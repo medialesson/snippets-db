@@ -9,7 +9,7 @@ namespace Snippets.Web.Domains
     public class Person
     {
         [JsonProperty("id")]
-        public string UserId { get; set; }
+        public string PersonId { get; set; }
 
         public string Email { get; set; }
 
