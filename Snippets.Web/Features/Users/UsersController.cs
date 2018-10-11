@@ -19,5 +19,11 @@ namespace Snippets.Web.Features.Users
         {
             return await _mediator.Send(command);
         }
+
+        [HttpPost("auth")]
+        public async Task<UserEnvelope> Auth([FromBody] Auth.Command command)
+        {
+            return await _mediator.Send(command);
+        }
     }
 }
