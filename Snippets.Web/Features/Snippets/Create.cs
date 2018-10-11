@@ -52,12 +52,12 @@ namespace Snippets.Web.Features.Snippets
                 _context = context;
             }
 
-            public async Task<SnippetEnvelope> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                var author = await _context.Persons.FirstAsync(cancellationToken); // TODO: Assign user in current request
+                var author = await _context.Persons.FirstAsync(cancellationToken); // TODO: Assign user in current message
                 var categories = new List<Category>();
 
-                foreach (var categoryString in (request.Snippet.CategoryList ?? Enumerable.Empty<string>()))
+                foreach (var categoryString in (message.Snippet.CategoryList ?? Enumerable.Empty<string>()))
                 {
                     var c = await _context.Categories.FirstOrDefaultAsync(x => 
                         x.DisplayName.ToLower() == categoryString.ToLower(), 
@@ -79,9 +79,9 @@ namespace Snippets.Web.Features.Snippets
 
                 var snippet = new Snippet()
                 {
-                    Title = request.Snippet.Title,
+                    Title = message.Snippet.Title,
                     Author = author,
-                    Content = request.Snippet.Content
+                    Content = message.Snippet.Content
                 };
 
                 await _context.Snippets.AddAsync(snippet, cancellationToken);

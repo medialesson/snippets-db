@@ -12,13 +12,19 @@ namespace Snippets.Web.Features.Snippets
 {
     [Route("snippets")]
     [ApiController]
-    public class SnippetsController : ControllerBase
+    public class SnippetController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public SnippetsController(IMediator mediator)
+        public SnippetController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<SnippetEnvelope> Get(string id)
+        {
+            return await _mediator.Send(new Details.Query(id));
         }
 
         [HttpPost]
