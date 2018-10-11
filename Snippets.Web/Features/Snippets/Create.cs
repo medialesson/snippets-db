@@ -79,6 +79,7 @@ namespace Snippets.Web.Features.Snippets
 
                 var snippet = new Snippet()
                 {
+                    Title = request.Snippet.Title,
                     Author = author,
                     Content = request.Snippet.Content
                 };
