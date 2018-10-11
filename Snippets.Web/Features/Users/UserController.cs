@@ -24,10 +24,10 @@ namespace Snippets.Web.Features.Users
         [HttpGet]
         public async Task<UserEnvelope> GetCurrent()
         {
-            return await  _mediator.Send(new Details.Query
+            return await _mediator.Send(new Details.Query
             {
                 UserId = _currentUserAccessor.GetCurrentUserId()
-            })
+            });
         }
     }
 }
