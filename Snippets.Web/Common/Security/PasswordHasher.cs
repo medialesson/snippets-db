@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Snippets.Web.Common.Security
 {
     public class PasswordHasher : IPasswordHasher
     {
+        private readonly IConfiguration _configuration;
         readonly HMACSHA512 _algorithm; 
 
-        public PasswordHasher(string secret)
+        public PasswordHasher(IConfiguration configuration)
         {
-           _algorithm = new HMACSHA512(Encoding.UTF8.GetBytes(secret));
+            _configuration = configuration;
+            _algorithm = new HMACSHA512(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Secret")));
         }
 
         public byte[] Hash(string password, byte[] salt)
