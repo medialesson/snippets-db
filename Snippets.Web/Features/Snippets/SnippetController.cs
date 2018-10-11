@@ -21,6 +21,12 @@ namespace Snippets.Web.Features.Snippets
             _mediator = mediator;
         }
 
+        [HttpGet]
+        public async Task<SnippetsEnvelope> Get([FromQuery] string category, [FromQuery] string author, [FromQuery] int? limit, [FromQuery] int? offset)
+        {
+            return await _mediator.Send(new List.Query(category, author, limit, offset));
+        }
+
         [HttpGet("{id}")]
         public async Task<SnippetEnvelope> Get(string id)
         {
