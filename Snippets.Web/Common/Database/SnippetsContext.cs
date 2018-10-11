@@ -11,10 +11,10 @@ namespace Snippets.Web.Common.Database
     public class SnippetsContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-
         public DbSet<Snippet> Snippets { get; set; }
-
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<SnippetCategory> SnippetCategories { get; set; }
 
 
         public SnippetsContext(DbContextOptions options) : base(options)
