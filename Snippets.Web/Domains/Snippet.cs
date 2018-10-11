@@ -25,7 +25,7 @@ namespace Snippets.Web.Domains
         public string Content { get; set; }
 
         [NotMapped]
-        public List<Category> Categories => SnippetCategories?.Select(x => x.Category).ToList();
+        public List<string> Categories => SnippetCategories?.Select(x => x.CategoryId).ToList();
             
         [JsonIgnore]
         public List<SnippetCategory> SnippetCategories { get; set; }
