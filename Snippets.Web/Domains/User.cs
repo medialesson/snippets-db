@@ -8,6 +8,7 @@ namespace Snippets.Web.Domains
 {
     public class User
     {
+        [JsonProperty("id")]
         public string UserId { get; set; }
 
         public string Email { get; set; }
@@ -17,8 +18,10 @@ namespace Snippets.Web.Domains
         [JsonIgnore]
         public List<Snippet> Snippets { get; set; }
 
+        [JsonIgnore]
         public byte[] PasswordHash { get; set; }
 
+        [JsonIgnore]
         public byte[] PasswordSalt { get; set; }
     }
 }

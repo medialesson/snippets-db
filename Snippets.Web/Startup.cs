@@ -28,7 +28,7 @@ namespace Snippets.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SnippetsContext>(options =>
+            services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
             {
                 options.UseSqlite("Data Source=snippets.db");
             });
