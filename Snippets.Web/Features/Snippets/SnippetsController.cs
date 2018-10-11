@@ -12,11 +12,11 @@ namespace Snippets.Web.Features.Snippets
 {
     [Route("snippets")]
     [ApiController]
-    public class SnippetController : ControllerBase
+    public class SnippetsController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public SnippetController(IMediator mediator)
+        public SnippetsController(IMediator mediator)
         {
             _mediator = mediator;
         }
