@@ -13,7 +13,11 @@ namespace Snippets.Web.Common
             _httpContextAccessor = httpContextAccessor;
         }
 
+<<<<<<< HEAD
         public string GetCurrentUserId()
+=======
+        public string GetCurrentUsername()
+>>>>>>> 1c87a7d... Add user accessor helper
         {
             return _httpContextAccessor.HttpContext.User?.Claims
                 ?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
