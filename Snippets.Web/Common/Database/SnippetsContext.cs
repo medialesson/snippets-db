@@ -10,7 +10,7 @@ namespace Snippets.Web.Common.Database
 {
     public class SnippetsContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Person> Persons { get; set; }
 
         public DbSet<Snippet> Snippets { get; set; }
 

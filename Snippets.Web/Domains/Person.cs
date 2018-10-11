@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Snippets.Web.Domains
 {
-    public class User
+    public class Person
     {
         [JsonProperty("id")]
         public string UserId { get; set; }
