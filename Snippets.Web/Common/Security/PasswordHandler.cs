@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Snippets.Web.Common.Security
 {
-    public class PasswordHasher : IPasswordHasher
+    public class PasswordHandler : IPasswordHasher
     {
         readonly HMACSHA512 _algorithm; 
 
-        public PasswordHasher(string secret)
+        public PasswordHandler(string secret)
         {
            _algorithm = new HMACSHA512(Encoding.UTF8.GetBytes(secret));
         }

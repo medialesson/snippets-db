@@ -8,7 +8,7 @@ namespace Snippets.Web.Common.Security
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        private readonly JwtIssuerOptions _jwtOptions;
+        readonly JwtIssuerOptions _jwtOptions;
 
         public JwtTokenGenerator(IOptions<JwtIssuerOptions> jwtOptions)
         {
