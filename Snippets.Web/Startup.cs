@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NSwag.AspNetCore;
 
 namespace Snippets.Web
 {
@@ -26,6 +27,7 @@ namespace Snippets.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +41,12 @@ namespace Snippets.Web
             {
                 app.UseHsts();
             }
+
+            app.UseStaticFiles();
+            app.UseSwaggerUi3(options =>
+            {
+                options.GeneratorSettings.Title = "Snippets API";
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();
