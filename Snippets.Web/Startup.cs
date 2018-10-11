@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Security;
 
 namespace Snippets.Web
 {
@@ -39,9 +41,13 @@ namespace Snippets.Web
 
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
 
-
             // Add auto mapper
             services.AddAutoMapper(GetType().Assembly);
+
+
+            // Add common services
+            //services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 
             // Add MVC
