@@ -84,7 +84,7 @@ namespace Snippets.Web.Features.Snippets
                 return new SnippetsEnvelope()
                 {
                     Snippets = snippets,
-                    SnippetsCount = queryable.Count()
+                    SnippetsCount = snippets.Count()
                 };
             }
         }
