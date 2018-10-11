@@ -10,11 +10,17 @@ namespace Snippets.Web.Domains
     public class Snippet
     {
         [JsonProperty("id")]
-        public string SnippetId { get; set; }
+        public string SnippetId { get; set; } = Guid.NewGuid().ToString();
 
-        public int Karma { get; set; }
+        // TODO: Add pivot table for karma assignment (person <-> karma)
+        // [JsonIgnore] public SnippetKarma { get; set; }
+
+        [NotMapped]
+        public int Karma => 0;
 
         public Person Author { get; set; }
+
+        public string Title { get; set; }
 
         public string Content { get; set; }
 
@@ -23,5 +29,8 @@ namespace Snippets.Web.Domains
             
         [JsonIgnore]
         public List<SnippetCategory> SnippetCategories { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

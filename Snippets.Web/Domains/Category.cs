@@ -10,7 +10,7 @@ namespace Snippets.Web.Domains
     public class Category
     {
         [JsonProperty("id")]
-        public string CategoryId { get; set; }
+        public string CategoryId { get; set; } = Guid.NewGuid().ToString();
 
         public string DisplayName { get; set; }
 
