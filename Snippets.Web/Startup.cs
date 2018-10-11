@@ -46,7 +46,8 @@ namespace Snippets.Web
 
 
             // Add common services
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddSingleton(Configuration);
+            services.AddSingleton<IPasswordHasher, PasswordHasher>(); // TODO: Blame Samuel in case it fucks up
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 
