@@ -42,13 +42,14 @@ namespace Snippets.Web
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSwaggerUi3(options =>
+
+            app.UseSwaggerUi3WithApiExplorer(options =>
             {
                 options.GeneratorSettings.Title = "Snippets API";
             });
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
