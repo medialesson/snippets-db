@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Snippets.Web.Domains.Enums
 {
-    public enum ProgrammingLanguage
+    public enum Language
     {
-        Default,
+        Plain,
         CSharp,
         VisualBasic,
         JavaScript,
@@ -16,11 +16,14 @@ namespace Snippets.Web.Domains.Enums
         Css,
         Json,
         Xml,
+        Go,
         Php,
         Ruby,
+        Rust,
         Swift,
         C,
         Cpp,
+        ObjectiveC,
         Markdown,
         Shell,
         Java

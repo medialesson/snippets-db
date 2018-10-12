@@ -15,7 +15,7 @@ namespace Snippets.Web.Features.Snippets
     public class SnippetsController : ControllerBase
     {
         private readonly IMediator _mediator;
-
+        
         public SnippetsController(IMediator mediator)
         {
             _mediator = mediator;
@@ -27,6 +27,11 @@ namespace Snippets.Web.Features.Snippets
             return await _mediator.Send(new List.Query(category, author, limit, offset));
         }
 
+        /// <summary>
+        /// Gets a single snippet by its ID
+        /// </summary>
+        /// <param name="id">Snippet ID</param>
+        /// <returns>Snippet</returns>
         [HttpGet("{id}")]
         public async Task<SnippetEnvelope> Get(string id)
         {

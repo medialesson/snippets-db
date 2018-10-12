@@ -19,7 +19,7 @@ namespace Snippets.Web.Features.Snippets
         {
             public string Title { get; set; }
             public string Content { get; set; }
-            public ProgrammingLanguage ProgrammingLanguage { get; set; }
+            public Language ProgrammingLanguage { get; set; }
             public ICollection<string> Categories { get; set; }
         }
 

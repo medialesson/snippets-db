@@ -25,7 +25,7 @@ namespace Snippets.Web.Domains
 
         public string Content { get; set; }
 
-        public ProgrammingLanguage ProgrammingLanguage { get; set; } = ProgrammingLanguage.Default;
+        public Language Language { get; set; } = Language.Plain;
 
         [NotMapped]
         public List<string> Categories => SnippetCategories?.Select(x => x.CategoryId).ToList();
