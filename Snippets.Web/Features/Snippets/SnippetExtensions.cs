@@ -14,6 +14,7 @@ namespace Snippets.Web.Features.Snippets
             return snippets
                 .Include(x => x.Author)
                 .Include(x => x.SnippetCategories)
+                .Include(x => x.SnippetKarma)
                 .AsNoTracking(); // Do not flag any changes as dirty
         }
     }

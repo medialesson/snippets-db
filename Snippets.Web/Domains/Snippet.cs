@@ -15,11 +15,11 @@ namespace Snippets.Web.Domains
 
         [NotMapped]
         [JsonIgnore]
-        public List<SnippetKarma> Upvotes => SnippetKarma.Where(x => x.Karma.Upvote).ToList();
+        public List<SnippetKarma> Upvotes => SnippetKarma?.Where(x => x.Karma.Upvote).ToList() ?? new List<SnippetKarma>();
 
         [NotMapped]
         [JsonIgnore]
-        public List<SnippetKarma> Downvotes => SnippetKarma.Except(Upvotes).ToList();
+        public List<SnippetKarma> Downvotes => SnippetKarma?.Except(Upvotes).ToList() ?? new List<SnippetKarma>();
 
         [NotMapped]
         public int Score => Upvotes.Count() - Downvotes.Count();

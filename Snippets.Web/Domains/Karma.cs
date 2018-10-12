@@ -12,7 +12,10 @@ namespace Snippets.Web.Domains
 
         public bool Upvote { get; set; }
 
+        public Person Submitter { get; set; }
+
+        [ForeignKey("KarmaId")]
         [JsonIgnore]
         public List<SnippetKarma> SnippetKarma { get; set; }
     }
-}
+}#
