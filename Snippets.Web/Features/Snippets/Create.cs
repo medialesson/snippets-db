@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Domains;
+using Snippets.Web.Domains.Enums;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -17,7 +19,8 @@ namespace Snippets.Web.Features.Snippets
         {
             public string Title { get; set; }
             public string Content { get; set; }
-            public ICollection<string> CategoryList { get; set; }
+            public ProgrammingLanguage ProgrammingLanguage { get; set; }
+            public ICollection<string> Categories { get; set; }
         }
 
         public class SnippetDataValidator : AbstractValidator<SnippetData>
@@ -45,19 +48,20 @@ namespace Snippets.Web.Features.Snippets
         public class Handler : IRequestHandler<Command, SnippetEnvelope>
         {
             private readonly SnippetsContext _context;
-            //private readonly ICurrentUserAccessor _currentUserAccessor;
+            private readonly ICurrentUserAccessor _currentUserAccessor;
 
-            public Handler(SnippetsContext context)
+            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor)
             {
                 _context = context;
+                _currentUserAccessor = currentUserAccessor;
             }
 
             public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                var author = await _context.Persons.FirstAsync(cancellationToken); // TODO: Assign user in current message
+                var author = await _context.Persons.FirstAsync(p => p.PersonId == _currentUserAccessor.GetCurrentUserId(), cancellationToken);
                 var categories = new List<Category>();
 
-                foreach (var categoryString in (message.Snippet.CategoryList ?? Enumerable.Empty<string>()))
+                foreach (var categoryString in (message.Snippet.Categories ?? Enumerable.Empty<string>()))
                 {
                     var c = await _context.Categories.FirstOrDefaultAsync(x => 
                         x.DisplayName.ToLower() == categoryString.ToLower(), 
@@ -81,7 +85,8 @@ namespace Snippets.Web.Features.Snippets
                 {
                     Title = message.Snippet.Title,
                     Author = author,
-                    Content = message.Snippet.Content
+                    Content = message.Snippet.Content,
+                    ProgrammingLanguage = message.Snippet.ProgrammingLanguage
                 };
 
                 await _context.Snippets.AddAsync(snippet, cancellationToken);

@@ -34,7 +34,7 @@ namespace Snippets.Web.Features.Snippets
         }
 
         [HttpPost]
-        // [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
         public async Task<SnippetEnvelope> Create([FromBody] Create.Command command)
         {
             return await _mediator.Send(command);
