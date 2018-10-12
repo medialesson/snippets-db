@@ -3,6 +3,7 @@
 
 # Visual studio code debugging files
 .vscode/
+Snippets.Web.xml
 
 # User-specific files
 *.suo
