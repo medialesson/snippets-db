@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snippets.Web.Domains;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Snippets.Web.Features.Users
         public string DisplayName { get; set; }
 
         public string Token { get; set; }
+
+        public UserPreferences Preferences { get; set; }
     }
 
     public class UserEnvelope

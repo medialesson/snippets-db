@@ -18,6 +18,8 @@ namespace Snippets.Web.Domains
         [JsonIgnore]
         public List<Snippet> Snippets { get; set; }
 
+        public UserPreferences Preferences { get; set; } = new UserPreferences();
+
         [JsonIgnore]
         public byte[] PasswordHash { get; set; }
 
