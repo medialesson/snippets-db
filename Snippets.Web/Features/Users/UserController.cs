@@ -29,5 +29,11 @@ namespace Snippets.Web.Features.Users
                 UserId = _currentUserAccessor.GetCurrentUserId()
             });
         }
+
+        [HttpPut]
+        public async Task<UserEnvelope> Update([FromBody] Edit.Command command) 
+        {
+            return await _mediator.Send(command);
+        }
     }
 }
