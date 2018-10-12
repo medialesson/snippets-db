@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Exceptions;
 using SQLitePCL;
 
 namespace Snippets.Web.Features.Snippets
@@ -51,8 +53,7 @@ namespace Snippets.Web.Features.Snippets
                 }
                 else
                 {
-                    // TODO: Throw REST exception
-                    throw new Exception("Snippet not found");
+                    throw new RestException(HttpStatusCode.NotFound, "Snippet not found");
                 }
             }
         }

@@ -21,6 +21,7 @@ using NSwag.SwaggerGeneration.Processors.Security;
 using NSwag;
 using Snippets.Web.Common;
 using Microsoft.AspNetCore.Http;
+using Snippets.Web.Common.Middleware;
 
 namespace Snippets.Web
 {
@@ -77,6 +78,8 @@ namespace Snippets.Web
             {
                 app.UseHsts();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
