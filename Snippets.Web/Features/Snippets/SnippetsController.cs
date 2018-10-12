@@ -33,6 +33,12 @@ namespace Snippets.Web.Features.Snippets
             return await _mediator.Send(new Details.Query(id));
         }
 
+        [HttpGet("{id}/raw")]
+        public async Task<string> GetRawContent(string id)
+        {
+            return await _mediator.Send(new Content.Query(id));
+        }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
         public async Task<SnippetEnvelope> Create([FromBody] Create.Command command)
