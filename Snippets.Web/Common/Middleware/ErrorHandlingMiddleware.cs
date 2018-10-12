@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Snippets.Web.Common.Exceptions;
 using System;
@@ -13,10 +14,12 @@ namespace Snippets.Web.Common.Middleware
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -27,11 +30,11 @@ namespace Snippets.Web.Common.Middleware
             }
             catch(Exception ex)
             {
-                await HandleExceptionAsync(context, ex); // TODO: Add logger
+                await HandleExceptionAsync(context, ex, _logger);
             }
         }
 
-        public static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        public static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger)
         {
             object errors = null;
 
@@ -40,11 +43,13 @@ namespace Snippets.Web.Common.Middleware
                 case RestException re:
                     errors = re.Errors;
                     context.Response.StatusCode = (int)re.Code;
+                    logger.LogWarning(re, $"HTTP {(int)re.Code} - {re.Message}");
                     break;
 
                 case Exception ex:
                     errors = string.IsNullOrWhiteSpace(ex.Message) ? "Error" : ex.Message;
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    logger.LogError(ex, ex.Message);
                     break;
             }
 
