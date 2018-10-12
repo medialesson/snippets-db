@@ -86,7 +86,7 @@ namespace Snippets.Web.Features.Snippets
                     Title = message.Snippet.Title,
                     Author = author,
                     Content = message.Snippet.Content,
-                    ProgrammingLanguage = message.Snippet.ProgrammingLanguage
+                    Language = message.Snippet.ProgrammingLanguage
                 };
 
                 await _context.Snippets.AddAsync(snippet, cancellationToken);
