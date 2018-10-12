@@ -11,6 +11,7 @@ namespace Snippets.Web.Common.Database
     public class SnippetsContext : DbContext
     {
         public DbSet<Person> Persons { get; set; }
+        public DbSet<UserPreferences> Preferences { get; set; }
         public DbSet<Snippet> Snippets { get; set; }
         public DbSet<Category> Categories { get; set; }
 
