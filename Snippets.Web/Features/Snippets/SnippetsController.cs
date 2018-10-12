@@ -21,6 +21,12 @@ namespace Snippets.Web.Features.Snippets
             _mediator = mediator;
         }
 
+        [HttpGet]
+        public async Task<SnippetsEnvelope> Get([FromQuery] string category, [FromQuery] string author, [FromQuery] int? limit, [FromQuery] int? offset)
+        {
+            return await _mediator.Send(new List.Query(category, author, limit, offset));
+        }
+
         [HttpGet("{id}")]
         public async Task<SnippetEnvelope> Get(string id)
         {
@@ -28,7 +34,7 @@ namespace Snippets.Web.Features.Snippets
         }
 
         [HttpPost]
-        // [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
         public async Task<SnippetEnvelope> Create([FromBody] Create.Command command)
         {
             return await _mediator.Send(command);
