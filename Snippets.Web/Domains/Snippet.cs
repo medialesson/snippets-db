@@ -13,11 +13,19 @@ namespace Snippets.Web.Domains
         [JsonProperty("id")]
         public string SnippetId { get; set; } = Guid.NewGuid().ToString();
 
-        // TODO: Add pivot table for karma assignment (person <-> karma)
-        // [JsonIgnore] public SnippetKarma { get; set; }
+        [NotMapped]
+        [JsonIgnore]
+        public List<Karma> Upvotes => Karma?.Where(x =>  x.Upvote).ToList() ?? new List<Karma>();
 
         [NotMapped]
-        public int Karma => 0;
+        [JsonIgnore]
+        public List<Karma> Downvotes => Karma?.Where(x => !x.Upvote).ToList() ?? new List<Karma>();
+
+        [NotMapped]
+        public int Score => Upvotes.Count() - Downvotes.Count();
+
+        [JsonIgnore]
+        public List<Karma> Karma { get; set; }
 
         public Person Author { get; set; }
 

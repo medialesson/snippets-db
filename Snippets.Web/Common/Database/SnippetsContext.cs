@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace Snippets.Web.Common.Database
         public DbSet<UserPreferences> Preferences { get; set; }
         public DbSet<Snippet> Snippets { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Karma> Karma { get; set; }
 
         public DbSet<SnippetCategory> SnippetCategories { get; set; }
-
 
         public SnippetsContext(DbContextOptions options) : base(options)
         {

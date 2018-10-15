@@ -13,7 +13,10 @@ namespace Snippets.Web.Features.Snippets
         {
             return snippets
                 .Include(x => x.Author)
-                .Include(x => x.SnippetCategories)
+                .Include(x => x.SnippetCategories).ThenInclude(x => x.Snippet)
+                .Include(x => x.SnippetCategories).ThenInclude(x => x.Category)
+                .Include(x => x.Karma).ThenInclude(x => x.Snippet)
+                .Include(x => x.Karma).ThenInclude(x => x.Submitter)
                 .AsNoTracking(); // Do not flag any changes as dirty
         }
     }
