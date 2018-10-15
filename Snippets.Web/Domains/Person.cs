@@ -16,17 +16,17 @@ namespace Snippets.Web.Domains
 
         public string  DisplayName { get; set; }
 
+        [NotMapped]
+        public int Score => Snippets?.Where(x => x.Author.PersonId == PersonId).Sum(s => s.Score) ?? 0;
+
         [JsonIgnore]
         public List<Snippet> Snippets { get; set; }
-
-        public UserPreferences Preferences { get; set; } = new UserPreferences();
 
         [JsonIgnore]
         public List<Karma> Karma { get; set; }
 
-        [NotMapped]
-        public int Score => Snippets?.Where(x => x.Author.PersonId == PersonId).Sum(s => s.Score) ?? 0;
-
+        public UserPreferences Preferences { get; set; } = new UserPreferences();
+        
         [JsonIgnore]
         public byte[] PasswordHash { get; set; }
 

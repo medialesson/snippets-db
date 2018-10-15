@@ -16,10 +16,10 @@ namespace Snippets.Web.Domains
 
         public string Color { get; set; } = "#000";
 
-        [JsonIgnore]
-        public List<SnippetCategory> SnippetCategories { get; set; }
-
         [NotMapped]
         public List<string> Snippets => SnippetCategories?.Select(x => x.SnippetId).ToList();
+
+        [JsonIgnore]
+        public List<SnippetCategory> SnippetCategories { get; set; }
     }
 }
