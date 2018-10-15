@@ -20,10 +20,26 @@ namespace Snippets.Web.Features.Karma
         [HttpPost("{id}/upvote")]
         public async Task<VoteEnvelope> Upvote(string id)
         {
-            var command = new Upvote.Command {
-                Vote = new Upvote.UserData {
+            var command = new Upvote.Command 
+            {
+                Vote = new Upvote.UserData 
+                {
                     SnippetId = id
                 } 
+            };
+
+            return await _mediator.Send(command);
+        }
+
+        [HttpPost("{id}/downvote")]
+        public async Task<VoteEnvelope> Downvote(string id)
+        {
+            var command = new Downvote.Command 
+            {
+                Vote = new Downvote.UserData
+                {
+                    SnippetId = id
+                }
             };
 
             return await _mediator.Send(command);

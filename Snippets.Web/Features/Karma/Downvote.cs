@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Snippets.Web.Features.Karma
 {
-    public class Upvote
+    public class Downvote
     {
        public class UserData
        {
@@ -53,7 +53,7 @@ namespace Snippets.Web.Features.Karma
                 if (currentKarma == null)
                 {
                     currentKarma = new Domains.Karma {
-                        Upvote = true,
+                        Upvote = false,
                         Snippet = currentSnippet,
                         Submitter = await _context.Persons.FindAsync(currentUserId)
                     };
@@ -61,14 +61,14 @@ namespace Snippets.Web.Features.Karma
                 }
                 else 
                 {
-                    if (!currentKarma.Upvote)
-                        currentKarma.Upvote = true;
+                    if (currentKarma.Upvote)
+                        currentKarma.Upvote = false;
                     else
                     {
                         _context.Karma.Remove(currentKarma);
-                        currentKarma.Upvote = false; // Gets mapped to Status
-                    }
-                } 
+                        currentKarma.Upvote = true; // Gets mapped to Status
+                    };
+                }
 
                 await _context.SaveChangesAsync();
                 var vote = _mapper.Map<Domains.Karma, Vote>(currentKarma);
