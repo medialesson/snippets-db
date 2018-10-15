@@ -7,13 +7,13 @@ namespace Snippets.Web.Common.Security
 {
     public class PasswordHasher : IPasswordHasher
     {
-        private readonly IConfiguration _configuration;
-        readonly HMACSHA512 _algorithm; 
+        private readonly AppSettings _settings;
+        readonly HMACSHA512 _algorithm;
 
-        public PasswordHasher(IConfiguration configuration)
+        public PasswordHasher(AppSettings settings)
         {
-            _configuration = configuration;
-            _algorithm = new HMACSHA512(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Secret")));
+            _settings = settings;
+            _algorithm = new HMACSHA512(Encoding.UTF8.GetBytes(_settings.Secret));
         }
 
         public byte[] Hash(string password, byte[] salt)

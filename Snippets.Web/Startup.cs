@@ -46,12 +46,18 @@ namespace Snippets.Web
 
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
 
+            // Bind settings to instance
+            var settings = new AppSettings();
+            Configuration.Bind("Snippets", settings);
+            services.AddSingleton(Configuration);
+            services.AddSingleton(settings);
+
+
             // Add auto mapper
             services.AddAutoMapper(GetType().Assembly);
 
 
             // Add common services
-            services.AddSingleton(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>(); // TODO: Blame Samuel in case it fucks up
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
