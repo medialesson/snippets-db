@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Snippets.Web.Domains.Enums
 {
+    /// <summary>
+    /// Supported language types for a Snippet
+    /// </summary>
     public enum Language
     {
         Plain,

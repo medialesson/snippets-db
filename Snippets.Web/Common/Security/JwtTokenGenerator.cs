@@ -10,6 +10,10 @@ namespace Snippets.Web.Common.Security
     {
         readonly JwtIssuerOptions _jwtOptions;
 
+        /// <summary>
+        /// Initializes a JwtTokenGenerator
+        /// </summary>
+        /// <param name="jwtOptions"></param>
         public JwtTokenGenerator(IOptions<JwtIssuerOptions> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;
@@ -19,6 +23,7 @@ namespace Snippets.Web.Common.Security
         {
             var claims = new Claim[]
             {
+                // Claims which the token validates to
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat,
@@ -33,7 +38,7 @@ namespace Snippets.Web.Common.Security
                 _jwtOptions.SigningCredentials
             );
 
-            
+            // Create a serialized token from the data above
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
