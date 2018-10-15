@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,9 @@ namespace Snippets.Web.Common.Database
         public DbSet<Person> Persons { get; set; }
         public DbSet<Snippet> Snippets { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Karma> Karma { get; set; }
 
         public DbSet<SnippetCategory> SnippetCategories { get; set; }
-        public DbSet<SnippetKarma> SnippetKarma { get; set; }
-
 
         public SnippetsContext(DbContextOptions options) : base(options)
         {
@@ -38,22 +38,6 @@ namespace Snippets.Web.Common.Database
                 sc.HasOne(pt => pt.Category)
                     .WithMany(p => p.SnippetCategories)
                     .HasForeignKey(pt => pt.CategoryId);
-            });
-
-            modelBuilder.Entity<SnippetKarma>(sk => 
-            {
-                sk.HasKey(t => new 
-                {
-                    t.SnippetId, t.KarmaId
-                });
-
-                sk.HasOne(pt => pt.Snippet)
-                    .WithMany(p => p.SnippetKarma)
-                    .HasForeignKey(pt => pt.SnippetId);
-
-                sk.HasOne(pt => pt.Karma)
-                    .WithMany(p => p.SnippetKarma)
-                    .HasForeignKey(pt =>pt.KarmaId);
             });
         }
     }
