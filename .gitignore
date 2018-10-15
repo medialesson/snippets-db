@@ -265,3 +265,4 @@ __pycache__/
 *.pyc
 /Snippets.Web/snippets.db
 Snippets.Web/.vscode/launch.json
+/Snippets.Web/Properties/PublishProfiles
