@@ -25,6 +25,7 @@ namespace Snippets.Web.Domains
         [JsonIgnore]
         public List<Karma> Karma { get; set; }
 
+        [NotMapped]
         public UserPreferences Preferences { get; set; } = new UserPreferences();
         
         [JsonIgnore]
