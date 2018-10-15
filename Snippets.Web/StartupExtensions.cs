@@ -18,7 +18,7 @@ namespace Snippets.Web
             services.AddOptions();
             var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config.GetValue<string>("Secret")));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config.GetSection("Snippets").GetValue<string>("Secret")));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
             string issuer = "snippets-api";
