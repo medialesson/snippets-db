@@ -14,21 +14,16 @@ namespace Snippets.Web.Features.Users
     public class UserController : ControllerBase
     {
         readonly IMediator _mediator;
-        readonly ICurrentUserAccessor _currentUserAccessor;
 
-        public UserController(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
-            _currentUserAccessor = currentUserAccessor;
         }
 
         [HttpGet]
         public async Task<UserEnvelope> GetCurrent()
         {
-            return await _mediator.Send(new Details.Query
-            {
-                UserId = _currentUserAccessor.GetCurrentUserId()
-            });
+            return await _mediator.Send(new Details.Query());
         }
 
         [HttpGet("{id}")]

@@ -49,6 +49,9 @@ namespace Snippets.Web.Features.Users
                 var person = await _context.Persons.AsNoTracking()
                     .FirstOrDefaultAsync(p => p.PersonId == message.UserId, cancellationToken);
 
+                if (message.UserId == null)
+                    throw new RedirectException($"user/{_currentUserAccessor.GetCurrentUserId()}", false);
+
                 if (person == null)
                     throw new RestException(HttpStatusCode.NotFound, "User does not exist");
 
@@ -59,7 +62,7 @@ namespace Snippets.Web.Features.Users
                     user.Email = null;
                     user.Token = null;
                 }
-                else 
+                else
                     user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
                 return new UserEnvelope(user);
             }
