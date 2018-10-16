@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
@@ -26,19 +27,23 @@ namespace Snippets.Web.Features.Categories
         public class QueryHandler : IRequestHandler<Query, CategoryEnvelope>
         {
             private readonly SnippetsContext _context;
+            private readonly IMapper _mapper;
 
-            public QueryHandler(SnippetsContext context)
+            public QueryHandler(SnippetsContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<CategoryEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
-                Category category = await _context.Categories
+                var selectedCategory = await _context.Categories
                     .FindAsync(new object[] { message.ID }, cancellationToken: cancellationToken);
 
-                if(category != null)
+                if(selectedCategory != null)
                 {
+                    var category = _mapper.Map<Domains.Category, Category>(selectedCategory);
+
                     return new CategoryEnvelope()
                     {
                         Category = category
