@@ -31,6 +31,15 @@ namespace Snippets.Web.Features.Users
             });
         }
 
+        [HttpGet("{id}")]
+        public async Task<UserEnvelope> GetUser(string id)
+        {
+            return await _mediator.Send(new Details.Query
+            {
+                UserId = id
+            });
+        }
+
         [HttpPut]
         public async Task<UserEnvelope> Update([FromBody] Edit.Command command) 
         {
