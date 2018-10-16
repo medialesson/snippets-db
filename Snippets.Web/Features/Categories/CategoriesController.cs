@@ -30,5 +30,16 @@ namespace Snippets.Web.Features.Categories
         {
             return await _mediator.Send(new List.Query(limit, offset));
         }
+
+        /// <summary>
+        /// Retrieves a single category specified by its ID
+        /// </summary>
+        /// <param name="id">Category ID</param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<CategoryEnvelope> Details(string id)
+        {
+            return await _mediator.Send(new Details.Query(id));
+        }
     }
 }
