@@ -41,8 +41,9 @@ namespace Snippets.Web.Features.Users
 
             public async Task<UserEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
-                var person = await _context.Persons.Include(p => p.Preferences).AsNoTracking()
+                var person = await _context.Persons.AsNoTracking()
                     .FirstOrDefaultAsync(p => p.PersonId == message.UserId);
+
                 if (person == null)
                     throw new Exception("User not found");
 

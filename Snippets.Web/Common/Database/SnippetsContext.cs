@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Newtonsoft.Json;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace Snippets.Web.Common.Database
     public class SnippetsContext : DbContext
     {
         public DbSet<Person> Persons { get; set; }
-        public DbSet<UserPreferences> Preferences { get; set; }
         public DbSet<Snippet> Snippets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Karma> Karma { get; set; }
@@ -25,6 +25,9 @@ namespace Snippets.Web.Common.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            // Snippets and Category pivot table builder
             modelBuilder.Entity<SnippetCategory>(sc =>
             {
                 sc.HasKey(t => new
@@ -39,6 +42,26 @@ namespace Snippets.Web.Common.Database
                 sc.HasOne(pt => pt.Category)
                     .WithMany(p => p.SnippetCategories)
                     .HasForeignKey(pt => pt.CategoryId);
+            });
+
+            modelBuilder.Entity<Person>(p =>
+            {
+                #region User Preferences Notice
+                /* 
+                 * Make sure to manually update your 
+                 * entity after making changes to the person's preferences, e.g.:
+                 * 
+                 * person.Preferences.IsProfilePublic = true;
+                 * _context.Person.Update(person);
+                 * _context.SaveChanges();
+                 *
+                 */
+                #endregion
+
+                p.Property(u => u.Preferences)
+                    .HasConversion(
+                        x => JsonConvert.SerializeObject(x), 
+                        x => JsonConvert.DeserializeObject<UserPreferences>(x));
             });
         }
     }
