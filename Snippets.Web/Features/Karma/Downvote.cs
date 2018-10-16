@@ -8,6 +8,7 @@ using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
 using System.Net;
 using System.Threading.Tasks;
+using Snippets.Web.Features.Karma.Enums;
 
 namespace Snippets.Web.Features.Karma
 {
@@ -50,6 +51,11 @@ namespace Snippets.Web.Features.Karma
                 var currentSnippet =  await _context.Snippets.FindAsync(message.Vote.SnippetId);
                 var currentKarma = _context.Karma.SingleOrDefault(x => x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet); 
 
+                var vote = new Vote 
+                {
+                    Status = VoteStatus.Downvote
+                };
+
                 if (currentKarma == null)
                 {
                     currentKarma = new Domains.Karma {
@@ -66,12 +72,11 @@ namespace Snippets.Web.Features.Karma
                     else
                     {
                         _context.Karma.Remove(currentKarma);
-                        currentKarma.Upvote = true; // Gets mapped to Status
+                        vote.Status = VoteStatus.Removed;
                     };
                 }
 
                 await _context.SaveChangesAsync();
-                var vote = _mapper.Map<Domains.Karma, Vote>(currentKarma);
                 return new VoteEnvelope(vote);
             }
         }
