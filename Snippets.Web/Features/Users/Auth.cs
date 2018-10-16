@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +8,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Exceptions;
 using Snippets.Web.Common.Security;
 using Snippets.Web.Domains;
 
@@ -43,7 +45,7 @@ namespace Snippets.Web.Features.Users
             }
         }
 
-        public class Handler  : IRequestHandler<Command, UserEnvelope>
+        public class Handler : IRequestHandler<Command, UserEnvelope>
         {
             readonly SnippetsContext _context;
             readonly IPasswordHasher _passwordHasher;
@@ -63,10 +65,10 @@ namespace Snippets.Web.Features.Users
                 var person = await _context.Persons.Where(p => p.Email == message.User.Email)
                     .SingleOrDefaultAsync(cancellationToken);
                 if (person == null)
-                    throw new Exception("Invalid email");
+                    throw new RestException(HttpStatusCode.BadRequest, "Invalid Email");
 
                 if (!person.PasswordHash.SequenceEqual(_passwordHasher.Hash(message.User.Password, person.PasswordSalt)))
-                    throw new Exception("Invalid password");
+                    throw new RestException(HttpStatusCode.BadRequest, "Invalid password");
 
                 var user = _mapper.Map<Person, User>(person);
                 user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);

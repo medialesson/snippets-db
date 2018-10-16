@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,7 +8,6 @@ namespace Snippets.Web.Domains
 {
     public class Person
     {
-        [JsonProperty("id")]
         public string PersonId { get; set; }
 
         public string Email { get; set; }
@@ -19,19 +17,15 @@ namespace Snippets.Web.Domains
         [NotMapped]
         public int Score => Snippets?.Where(x => x.Author.PersonId == PersonId).Sum(s => s.Score) ?? 0;
 
-        [JsonIgnore]
         public List<Snippet> Snippets { get; set; }
 
-        [JsonIgnore]
         public List<Karma> Karma { get; set; }
 
         [NotMapped]
         public UserPreferences Preferences { get; set; } = new UserPreferences();
         
-        [JsonIgnore]
         public byte[] PasswordHash { get; set; }
 
-        [JsonIgnore]
         public byte[] PasswordSalt { get; set; }
     }
 }

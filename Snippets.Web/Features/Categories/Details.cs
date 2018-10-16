@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
-using Snippets.Web.Domains;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

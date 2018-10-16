@@ -15,14 +15,14 @@ namespace Snippets.Web.Features.Karma
 {
     public class Upvote
     {
-       public class UserData
+       public class VoteData
        {
            public string SnippetId { get; set; }
        } 
 
         public class Command : IRequest<VoteEnvelope>
         {
-            public UserData Vote { get; set; }
+            public VoteData Vote { get; set; }
         } 
 
         public class CommandValidator : AbstractValidator<Command>
@@ -49,9 +49,10 @@ namespace Snippets.Web.Features.Karma
             public async Task<VoteEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
-                var currentSnippet =  await _context.Snippets.FindAsync(message.Vote.SnippetId, cancellationToken);
-                var currentKarma = await _context.Karma.SingleOrDefaultAsync(
-                    x => x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet, 
+                var currentSnippet =  await _context.Snippets
+                    .FindAsync(message.Vote.SnippetId, cancellationToken);
+                var currentKarma = await _context.Karma.SingleOrDefaultAsync(x => 
+                    x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet, 
                     cancellationToken); 
 
                 var vote = new Vote 

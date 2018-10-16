@@ -7,7 +7,6 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
-using Snippets.Web.Domains;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -47,7 +46,8 @@ namespace Snippets.Web.Features.Snippets
                 if (!string.IsNullOrEmpty(message.Category))
                 {
                     var category =
-                        await _context.SnippetCategories.FirstOrDefaultAsync(x => x.CategoryId == message.Category,
+                        await _context.SnippetCategories.FirstOrDefaultAsync(x => 
+                            x.CategoryId == message.Category,
                             cancellationToken);
 
                     if (category != null)
@@ -64,7 +64,8 @@ namespace Snippets.Web.Features.Snippets
                 if (!string.IsNullOrEmpty(message.AuthorId))
                 {
                     var author =
-                        await _context.Persons.FirstOrDefaultAsync(x => x.PersonId == message.AuthorId,
+                        await _context.Persons.FirstOrDefaultAsync(x => 
+                            x.PersonId == message.AuthorId,
                             cancellationToken);
 
                     if (author != null)
@@ -85,7 +86,6 @@ namespace Snippets.Web.Features.Snippets
                     .ToListAsync(cancellationToken);
 
                 var snippets = _mapper.Map<List<Domains.Snippet>, List<Snippet>>(queriedSnippets);
-
                 return new SnippetsEnvelope()
                 {
                     Snippets = snippets,

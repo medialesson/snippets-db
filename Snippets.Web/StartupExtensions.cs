@@ -4,10 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Snippets.Web.Common.Security;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Snippets.Web
 {
@@ -18,7 +15,7 @@ namespace Snippets.Web
             services.AddOptions();
             var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config.GetSection("Snippets").GetValue<string>("Secret")));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Snippets").GetValue<string>("Secret")));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
             string issuer = "snippets-api";

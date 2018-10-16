@@ -18,15 +18,11 @@ namespace Snippets.Web.Features.Users
     {
         public class Query : IRequest<UserEnvelope>
         {
-            public string UserId { get; set; }
-        }
-
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
+            public Query(string userId = null)
             {
-                RuleFor(u => u.UserId).NotEmpty();
+                UserId = userId;
             }
+            public string UserId { get; }
         }
 
         public class QueryHandler : IRequestHandler<Query, UserEnvelope>

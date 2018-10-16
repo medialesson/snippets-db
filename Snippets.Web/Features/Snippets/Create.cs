@@ -65,7 +65,9 @@ namespace Snippets.Web.Features.Snippets
 
             public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                var author = await _context.Persons.FirstAsync(p => p.PersonId == _currentUserAccessor.GetCurrentUserId(), cancellationToken);
+                var author = await _context.Persons.FirstAsync(p => 
+                    p.PersonId == _currentUserAccessor.GetCurrentUserId(), 
+                    cancellationToken);
                 var categories = new List<Category>();
 
                 foreach (var categoryString in message.Snippet.Categories)

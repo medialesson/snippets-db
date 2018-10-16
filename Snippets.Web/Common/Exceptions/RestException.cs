@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Snippets.Web.Common.Exceptions
 {
@@ -18,8 +15,6 @@ namespace Snippets.Web.Common.Exceptions
             Code = code;
             Errors = errors;
         }
-
-        // TODO: Either use the constructor to create exceptions or the properties.
 
         /// <summary>
         /// HttpStatuscode returned by the server

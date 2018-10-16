@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Security;
 using Snippets.Web.Domains;
+using Snippets.Web.Common.Exceptions;
+using System.Net;
 
 namespace Snippets.Web.Features.Users
 {
@@ -66,7 +68,7 @@ namespace Snippets.Web.Features.Users
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
-                    throw new Exception("Email is already in use"); // TODO: Use a custom exception type
+                    throw new RestException(HttpStatusCode.BadRequest, "Email already in use");
 
                 var salt = Guid.NewGuid().ToByteArray();
                 var person = new Person
