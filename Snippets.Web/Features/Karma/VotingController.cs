@@ -36,7 +36,7 @@ namespace Snippets.Web.Features.Karma
         {
             var command = new Downvote.Command 
             {
-                Vote = new Downvote.UserData
+                Vote = new Downvote.VoteData
                 {
                     SnippetId = id
                 }
