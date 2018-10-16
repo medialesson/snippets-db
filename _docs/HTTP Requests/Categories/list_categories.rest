@@ -17,3 +17,11 @@ Content-Type: application/json
 GET https://localhost:5001/categories
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+@firstCategoryId = {{list_categories.response.body.$.categories[:1].categoryId}}
+
+
+### Get single category
+GET https://localhost:5001/categories/{{firstCategoryId}}
+Content-Type: application/json
+Authorization: Bearer {{token}} 
