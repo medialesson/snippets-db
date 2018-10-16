@@ -9,6 +9,7 @@ using Snippets.Web.Common.Exceptions;
 using System.Net;
 using System.Threading.Tasks;
 using Snippets.Web.Features.Karma.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Snippets.Web.Features.Karma
 {
@@ -48,8 +49,10 @@ namespace Snippets.Web.Features.Karma
             public async Task<VoteEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
-                var currentSnippet =  await _context.Snippets.FindAsync(message.Vote.SnippetId);
-                var currentKarma = _context.Karma.SingleOrDefault(x => x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet); 
+                var currentSnippet =  await _context.Snippets.FindAsync(message.Vote.SnippetId, cancellationToken);
+                var currentKarma = await _context.Karma.SingleOrDefaultAsync(
+                    x => x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet, 
+                    cancellationToken); 
 
                 var vote = new Vote 
                 {
@@ -61,9 +64,9 @@ namespace Snippets.Web.Features.Karma
                     currentKarma = new Domains.Karma {
                         Upvote = true,
                         Snippet = currentSnippet,
-                        Submitter = await _context.Persons.FindAsync(currentUserId)
+                        Submitter = await _context.Persons.FindAsync(currentUserId, cancellationToken)
                     };
-                    _context.Karma.Add(currentKarma);
+                    await _context.Karma.AddAsync(currentKarma, cancellationToken);
                 }
                 else 
                 {
@@ -76,7 +79,7 @@ namespace Snippets.Web.Features.Karma
                     }
                 } 
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return new VoteEnvelope(vote);
             }
         }
