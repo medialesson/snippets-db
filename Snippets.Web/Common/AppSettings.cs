@@ -8,5 +8,8 @@ namespace Snippets.Web.Common
     public class AppSettings
     {
         public string Secret { get; set; }
+        public string AccentColors { get; set; }
+
+        public IEnumerable<string> AccentColorsList { get => AccentColors.Split(';').ToList(); }
     }
 }

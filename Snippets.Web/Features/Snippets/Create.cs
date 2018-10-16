@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Extensions;
 using Snippets.Web.Domains;
 using Snippets.Web.Features.Snippets.Enums;
 
@@ -52,12 +53,14 @@ namespace Snippets.Web.Features.Snippets
             readonly SnippetsContext _context;
             readonly ICurrentUserAccessor _currentUserAccessor;
             readonly IMapper _mapper;
+            readonly AppSettings _settings;
 
-            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper)
+            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper, AppSettings settings)
             {
                 _context = context;
                 _currentUserAccessor = currentUserAccessor;
                 _mapper = mapper;
+                _settings = settings;
             }
 
             public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
@@ -75,7 +78,8 @@ namespace Snippets.Web.Features.Snippets
                     {
                         category = new Category()
                         {
-                            DisplayName = categoryString
+                            DisplayName = categoryString,
+                            Color = _settings.AccentColorsList.Random()
                         };
 
                         await _context.Categories.AddAsync(category, cancellationToken);
