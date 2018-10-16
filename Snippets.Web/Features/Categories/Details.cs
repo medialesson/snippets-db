@@ -16,12 +16,11 @@ namespace Snippets.Web.Features.Categories
     {
         public class Query : IRequest<CategoryEnvelope>
         {
-            public Query(string id)
+            public Query(string categoryId)
             {
-                ID = id;
+                CategoryId = categoryId;
             }
-
-            public string ID { get; }
+            public string CategoryId { get; }
         }
 
         public class QueryHandler : IRequestHandler<Query, CategoryEnvelope>
@@ -38,7 +37,7 @@ namespace Snippets.Web.Features.Categories
             public async Task<CategoryEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
                 var selectedCategory = await _context.Categories
-                    .FindAsync(new object[] { message.ID }, cancellationToken: cancellationToken);
+                    .FindAsync(new object[] { message.CategoryId }, cancellationToken: cancellationToken);
 
                 if(selectedCategory != null)
                 {
