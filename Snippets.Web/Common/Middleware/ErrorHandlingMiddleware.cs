@@ -42,9 +42,9 @@ namespace Snippets.Web.Common.Middleware
             {
                 case RestException re:
                     errors = re.Errors;
-                    context.Response.StatusCode = (int)re.Code;
+                    context.Response.StatusCode = (int) re.Code;
                     context.Response.ContentType = "application/json";
-                    logger.LogWarning(re, $"HTTP {(int)re.Code} - {re.Message}");
+                    logger.LogWarning(re, $"HTTP {(int) re.Code} - {re.Message}");
                     break;
 
                 case RedirectException re:
@@ -54,7 +54,7 @@ namespace Snippets.Web.Common.Middleware
                 case Exception ex:
                     errors = string.IsNullOrWhiteSpace(ex.Message) ? "Error" : ex.Message;
                     context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                     logger.LogError(ex, ex.Message);
                     break;
             }

@@ -29,10 +29,7 @@ namespace Snippets.Web.Features.Users
         [HttpGet("{id}")]
         public async Task<UserEnvelope> GetUser(string id)
         {
-            return await _mediator.Send(new Details.Query
-            {
-                UserId = id
-            });
+            return await _mediator.Send(new Details.Query(id));
         }
 
         [HttpPut]

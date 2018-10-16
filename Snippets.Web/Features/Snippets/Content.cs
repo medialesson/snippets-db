@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,19 +16,19 @@ namespace Snippets.Web.Features.Snippets
     {
         public class Query : IRequest<string>
         {
-            public Query(string id)
+            public Query(string snippetId)
             {
-                ID = id;
+                SnippetId = snippetId;
             }
 
-            public string ID { get; }
+            public string SnippetId { get; }
         }
 
         public class QueryValidator : AbstractValidator<Query>
         {
             public QueryValidator()
             {
-                RuleFor(x => x.ID).NotNull().NotEmpty();
+                RuleFor(x => x.SnippetId).NotEmpty();
             }
         }
 
@@ -42,7 +44,7 @@ namespace Snippets.Web.Features.Snippets
             public async Task<string> Handle(Query message, CancellationToken cancellationToken)
             {
                 var snippet = await _context.Snippets.GetAllData().FirstOrDefaultAsync(s => 
-                    s.SnippetId == message.ID, cancellationToken);
+                    s.SnippetId == message.SnippetId, cancellationToken);
 
                 if(snippet != null)
                 {
@@ -50,8 +52,7 @@ namespace Snippets.Web.Features.Snippets
                 }
                 else
                 {
-                    // TODO: Throw REST exception
-                    throw new Exception("Snippet not found");
+                    throw new RestException(HttpStatusCode.NotFound, "Snippet not found");
                 }
             }
         }

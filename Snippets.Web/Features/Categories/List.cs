@@ -43,7 +43,7 @@ namespace Snippets.Web.Features.Categories
                 var queriedCategories = await queryable
                     .OrderByDescending(x => x.CategoryId)
                     .Skip(message.Offset ?? 0)
-                    .Take(message.Limit ?? 25)
+                    .Take(message.Limit ?? 20)
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
 

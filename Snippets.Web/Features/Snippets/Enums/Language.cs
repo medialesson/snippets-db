@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Snippets.Web.Features.Snippets.Enums
+﻿namespace Snippets.Web.Features.Snippets.Enums
 {
+    /// <summary>
+    /// Supported language types for a Snippet
+    /// </summary>
     public enum Language
     {
         Plain,
