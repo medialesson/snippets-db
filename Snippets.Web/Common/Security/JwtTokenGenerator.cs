@@ -24,6 +24,12 @@ namespace Snippets.Web.Common.Security
                 new Claim(JwtRegisteredClaimNames.Iat,
                 new DateTimeOffset(_jwtOptions.IssuedAt).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
             };
+
+#if DEBUG
+            // Validate tokens for one day
+            _jwtOptions.ValidFor = TimeSpan.FromDays(1);
+#endif
+
             var jwt = new JwtSecurityToken(
                 _jwtOptions.Issuer,
                 _jwtOptions.Audience,
@@ -32,7 +38,6 @@ namespace Snippets.Web.Common.Security
                 _jwtOptions.Expiration,
                 _jwtOptions.SigningCredentials
             );
-
             
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
