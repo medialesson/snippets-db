@@ -27,7 +27,7 @@ namespace Snippets.Web.Features.Categories
         /// <param name="offset">Applies an offset to the categories collection</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<CategoriesEnvelope> List([FromQuery] int? limit, [FromQuery] int? offset)
+        public async Task<CategoriesEnvelope> List([FromQuery] int? limit = 25, [FromQuery] int? offset = 0)
         {
             return await _mediator.Send(new List.Query(limit, offset));
         }
