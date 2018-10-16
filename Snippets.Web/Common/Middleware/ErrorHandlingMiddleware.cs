@@ -43,17 +43,21 @@ namespace Snippets.Web.Common.Middleware
                 case RestException re:
                     errors = re.Errors;
                     context.Response.StatusCode = (int)re.Code;
+                    context.Response.ContentType = "application/json";
                     logger.LogWarning(re, $"HTTP {(int)re.Code} - {re.Message}");
+                    break;
+
+                case RedirectException re:
+                    context.Response.Redirect(re.RedirectToUrl, re.IsPermanent);
                     break;
 
                 case Exception ex:
                     errors = string.IsNullOrWhiteSpace(ex.Message) ? "Error" : ex.Message;
+                    context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     logger.LogError(ex, ex.Message);
                     break;
             }
-
-            context.Response.ContentType = "application/json";
 
             var result = JsonConvert.SerializeObject(new
             {
