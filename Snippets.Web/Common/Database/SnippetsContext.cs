@@ -25,6 +25,9 @@ namespace Snippets.Web.Common.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            // Snippets and Category pivot table builder
             modelBuilder.Entity<SnippetCategory>(sc =>
             {
                 sc.HasKey(t => new
@@ -43,13 +46,22 @@ namespace Snippets.Web.Common.Database
 
             modelBuilder.Entity<Person>(p =>
             {
-                //p.Property<string>("PreferencesJson");
+                #region User Preferences Notice
+                /* 
+                 * Make sure to manually update your 
+                 * entity after making changes to the person's preferences, e.g.:
+                 * 
+                 * person.Preferences.IsProfilePublic = true;
+                 * _context.Person.Update(person);
+                 * _context.SaveChanges();
+                 *
+                 */
+                #endregion
 
-                p.Property<UserPreferences>(u => u.Preferences)
+                p.Property(u => u.Preferences)
                     .HasConversion(
                         x => JsonConvert.SerializeObject(x), 
-                        x => JsonConvert.DeserializeObject<UserPreferences>(x)
-                    );
+                        x => JsonConvert.DeserializeObject<UserPreferences>(x));
             });
         }
     }
