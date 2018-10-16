@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Snippets.Web.Domains.Enums;
 
 namespace Snippets.Web.Domains
 {
@@ -33,10 +32,10 @@ namespace Snippets.Web.Domains
 
         public string Content { get; set; }
 
-        public Language Language { get; set; } = Language.Plain;
+        public int Language { get; set; }
 
         [NotMapped]
-        public List<string> Categories => SnippetCategories?.Select(x => x.CategoryId).ToList();
+        public List<Category> Categories => SnippetCategories?.Select(x => x.Category).ToList();
             
         [JsonIgnore]
         public List<SnippetCategory> SnippetCategories { get; set; }

@@ -10,23 +10,28 @@ namespace Snippets.Web.Features.Users
 {
     [Route("user")]
     [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
-    public class UserController
+    [ApiController]
+    public class UserController : ControllerBase
     {
         readonly IMediator _mediator;
-        readonly ICurrentUserAccessor _currentUserAccessor;
 
-        public UserController(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
-            _currentUserAccessor = currentUserAccessor;
         }
 
         [HttpGet]
         public async Task<UserEnvelope> GetCurrent()
         {
+            return await _mediator.Send(new Details.Query());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<UserEnvelope> GetUser(string id)
+        {
             return await _mediator.Send(new Details.Query
             {
-                UserId = _currentUserAccessor.GetCurrentUserId()
+                UserId = id
             });
         }
 

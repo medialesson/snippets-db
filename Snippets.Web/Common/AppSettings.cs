@@ -11,5 +11,8 @@ namespace Snippets.Web.Common
         /// Secret key for use with hash algorithms
         /// </summary>
         public string Secret { get; set; }
+        public string AccentColors { get; set; }
+
+        public IEnumerable<string> AccentColorsList { get => AccentColors.Split(';').ToList(); }
     }
 }

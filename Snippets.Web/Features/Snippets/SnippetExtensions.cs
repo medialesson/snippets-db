@@ -9,7 +9,7 @@ namespace Snippets.Web.Features.Snippets
 {
     public static class SnippetExtensions
     {
-        public static IQueryable<Snippet> GetAllData(this DbSet<Snippet> snippets)
+        public static IQueryable<Domains.Snippet> GetAllData(this DbSet<Domains.Snippet> snippets)
         {
             return snippets
                 .Include(x => x.Author)

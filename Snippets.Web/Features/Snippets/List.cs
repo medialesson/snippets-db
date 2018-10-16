@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
@@ -30,16 +31,18 @@ namespace Snippets.Web.Features.Snippets
 
         public class QueryHandler : IRequestHandler<Query, SnippetsEnvelope>
         {
-            private readonly SnippetsContext _context;
+            readonly SnippetsContext _context;
+            readonly IMapper _mapper;
 
-            public QueryHandler(SnippetsContext context)
+            public QueryHandler(SnippetsContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<SnippetsEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
-                IQueryable<Snippet> queryable = _context.Snippets.GetAllData();
+                IQueryable<Domains.Snippet> queryable = _context.Snippets.GetAllData();
 
                 if (!string.IsNullOrEmpty(message.Category))
                 {
@@ -74,12 +77,14 @@ namespace Snippets.Web.Features.Snippets
                     }
                 }
 
-                var snippets = await queryable
+                var queriedSnippets = await queryable
                     .OrderByDescending(x => x.CreatedAt)
                     .Skip(message.Offset ?? 0)
                     .Take(message.Limit ?? 20)
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
+
+                var snippets = _mapper.Map<List<Domains.Snippet>, List<Snippet>>(queriedSnippets);
 
                 return new SnippetsEnvelope()
                 {

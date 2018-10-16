@@ -11,7 +11,8 @@ namespace Snippets.Web.Features.Users
     {
         public MappingProfile()
         {
-            CreateMap<Person, User>(MemberList.None);
+            CreateMap<Person, User>(MemberList.None)
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.PersonId));
         }
     }
 }

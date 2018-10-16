@@ -1,0 +1,29 @@
+### Register the user
+# @name register
+POST https://localhost:5001/users
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "coffee@beanmachine.pro",
+    "displayName": "Bean Machine",
+    "password": "coffee"
+  }
+}
+
+@token = {{register.response.body.$.user.token}}
+
+
+### Authenticate the user
+# @name auth
+POST https://localhost:5001/users/auth
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "coffee@beanmachine.pro",
+    "password": "coffee"
+  }
+}
+
+@token = {{auth.response.body.$.user.token}}
