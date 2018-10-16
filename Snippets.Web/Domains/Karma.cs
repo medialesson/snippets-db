@@ -12,8 +12,10 @@ namespace Snippets.Web.Domains
 
         public bool Upvote { get; set; }
 
+        [JsonIgnore]
         public Snippet Snippet { get; set; }
 
+        [JsonIgnore]
         public Person Submitter { get; set; }
     }
 }
