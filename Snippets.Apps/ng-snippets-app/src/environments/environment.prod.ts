@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiRootUrl: 'https://snippets-api-dev.azurewebsites.net'
 };
