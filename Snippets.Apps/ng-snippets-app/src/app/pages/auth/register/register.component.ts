@@ -7,9 +7,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegisterComponent implements OnInit {
 
+  email: string;
+  displayName: string;
+  password: string;
+  passwordConfirmation: string;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  public submitForm() {
+    if(this.password === this.passwordConfirmation) {
+
+    }
+    else {
+      alert('Your password doesn\'t match');
+    }
   }
 
 }
