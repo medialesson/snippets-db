@@ -12,7 +12,7 @@ export class AppComponent {
 
   @BlockUI() blockUI: NgBlockUI;
 
-  constructor(private auth: AuthService) {
+  constructor(public auth: AuthService) {
   }
 
   public get isSignedIn() : boolean {

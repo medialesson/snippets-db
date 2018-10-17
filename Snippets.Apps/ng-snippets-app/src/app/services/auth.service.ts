@@ -10,6 +10,8 @@ const JWT_TOKEN_KEY = "access_token";
 })
 export class AuthService {
 
+  currentUser: User;
+
   constructor(private jwtHelper: JwtHelperService,
     private http: HttpClient) { }
 
@@ -38,6 +40,7 @@ export class AuthService {
       }
     }).toPromise();
 
+    this.currentUser = response.user;
     return response.user;
   }
 
@@ -49,6 +52,7 @@ export class AuthService {
       }
     }).toPromise();
 
+    this.currentUser = response.user;
     return response.user;
   }
 }
