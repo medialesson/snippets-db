@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
-import { SnippetPostData, SnippetPostDataEnvelope, SnippetDetailsEnvelope } from '../data/features/snippet';
+import { SnippetPostData, SnippetPostDataEnvelope, SnippetDetailsEnvelope, SnippetsDetailsEnvelope } from '../data/features/snippet';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,11 @@ export class SnippetsService {
 
   async getAsync(id: string): Promise<SnippetDetailsEnvelope> {
     return await this.http.get<SnippetDetailsEnvelope>('https://snippets-api-dev.azurewebsites.net/snippets/' + id)
+      .toPromise();
+  }
+
+  async getAllAsync(): Promise<SnippetsDetailsEnvelope> {
+    return await this.http.get<SnippetsDetailsEnvelope>('https://snippets-api-dev.azurewebsites.net/snippets/')
       .toPromise();
   }
 }

@@ -30,6 +30,7 @@ export class CreateComponent implements OnInit {
 
     setTimeout(() => {
       this.blockUI.stop();
+      this.router.navigate([id]);
     }, 1000);
   }
 }

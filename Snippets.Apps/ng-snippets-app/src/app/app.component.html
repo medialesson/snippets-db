@@ -26,6 +26,9 @@
 					<a class="nav-link">{{auth.currentUser.displayName}}</a>
 				</li>
 				<li *ngIf="isSignedIn" class="nav-item">
+					<a class="nav-link" routerLink="create" routerLinkActive="true">Create</a>
+				</li>
+				<li *ngIf="isSignedIn" class="nav-item">
 					<a class="nav-link" routerLink="/signout" routerLinkActive="active">Sign out</a>
 				</li>
 			</ul>

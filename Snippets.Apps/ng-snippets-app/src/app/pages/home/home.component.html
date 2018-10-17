@@ -1,3 +1,13 @@
-<p>
-  home works!
-</p>
+<div class="container">
+  <ul class="list-group list-group-flush">
+    <li *ngFor="let snippet of snippetsList" class="media list-group-item">
+      <!-- <a class="d-flex" href="#">
+        <img src="" alt="">
+      </a> -->
+      <div class="media-body link" (click)="navigateToSnippetById(snippet.snippetId)">
+        <h5>{{snippet.title}}</h5>
+        Submitted by {{snippet.author.displayName}}
+      </div>
+    </li>
+  </ul>
+</div>

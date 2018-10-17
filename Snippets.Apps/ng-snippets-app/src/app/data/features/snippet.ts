@@ -11,13 +11,17 @@ export class SnippetPostData {
     title:      string;
     content:    string;
     language:   number;
-    categories: string[] = [''];
+    categories: string[] = [];
 }
 
 
 // GET snippet details
 export class SnippetDetailsEnvelope {
     snippet: SnippetDetails;
+}
+
+export class SnippetsDetailsEnvelope {
+    snippets: SnippetDetails[];
 }
 
 export class SnippetDetails {
