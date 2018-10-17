@@ -1,10 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
+import { HttpClientModule } from '@angular/common/http';
+
+import { JwtModule } from '@auth0/angular-jwt';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUIModule, BlockUI } from 'ng-block-ui';
-import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule } from '@angular/common/http';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { TagInputModule } from 'ngx-chips';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +19,9 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AuthService } from './services/auth.service';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
+import { CreateComponent } from './pages/snippets/create/create.component';
+import { DetailsComponent } from './pages/snippets/details/details.component';
+import { SnippetsService } from './services/snippets.service';
 
 @NgModule({
   declarations: [
@@ -20,24 +29,39 @@ import { SignoutComponent } from './pages/auth/signout/signout.component';
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    SignoutComponent
+    SignoutComponent,
+    CreateComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    BlockUIModule.forRoot(),
-    NgbModule,
     HttpClientModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: AuthService.getJwtToken
+        tokenGetter: AuthService.getJwtToken,
+        headerName: 'Authorization',
+        whitelistedDomains: [
+          'localhost:5001', 
+          'localhost:5000', 
+          'snippets-api-dev.azurewebsites.net'
+        ]
       }
     }),
-    AppRoutingModule
+    BrowserAnimationsModule,
+    AppRoutingModule,
+
+    BlockUIModule.forRoot(),
+    NgbModule,
+    TagInputModule,
+
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    SnippetsService
   ],
   bootstrap: [AppComponent]
 })

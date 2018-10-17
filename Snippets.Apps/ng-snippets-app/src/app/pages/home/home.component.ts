@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SnippetsService } from 'src/app/services/snippets.service';
+import { SnippetDetails } from 'src/app/data/features/snippet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  snippetsList: SnippetDetails[];
 
-  ngOnInit() {
+  constructor(private snippets: SnippetsService,
+    private router: Router) { }
+
+  async ngOnInit() {
+    this.snippetsList = (await this.snippets.getAllAsync()).snippets;
+  }
+
+  navigateToSnippetById(id: string) {
+    this.router.navigate([id]);
   }
 
 }
