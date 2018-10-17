@@ -1,5 +1,5 @@
 <block-ui>
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 shadow-sm">
 		<a class="navbar-brand text-light" routerLink="" routerLinkActive="active">Snippets</a>
 		<button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#mainNav" aria-controls="mainNav"
 			aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,7 @@
 				</li>
 
 				<!-- Signed in views -->
-				<li *ngIf="isSignedIn" class="nav-item">
+				<li *ngIf="isSignedIn && auth.currentUser" class="nav-item">
 					<a class="nav-link">{{auth.currentUser.displayName}}</a>
 				</li>
 				<li *ngIf="isSignedIn" class="nav-item">
