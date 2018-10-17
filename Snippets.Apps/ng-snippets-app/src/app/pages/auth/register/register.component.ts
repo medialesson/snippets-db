@@ -31,15 +31,8 @@ export class RegisterComponent implements OnInit {
     this.blockUI.start('Hang tight,\nwe\'re creating your account...');
 
     // Send request
-    let response = await this.httpClient.post<UserEnvelope>('https://snippets-api-dev.azurewebsites.net/users', {
-      user: {
-        email: this.email,
-        displayName: this.displayName,
-        password: this.password
-      }
-    }).toPromise();
-
-    this.authService.setJwtToken(response.user.token);
+    let user = await this.authService.registerAsync(this.email, this.displayName, this.password);
+    this.authService.setJwtToken(user.token);
 
     // Add timeout for UX because the 
     // sign up process is actually blazing fast

@@ -13,7 +13,13 @@
 			</ul>
 			<ul class="navbar-nav mt-2 mt-lg-0">
 				<li class="nav-item">
-					<a class="nav-link" routerLink="register" routerLinkActive="active">Sign in</a>
+					<a class="nav-link" *ngIf="!isSignedIn" routerLink="/register" routerLinkActive="active">Register</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" *ngIf="!isSignedIn" routerLink="/login" routerLinkActive="active">Sign in</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" *ngIf="isSignedIn" routerLink="/signout" routerLinkActive="active">Sign out</a>
 				</li>
 			</ul>
 		</div>

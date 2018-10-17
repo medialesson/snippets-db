@@ -12,13 +12,15 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AuthService } from './services/auth.service';
+import { SignoutComponent } from './pages/auth/signout/signout.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    SignoutComponent
   ],
   imports: [
     BrowserModule,
