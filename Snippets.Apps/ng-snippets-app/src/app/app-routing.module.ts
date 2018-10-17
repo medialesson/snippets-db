@@ -5,19 +5,23 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
+import { GuestGuard } from './guards/guest.guard';
 
 const routes: Routes = [
   {
     path: 'register',
-    component: RegisterComponent
+    component: RegisterComponent,
+    canActivate: [GuestGuard]
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [GuestGuard]
   },
   {
     path: 'signout',
-    component: SignoutComponent
+    component: SignoutComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',
