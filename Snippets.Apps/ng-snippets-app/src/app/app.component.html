@@ -1,3 +1,4 @@
+<ngx-loading-bar></ngx-loading-bar>
 <block-ui>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 shadow-sm">
 		<a class="navbar-brand text-light" routerLink="" routerLinkActive="active">Snippets</a>
@@ -23,6 +24,9 @@
 				<!-- Signed in views -->
 				<li *ngIf="isSignedIn && auth.currentUser" class="nav-item">
 					<a class="nav-link">{{auth.currentUser.displayName}}</a>
+				</li>
+				<li *ngIf="isSignedIn" class="nav-item">
+					<a class="nav-link" routerLink="create" routerLinkActive="true">Create</a>
 				</li>
 				<li *ngIf="isSignedIn" class="nav-item">
 					<a class="nav-link" routerLink="/signout" routerLinkActive="active">Sign out</a>
