@@ -9,7 +9,7 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  get(path: string) {
-    return this.httpClient.get(environment.api.rootUrl + '/' + path);
-  }
+  // get(path: string) {
+  //   return this.httpClient.get(environment.api.rootUrl + '/' + path);
+  // }
 }
