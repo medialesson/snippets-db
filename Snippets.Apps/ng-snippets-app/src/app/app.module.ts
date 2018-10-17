@@ -13,6 +13,8 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AuthService } from './services/auth.service';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
+import { CreateComponent } from './pages/snippets/create/create.component';
+import { DetailsComponent } from './pages/snippets/details/details.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { SignoutComponent } from './pages/auth/signout/signout.component';
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    SignoutComponent
+    SignoutComponent,
+    CreateComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,
