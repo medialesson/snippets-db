@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SnippetPostData, SnippetPostDataEnvelope } from 'src/app/data/features/snippet';
 import { SnippetsService } from 'src/app/services/snippets.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create',
@@ -14,16 +15,19 @@ export class CreateComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
 
-  constructor(private snippets: SnippetsService) { }
+  constructor(private snippets: SnippetsService,
+    private router: Router) { }
 
   ngOnInit() {
   }
 
   public async submitForm() {
-    this.blockUI.start('We\'re launching your snippet into orbit...');
+    this.blockUI.start('Snipping away...');
     let snippet = await this.snippets.submitAsync(this.snippetData);
 
-    alert(snippet.snippet.snippetId);
+    let id = snippet.snippet.snippetId;
+    
+
     setTimeout(() => {
       this.blockUI.stop();
     }, 1000);

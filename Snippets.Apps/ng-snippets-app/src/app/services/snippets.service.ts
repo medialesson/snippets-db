@@ -16,4 +16,9 @@ export class SnippetsService {
     return await this.http.post<SnippetDetailsEnvelope>('https://snippets-api-dev.azurewebsites.net/snippets', 
       envelope).toPromise();
   }
+
+  async getAsync(id: string): Promise<SnippetDetailsEnvelope> {
+    return await this.http.get<SnippetDetailsEnvelope>('https://snippets-api-dev.azurewebsites.net/snippets/' + id)
+      .toPromise();
+  }
 }

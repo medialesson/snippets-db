@@ -1,13 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BlockUIModule, BlockUI } from 'ng-block-ui';
-import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
+import { HttpClientModule } from '@angular/common/http';
 
 import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule } from '@angular/common/http';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BlockUIModule, BlockUI } from 'ng-block-ui';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { TagInputModule } from 'ngx-chips';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -51,7 +54,10 @@ import { SnippetsService } from './services/snippets.service';
 
     BlockUIModule.forRoot(),
     NgbModule,
-    TagInputModule
+    TagInputModule,
+
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule
   ],
   providers: [
     AuthService,

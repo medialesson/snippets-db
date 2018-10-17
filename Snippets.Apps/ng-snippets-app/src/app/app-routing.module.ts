@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { GuestGuard } from './guards/guest.guard';
 import { CreateComponent } from './pages/snippets/create/create.component';
+import { DetailsComponent } from './pages/snippets/details/details.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
     path: '',
     component: HomeComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: ':id',
+    component: DetailsComponent
   },
 ];
 
