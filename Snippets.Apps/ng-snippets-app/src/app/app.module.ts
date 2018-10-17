@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUIModule, BlockUI } from 'ng-block-ui';
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
+
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -15,6 +18,7 @@ import { AuthService } from './services/auth.service';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { CreateComponent } from './pages/snippets/create/create.component';
 import { DetailsComponent } from './pages/snippets/details/details.component';
+import { SnippetsService } from './services/snippets.service';
 
 @NgModule({
   declarations: [
@@ -30,18 +34,28 @@ import { DetailsComponent } from './pages/snippets/details/details.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    BlockUIModule.forRoot(),
-    NgbModule,
     HttpClientModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: AuthService.getJwtToken
+        tokenGetter: AuthService.getJwtToken,
+        headerName: 'Authorization',
+        whitelistedDomains: [
+          'localhost:5001', 
+          'localhost:5000', 
+          'snippets-api-dev.azurewebsites.net'
+        ]
       }
     }),
-    AppRoutingModule
+    BrowserAnimationsModule,
+    AppRoutingModule,
+
+    BlockUIModule.forRoot(),
+    NgbModule,
+    TagInputModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    SnippetsService
   ],
   bootstrap: [AppComponent]
 })

@@ -25,6 +25,7 @@
     "bootstrap": "^4.1.3",
     "core-js": "^2.5.4",
     "ng-block-ui": "^2.0.0-beta.3",
+    "ngx-chips": "^1.9.8",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },

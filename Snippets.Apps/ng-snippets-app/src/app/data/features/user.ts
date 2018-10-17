@@ -1,8 +1,8 @@
-export interface UserEnvelope {
+export class UserEnvelope {
     user: User;
 }
 
-export interface User {
+export class User {
     userId:      string;
     email:       string;
     displayName: string;

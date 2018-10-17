@@ -6,6 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { GuestGuard } from './guards/guest.guard';
+import { CreateComponent } from './pages/snippets/create/create.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
   {
     path: 'signout',
     component: SignoutComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'create',
+    component: CreateComponent,
     canActivate: [AuthGuard]
   },
   {
