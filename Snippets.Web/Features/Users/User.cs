@@ -7,11 +7,19 @@ namespace Snippets.Web.Features.Users
 {
     public class User
     {
+        public string UserId { get; set; }
+
         public string Email { get; set; }
 
         public string DisplayName { get; set; }
 
+        public int Score { get; set; }
+
         public string Token { get; set; }
+
+#if DEBUG
+        public string DebugToken => "Bearer " + Token;
+#endif
     }
 
     public class UserEnvelope

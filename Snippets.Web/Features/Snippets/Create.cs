@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Extensions;
 using Snippets.Web.Domains;
+using Snippets.Web.Features.Snippets.Enums;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -17,15 +21,17 @@ namespace Snippets.Web.Features.Snippets
         {
             public string Title { get; set; }
             public string Content { get; set; }
-            public ICollection<string> CategoryList { get; set; }
+            public Language Language { get; set; }
+            public List<string> Categories { get; set; }
         }
 
         public class SnippetDataValidator : AbstractValidator<SnippetData>
         {
             public SnippetDataValidator()
             {
-                RuleFor(x => x.Title).NotNull().NotEmpty();
-                RuleFor(x => x.Content).NotNull().NotEmpty();
+                RuleFor(x => x.Title).NotEmpty();
+                RuleFor(x => x.Content).NotEmpty();
+                RuleFor(x => x.Language).NotEmpty();
             }
         }
 
@@ -44,56 +50,64 @@ namespace Snippets.Web.Features.Snippets
 
         public class Handler : IRequestHandler<Command, SnippetEnvelope>
         {
-            private readonly SnippetsContext _context;
-            //private readonly ICurrentUserAccessor _currentUserAccessor;
+            readonly SnippetsContext _context;
+            readonly ICurrentUserAccessor _currentUserAccessor;
+            readonly IMapper _mapper;
+            readonly AppSettings _settings;
 
-            public Handler(SnippetsContext context)
+            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper, AppSettings settings)
             {
                 _context = context;
+                _currentUserAccessor = currentUserAccessor;
+                _mapper = mapper;
+                _settings = settings;
             }
 
             public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                var author = await _context.Persons.FirstAsync(cancellationToken); // TODO: Assign user in current message
+                var author = await _context.Persons.FirstAsync(p => 
+                    p.PersonId == _currentUserAccessor.GetCurrentUserId(), 
+                    cancellationToken);
                 var categories = new List<Category>();
 
-                foreach (var categoryString in (message.Snippet.CategoryList ?? Enumerable.Empty<string>()))
+                foreach (var categoryString in message.Snippet.Categories)
                 {
-                    var c = await _context.Categories.FirstOrDefaultAsync(x => 
+                    var category = await _context.Categories.FirstOrDefaultAsync(x => 
                         x.DisplayName.ToLower() == categoryString.ToLower(), 
                         cancellationToken);
 
-                    if (c == null)
+                    if (category == null)
                     {
-                        c = new Category()
+                        category = new Category()
                         {
-                            DisplayName = categoryString
+                            DisplayName = categoryString,
+                            Color = _settings.AccentColorsList.Random()
                         };
 
-                        await _context.Categories.AddAsync(c, cancellationToken);
-                        await _context.SaveChangesAsync(cancellationToken);
+                        await _context.Categories.AddAsync(category, cancellationToken);
                     }
 
-                    categories.Add(c);
+                    categories.Add(category);
                 }
 
-                var snippet = new Snippet()
+                var newSnippet = new Domains.Snippet()
                 {
                     Title = message.Snippet.Title,
                     Author = author,
-                    Content = message.Snippet.Content
+                    Content = message.Snippet.Content,
+                    Language = (int) message.Snippet.Language,
                 };
+                await _context.Snippets.AddAsync(newSnippet, cancellationToken);
 
-                await _context.Snippets.AddAsync(snippet, cancellationToken);
-
-                await _context.SnippetCategories.AddRangeAsync(categories.Select(x => new SnippetCategory()
+                await _context.SnippetCategories.AddRangeAsync(categories.Select(x => new Domains.SnippetCategory()
                 {
-                    Snippet = snippet,
+                    Snippet = newSnippet,
                     Category = x
                 }), cancellationToken);
 
                 await _context.SaveChangesAsync(cancellationToken);
 
+                var snippet = _mapper.Map<Domains.Snippet, Snippet>(newSnippet);
                 return new SnippetEnvelope(snippet);
             }
         }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Snippets.Web.Domains
+﻿namespace Snippets.Web.Domains
 {
     public class SnippetCategory
     {

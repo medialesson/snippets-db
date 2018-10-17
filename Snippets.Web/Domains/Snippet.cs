@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Snippets.Web.Domains
 {
     public class Snippet
     {
-        [JsonProperty("id")]
         public string SnippetId { get; set; } = Guid.NewGuid().ToString();
 
-        // TODO: Add pivot table for karma assignment (person <-> karma)
-        // [JsonIgnore] public SnippetKarma { get; set; }
+        [NotMapped]
+        public List<Karma> Upvotes => Karma?.Where(x =>  x.Upvote).ToList() ?? new List<Karma>();
 
         [NotMapped]
-        public int Karma => 0;
+        public List<Karma> Downvotes => Karma?.Where(x => !x.Upvote).ToList() ?? new List<Karma>();
+
+        [NotMapped]
+        public int Score => Upvotes.Count() - Downvotes.Count();
+
+        public List<Karma> Karma { get; set; }
 
         public Person Author { get; set; }
 
@@ -24,10 +26,11 @@ namespace Snippets.Web.Domains
 
         public string Content { get; set; }
 
+        public int Language { get; set; }
+
         [NotMapped]
-        public List<string> Categories => SnippetCategories?.Select(x => x.CategoryId).ToList();
+        public List<Category> Categories => SnippetCategories?.Select(x => x.Category).ToList();
             
-        [JsonIgnore]
         public List<SnippetCategory> SnippetCategories { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

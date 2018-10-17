@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
-using SQLitePCL;
+using Snippets.Web.Common.Exceptions;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -15,44 +14,46 @@ namespace Snippets.Web.Features.Snippets
     {
         public class Query : IRequest<SnippetEnvelope>
         {
-            public string ID { get; }
-
-            public Query(string id)
+            public Query(string snippetId)
             {
-                ID = id;
+                SnippetId = snippetId;
             }
+            
+            public string SnippetId { get; }
         }
 
         public class QueryValidator : AbstractValidator<Query>
         {
             public QueryValidator()
             {
-                RuleFor(x => x.ID).NotNull().NotEmpty();
+                RuleFor(x => x.SnippetId).NotEmpty();
             }
         }
 
         public class QueryHandler : IRequestHandler<Query, SnippetEnvelope>
         {
-            private readonly SnippetsContext _context;
+            readonly SnippetsContext _context;
+            readonly IMapper _mapper;
 
-            public QueryHandler(SnippetsContext context)
+            public QueryHandler(SnippetsContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<SnippetEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
-                var snippet = await _context.Snippets.GetAllData()
-                    .FirstOrDefaultAsync(x => x.SnippetId == message.ID, cancellationToken);
+                var selectedSnippet = await _context.Snippets.GetAllData().AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.SnippetId == message.SnippetId, cancellationToken);
 
-                if (snippet != null)
-                {
+                if (selectedSnippet != null)
+                {                    
+                    var snippet = _mapper.Map<Domains.Snippet, Snippet>(selectedSnippet);
                     return new SnippetEnvelope(snippet);
                 }
                 else
                 {
-                    // TODO: Throw REST exception
-                    throw new KeyNotFoundException("Snippet not found");
+                    throw new RestException(HttpStatusCode.NotFound, "Snippet not found");
                 }
             }
         }

@@ -9,11 +9,14 @@ namespace Snippets.Web.Features.Snippets
 {
     public static class SnippetExtensions
     {
-        public static IQueryable<Snippet> GetAllData(this DbSet<Snippet> snippets)
+        public static IQueryable<Domains.Snippet> GetAllData(this DbSet<Domains.Snippet> snippets)
         {
             return snippets
                 .Include(x => x.Author)
-                .Include(x => x.SnippetCategories)
+                .Include(x => x.SnippetCategories).ThenInclude(x => x.Snippet)
+                .Include(x => x.SnippetCategories).ThenInclude(x => x.Category)
+                .Include(x => x.Karma).ThenInclude(x => x.Snippet)
+                .Include(x => x.Karma).ThenInclude(x => x.Submitter)
                 .AsNoTracking(); // Do not flag any changes as dirty
         }
     }
