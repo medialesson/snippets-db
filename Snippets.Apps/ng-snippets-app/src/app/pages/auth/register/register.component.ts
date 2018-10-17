@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
   selector: 'app-register',
@@ -12,18 +13,18 @@ export class RegisterComponent implements OnInit {
   password: string;
   passwordConfirmation: string;
 
+  @BlockUI() blockUI: NgBlockUI;
+
   constructor() { }
 
   ngOnInit() {
   }
 
   public submitForm() {
-    if(this.password === this.passwordConfirmation) {
-
-    }
-    else {
-      alert('Your password doesn\'t match');
-    }
+    this.blockUI.start('Hang tight...');
+    setTimeout(() => {
+      this.blockUI.stop();
+    }, 5000);
   }
 
 }
