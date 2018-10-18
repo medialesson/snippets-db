@@ -55,6 +55,7 @@ namespace Snippets.Web.Common.Database
                     .HasForeignKey(pt => pt.CategoryId);
             });
 
+            // User preferences serialisation
             modelBuilder.Entity<Person>(p =>
             {
                 #region User Preferences Notice

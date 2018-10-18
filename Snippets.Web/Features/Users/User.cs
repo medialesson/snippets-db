@@ -29,6 +29,6 @@ namespace Snippets.Web.Features.Users
             User = user;
         }
 
-        public User User { get; set; }
+        public User User { get; }
     }
 }

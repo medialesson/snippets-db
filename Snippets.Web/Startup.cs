@@ -34,7 +34,7 @@ namespace Snippets.Web
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // Method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Add MediatR and database services
@@ -73,7 +73,7 @@ namespace Snippets.Web
             services.AddJwt();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

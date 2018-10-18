@@ -18,10 +18,18 @@ namespace Snippets.Web.Features.Users
     {
         public class Query : IRequest<UserEnvelope>
         {
+            /// <summary>
+            /// Initializes a Details Query
+            /// </summary>
+            /// <param name="userId">Unique identifier for the Person from which the details are retrieved</param>
             public Query(string userId = null)
             {
                 UserId = userId;
             }
+
+            /// <summary>
+            /// Unique identifier for the Person from which the details are retrieved
+            /// </summary>
             public string UserId { get; }
         }
 
@@ -32,6 +40,13 @@ namespace Snippets.Web.Features.Users
             readonly ICurrentUserAccessor _currentUserAccessor;
             readonly IMapper _mapper;
 
+            /// <summary>
+            /// Initializes a Details QueryHandler 
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="jwtTokenGenerator">Represents a type used to generate user specific jwt tokens</param>
+            /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public QueryHandler(SnippetsContext context, IJwtTokenGenerator jwtTokenGenerator, ICurrentUserAccessor currentUserAccessor, IMapper mapper)
             {
                 _context = context;
@@ -40,8 +55,14 @@ namespace Snippets.Web.Features.Users
                 _mapper = mapper;
             }
 
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<UserEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
+                // Get the specified user from the database context 
                 var person = await _context.Persons.AsNoTracking()
                     .FirstOrDefaultAsync(p => p.PersonId == message.UserId, cancellationToken);
 
@@ -51,12 +72,14 @@ namespace Snippets.Web.Features.Users
                 if (person == null)
                     throw new RestException(HttpStatusCode.NotFound, "User does not exist");
 
+                // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
 
+                // Decrease the detail in personalized information if the user is requesting another Person
                 if (person.PersonId != _currentUserAccessor.GetCurrentUserId())
                 {
                     user.Email = null;
-                    user.Token = null;
+                    user.Token = null; // Otherwise you may be able to login as the user LOL
                 }
                 else
                     user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);

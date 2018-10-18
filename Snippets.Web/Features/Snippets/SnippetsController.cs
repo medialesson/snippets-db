@@ -15,12 +15,23 @@ namespace Snippets.Web.Features.Snippets
     public class SnippetsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        
+ 
+        /// <summary>
+        /// Initializes a SnippetsController
+        /// </summary>
+        /// <param name="mediator">Represents an instance of a MediateR mediator</param>
         public SnippetsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Retrieves a list of Snippets
+        /// </summary>
+        /// <param name="category">Delimits the query to a specific category only</param>
+        /// <param name="authorId">Delimits the query to a specific author only by its id</param>
+        /// <param name="limit">Delimits the number of results returned</param>
+        /// <param name="offset">Skips the specified amount of entries</param>
         [HttpGet]
         public async Task<SnippetsEnvelope> Get([FromQuery] string category, [FromQuery] string author, [FromQuery] int? limit, [FromQuery] int? offset)
         {
@@ -28,22 +39,29 @@ namespace Snippets.Web.Features.Snippets
         }
 
         /// <summary>
-        /// Gets a single snippet by its ID
+        /// Retrieves a single Snippet by its unique identifier
         /// </summary>
-        /// <param name="id">Snippet ID</param>
-        /// <returns>Snippet</returns>
+        /// <param name="id">Unique identifier of the Snippet</param>
         [HttpGet("{id}")]
         public async Task<SnippetEnvelope> Get(string id)
         {
             return await _mediator.Send(new Details.Query(id));
         }
 
+        /// <summary>
+        /// Retrieves the content of a Snippet by its unique identifier
+        /// </summary>
+        /// <param name="id">Unique identifier of the Snippet</param>
         [HttpGet("{id}/raw")]
         public async Task<string> GetRawContent(string id)
         {
             return await _mediator.Send(new Content.Query(id));
         }
 
+    	/// <summary>
+        /// Creates a new Snippet
+        /// </summary>
+        /// <param name="command">Command folowing the <see cref="Create.SnippetData" /> convention</param>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
         public async Task<SnippetEnvelope> Create([FromBody] Create.Command command)

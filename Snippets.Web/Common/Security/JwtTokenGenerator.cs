@@ -31,7 +31,7 @@ namespace Snippets.Web.Common.Security
             };
 
 #if DEBUG
-            // Validate tokens for one day
+            // Validate tokens for one day while in debug mode
             _jwtOptions.ValidFor = TimeSpan.FromDays(1);
 #endif
 

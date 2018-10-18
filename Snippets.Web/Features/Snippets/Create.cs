@@ -19,14 +19,32 @@ namespace Snippets.Web.Features.Snippets
     {
         public class SnippetData
         {
+            /// <summary>
+            /// Title of the Snippet 
+            /// </summary>
             public string Title { get; set; }
+
+            /// <summary>
+            /// Content of the Snippet (usually code)
+            /// </summary>
             public string Content { get; set; }
+
+            /// <summary>
+            /// Programming language the Snippets content is in
+            /// </summary>
             public Language Language { get; set; }
+
+            /// <summary>
+            /// List of Category names the Snippet should be attached to
+            /// </summary>
             public List<string> Categories { get; set; }
         }
 
         public class SnippetDataValidator : AbstractValidator<SnippetData>
         {
+            /// <summary>
+            /// Initializes a Create SnippetDataValidator
+            /// </summary>
             public SnippetDataValidator()
             {
                 RuleFor(x => x.Title).NotEmpty();
@@ -37,11 +55,17 @@ namespace Snippets.Web.Features.Snippets
 
         public class Command : IRequest<SnippetEnvelope>
         {
+            /// <summary>
+            /// Instance of the inbound Create SnippetData
+            /// </summary>
             public SnippetData Snippet { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
+            /// <summary>
+            /// Initializes a Create CommandValidator
+            /// </summary>
             public CommandValidator()
             {
                 RuleFor(x => x.Snippet).NotNull().SetValidator(new SnippetDataValidator());
@@ -55,6 +79,13 @@ namespace Snippets.Web.Features.Snippets
             readonly IMapper _mapper;
             readonly AppSettings _settings;
 
+            /// <summary>
+            /// Initializes a Create Handler
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
+            /// <param name="settings">Mapper for the appsettings.json file</param>
             public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper, AppSettings settings)
             {
                 _context = context;
@@ -63,6 +94,11 @@ namespace Snippets.Web.Features.Snippets
                 _settings = settings;
             }
 
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<SnippetEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 var author = await _context.Persons.FirstAsync(p => 
@@ -107,6 +143,7 @@ namespace Snippets.Web.Features.Snippets
 
                 await _context.SaveChangesAsync(cancellationToken);
 
+                // Map from the data context to a transfer object
                 var snippet = _mapper.Map<Domains.Snippet, Snippet>(newSnippet);
                 return new SnippetEnvelope(snippet);
             }

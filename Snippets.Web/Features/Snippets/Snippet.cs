@@ -54,14 +54,18 @@ namespace Snippets.Web.Features.Snippets
             Snippet = snippet;
         }
 
-        public Snippet Snippet { get; set; }
+        public Snippet Snippet { get; }
     }
 
     public class SnippetsEnvelope
     {
-        public ICollection<Snippet> Snippets { get; set; }
+        public SnippetsEvnvelope(List<Snippet> snippets)
+        {
+            Snippets = snippets;
+        }
+        public List<Snippet> Snippets { get; }
 
         [JsonProperty("count")] 
-        public int SnippetsCount { get; set; }
+        public int SnippetsCount => Snippets.Count();
     }    
 }

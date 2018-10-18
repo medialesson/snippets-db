@@ -20,15 +20,27 @@ namespace Snippets.Web.Features.Users
     {
         public class UserData
         {
+            /// <summary>
+            /// Email to associate with the Person
+            /// </summary>
             public string Email { get; set; }
 
+            /// <summary>
+            /// Name that gets displayed to other users to associate with the Person
+            /// </summary>
             public string DisplayName { get; set; }
 
+            /// <summary>
+            /// Password in plain text to associate with the Person
+            /// </summary>
             public string Password { get; set; }
         }
 
         public class UserDataValidator : AbstractValidator<UserData>
         {
+            /// <summary>
+            /// Initialize a Create UserDataValidator
+            /// </summary>
             public UserDataValidator()
             {
                 RuleFor(d => d.Email).NotEmpty().EmailAddress();
@@ -39,11 +51,17 @@ namespace Snippets.Web.Features.Users
 
         public class Command : IRequest<UserEnvelope>
         {
+            /// <summary>
+            /// Instance of the inbound Create UserData
+            /// </summary>
             public UserData User { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
+            /// <summary>
+            /// Initializes a Create CommandValidator
+            /// </summary>
             public CommandValidator()
             {
                 RuleFor(c => c.User).NotNull().SetValidator(new UserDataValidator());
@@ -57,6 +75,13 @@ namespace Snippets.Web.Features.Users
             readonly IJwtTokenGenerator _jwtTokenGenerator;
             readonly IMapper _mapper;
 
+            /// <summary>
+            /// Handles the request 
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
+            /// <param name="jwtTokenGenerator">Represents a type used to generate user specific jwt tokens</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper)
             {
                 _context = context;
@@ -67,6 +92,7 @@ namespace Snippets.Web.Features.Users
 
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
+                // Check whether there is a User already existing with the same mail associated
                 if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
                     throw new RestException(HttpStatusCode.BadRequest, "Email already in use");
 
@@ -81,6 +107,8 @@ namespace Snippets.Web.Features.Users
 
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
+
+                // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
                 user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
                 return new UserEnvelope(user);
