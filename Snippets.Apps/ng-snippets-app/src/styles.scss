@@ -1,5 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~bootstrap/scss/bootstrap";
+// @import "~bootstrap/scss/bootstrap";
+
+@import "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700";
+@import "assets/vendor/argon/vendor/nucleo/css/nucleo.css";
+@import "assets/vendor/argon/vendor/font-awesome/css/font-awesome.min.css";
+// @import "assets/vendor/argon/css/argon.css";
 
 .vh-100 {
 	height: 100vh;
