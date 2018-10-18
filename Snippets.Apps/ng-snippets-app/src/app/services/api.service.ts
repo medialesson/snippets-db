@@ -8,8 +8,11 @@ import { environment } from 'src/environments/environment';
 export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
-
-  // get(path: string) {
-  //   return this.httpClient.get(environment.api.rootUrl + '/' + path);
-  // }
+  
+  /**
+   * getApiUrl
+   */
+  public static getApiUrl(endpoint: string): string {
+    return environment.api.rootUrl + '/' + endpoint;
+  }
 }
