@@ -50,7 +50,7 @@
                      <a *ngIf="!isSignedIn" routerLink="/login" class="dropdown-item">Sign in</a>
                      <a *ngIf="!isSignedIn" routerLink="/register" class="dropdown-item">Register</a>
 
-                     <a *ngIf="isSignedIn && auth.currentUser" class="dropdown-item">{{auth.currentUser.displayName}}</a>
+                     <a *ngIf="isSignedIn && auth.currentUser" [routerLink]="['/by/' + auth.currentUser.userId]" routerLinkActive="active" class="dropdown-item">{{auth.currentUser.displayName}}</a>
 
                      <div class="dropdown-divider"></div>
 

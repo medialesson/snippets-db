@@ -25,6 +25,9 @@ import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { CreateComponent } from './pages/snippets/create/create.component';
 import { DetailsComponent } from './pages/snippets/details/details.component';
 import { SnippetsService } from './services/snippets.service';
+import { ProfileDetailsComponent } from './pages/profiles/profile-details/profile-details.component';
+import { UsersService } from './services/users.service';
+import { SnippetsDeckComponent } from './views/snippets-deck/snippets-deck.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,11 @@ import { SnippetsService } from './services/snippets.service';
     CreateComponent,
     DetailsComponent,
 
-    TimeAgoPipe
+    TimeAgoPipe,
+
+    ProfileDetailsComponent,
+
+    SnippetsDeckComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +75,8 @@ import { SnippetsService } from './services/snippets.service';
   ],
   providers: [
     AuthService,
-    SnippetsService
+    SnippetsService,
+    UsersService
   ],
   bootstrap: [AppComponent]
 })
