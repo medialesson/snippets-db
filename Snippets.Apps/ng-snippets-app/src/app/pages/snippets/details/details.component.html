@@ -8,7 +8,10 @@
         <button class="btn btn-outline-danger btn-sm" (click)="downloadSnippet()"><i class="ni ni-like-2 flip-180"></i></button>
       </div>
 
-      <button class="btn btn-primary btn-sm" (click)="downloadSnippet()" disabled>Download</button>
+      <div class="btn-group" role="group">
+        <button class="btn btn-primary btn-sm" (click)="downloadSnippet()">Download</button>
+        <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i class="ni ni-single-copy-04"></i></button>
+      </div>
     </span>
   </h5>
 </div>

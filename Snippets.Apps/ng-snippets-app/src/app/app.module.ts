@@ -14,6 +14,8 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TagInputModule } from 'ngx-chips';
 import { HighlightModule } from 'ngx-highlightjs';
 import { StickyModule } from 'ng2-sticky-kit';
+import { ClipboardModule } from 'ngx-clipboard';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,9 +45,7 @@ import { SnippetsEditorComponent } from './views/snippets-editor/snippets-editor
     TimeAgoPipe,
 
     ProfileDetailsComponent,
-
     SnippetsDeckComponent,
-
     SnippetsEditorComponent
   ],
   imports: [
@@ -72,6 +72,8 @@ import { SnippetsEditorComponent } from './views/snippets-editor/snippets-editor
     TagInputModule,
     HighlightModule.forRoot(),
     StickyModule,
+    ClipboardModule,
+    ToastrModule.forRoot() ,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
