@@ -26,7 +26,6 @@ export class CreateComponent implements OnInit {
     let snippet = await this.snippets.submitAsync(this.snippetData);
 
     let id = snippet.snippet.snippetId;
-    
 
     setTimeout(() => {
       this.blockUI.stop();

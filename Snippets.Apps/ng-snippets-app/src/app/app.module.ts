@@ -5,12 +5,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { HttpClientModule } from '@angular/common/http';
 
 import { JwtModule } from '@auth0/angular-jwt';
+import { TimeAgoPipe } from 'time-ago-pipe';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUIModule, BlockUI } from 'ng-block-ui';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TagInputModule } from 'ngx-chips';
+import { HighlightModule } from 'ngx-highlightjs';
+import { StickyModule } from 'ng2-sticky-kit';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,7 +34,9 @@ import { SnippetsService } from './services/snippets.service';
     HomeComponent,
     SignoutComponent,
     CreateComponent,
-    DetailsComponent
+    DetailsComponent,
+
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule,
@@ -55,6 +60,8 @@ import { SnippetsService } from './services/snippets.service';
     BlockUIModule.forRoot(),
     NgbModule,
     TagInputModule,
+    HighlightModule.forRoot(),
+    StickyModule,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule

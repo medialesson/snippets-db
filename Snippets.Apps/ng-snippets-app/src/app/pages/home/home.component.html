@@ -1,13 +1,17 @@
-<div class="container">
-  <ul class="list-group list-group-flush">
-    <li *ngFor="let snippet of snippetsList" class="media list-group-item">
-      <!-- <a class="d-flex" href="#">
-        <img src="" alt="">
-      </a> -->
-      <div class="media-body link" (click)="navigateToSnippetById(snippet.snippetId)">
-        <h5>{{snippet.title}}</h5>
-        Submitted by {{snippet.author.displayName}}
+<div class="bg-secondary py-5">
+  <div class="container">
+    <div class="card-columns">
+      <div class="card card-lift--hover shadow-sm border-0 link full-height" *ngFor="let snippet of snippetsList"
+        (click)="navigateToSnippetById(snippet.snippetId)">
+        <div class="card-body py-4">
+          <h5 class="card-title text-primary text-uppercase mb-0">{{snippet.title}}</h5>
+          <p class="description">by <b class="bold">{{snippet.author.displayName}}</b></p>
+          <p class="card-text"><small class="text-muted">Last updated {{snippet.createdAt | timeAgo}}</small></p>
+          <div>
+            <span *ngFor="let category of snippet.categories" class="badge badge-pill badge-primary mr-1">{{category.displayName}}</span>
+          </div>
+        </div>
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </div>
