@@ -28,6 +28,7 @@ import { SnippetsService } from './services/snippets.service';
 import { ProfileDetailsComponent } from './pages/profiles/profile-details/profile-details.component';
 import { UsersService } from './services/users.service';
 import { SnippetsDeckComponent } from './views/snippets-deck/snippets-deck.component';
+import { SnippetsEditorComponent } from './views/snippets-editor/snippets-editor.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,9 @@ import { SnippetsDeckComponent } from './views/snippets-deck/snippets-deck.compo
 
     ProfileDetailsComponent,
 
-    SnippetsDeckComponent
+    SnippetsDeckComponent,
+
+    SnippetsEditorComponent
   ],
   imports: [
     BrowserModule,

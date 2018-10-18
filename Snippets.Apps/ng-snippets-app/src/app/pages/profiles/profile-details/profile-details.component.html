@@ -6,6 +6,6 @@
 
 <div class="bg-secondary py-4">
   <div class="container">
-    <app-snippets-deck [snippets]="userSnippets"></app-snippets-deck>
+    <app-snippets-deck [snippets]="userSnippets" (onItemClick)="navigateToSnippetById($event.snippetId)"></app-snippets-deck>
   </div>
 </div>

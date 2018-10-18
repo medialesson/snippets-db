@@ -35,4 +35,8 @@ export class ProfileDetailsComponent implements OnInit {
     });
   }
 
+  public navigateToSnippetById(id: string) {
+    this.router.navigate([id]);
+  }
+
 }

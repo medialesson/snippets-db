@@ -1,6 +1,6 @@
 <div class="bg-secondary py-3">
   <h5 class="container title my-0">
-    {{snippet.title}} <span class="text-muted small">by {{snippet.author.displayName}}</span>
+    {{snippet.title}} <span class="text-muted small">by <a [routerLink]="['/by/' + snippet.author.authorId]">{{snippet.author.displayName}}</a></span>
 
     <span class="float-right">
       <div class="btn-group mr-3" role="group">
@@ -24,7 +24,6 @@
     <div class="col-md">
       <div class="card shadow-sm bg-secondary">
         <pre><code highlight [textContent]="snippet.content" class="padding"></code></pre>
-        <!-- <div class="card-body">{{snippet.content}}</div> -->
       </div>
     </div>
   </div>

@@ -10,11 +10,12 @@ export class SnippetsDeckComponent implements OnInit {
 
   @Input() public snippets: SnippetDetails[];
 
+  @Output() onItemClick = new EventEmitter();
+  @Output() onDisplayNameClick = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
   }
-
-  @Output() onClick = new EventEmitter();
 
 }
