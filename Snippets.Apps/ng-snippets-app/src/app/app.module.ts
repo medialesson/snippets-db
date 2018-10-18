@@ -13,6 +13,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TagInputModule } from 'ngx-chips';
 import { HighlightModule } from 'ngx-highlightjs';
+import { StickyModule } from 'ng2-sticky-kit';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -60,6 +61,7 @@ import { SnippetsService } from './services/snippets.service';
     NgbModule,
     TagInputModule,
     HighlightModule.forRoot(),
+    StickyModule,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
