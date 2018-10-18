@@ -31,6 +31,7 @@
     "ng-loading-bar": "0.0.10",
     "ngx-chips": "^1.9.8",
     "rxjs": "~6.2.0",
+    "time-ago-pipe": "^1.3.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
