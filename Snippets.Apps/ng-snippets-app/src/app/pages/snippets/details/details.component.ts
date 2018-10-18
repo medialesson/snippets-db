@@ -36,7 +36,7 @@ export class DetailsComponent implements OnInit {
   }
 
   copySnippet() {
-    this.toastr.info('Snippet copied to your clipboard', '', {
+    this.toastr.info('Snippet has been copied to your clipboard', '', {
       positionClass: 'toast-bottom-center'
     });
   }
