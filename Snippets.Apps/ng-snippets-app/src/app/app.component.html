@@ -1,39 +1,67 @@
 <ngx-loading-bar></ngx-loading-bar>
 <block-ui>
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 shadow-sm">
-		<a class="navbar-brand text-light" routerLink="" routerLinkActive="active">Snippets</a>
-		<button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#mainNav" aria-controls="mainNav"
-			aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="mainNav">
-			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-				<li class="nav-item active">
-					<a class="nav-link">Home</a>
-				</li>
-			</ul>
-			<ul class="navbar-nav mt-2 mt-lg-0">
-				<!-- Guest views -->
-				<li *ngIf="!isSignedIn" class="nav-item">
-					<a class="nav-link" routerLink="/register" routerLinkActive="active">Register</a>
-				</li>
-				<li *ngIf="!isSignedIn" class="nav-item">
-					<a class="nav-link" routerLink="/login" routerLinkActive="active">Sign in</a>
-				</li>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-default">
+      <div class="container">
+         <a class="navbar-brand" routerLink="/">Snippets</a>
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-default"
+            aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbar-default">
+            <div class="navbar-collapse-header">
+               <div class="row">
+                  <div class="col-6 collapse-brand">
+                     <a href="index.html">
+                        <img src="assets/img/brand/blue.png">
+                     </a>
+                  </div>
+                  <div class="col-6 collapse-close">
+                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-default"
+                        aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+                        <span></span>
+                        <span></span>
+                     </button>
+                  </div>
+               </div>
+            </div>
 
-				<!-- Signed in views -->
-				<li *ngIf="isSignedIn && auth.currentUser" class="nav-item">
-					<a class="nav-link">{{auth.currentUser.displayName}}</a>
-				</li>
-				<li *ngIf="isSignedIn" class="nav-item">
-					<a class="nav-link" routerLink="create" routerLinkActive="true">Create</a>
-				</li>
-				<li *ngIf="isSignedIn" class="nav-item">
-					<a class="nav-link" routerLink="/signout" routerLinkActive="active">Sign out</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
+            <ul class="navbar-nav ml-lg-auto">
+               <li class="nav-item">
+                  <a class="nav-link nav-link-icon" href="#">
+                     <i class="ni ni-collection"></i>
+                     <span class="nav-link-inner--text d-lg-none">Discover</span>
+                  </a>
+               </li>
 
-	<router-outlet></router-outlet>
+               <li class="nav-item">
+                  <a class="nav-link nav-link-icon" routerLink="create" routerLinkActive="active">
+                     <i class="ni ni-cloud-upload-96"></i>
+                     <span class="nav-link-inner--text d-lg-none">Create</span>
+                  </a>
+               </li>
+
+               <li class="nav-item" ngbDropdown placement="bottom-right">
+                  <a class="nav-link nav-link-icon" role="button" id="navbar-settings" ngbDropdownToggle>
+                     <i class="ni ni-single-02"></i>
+                     <span class="nav-link-inner--text d-lg-none">Me</span>
+                  </a>
+
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-settings" ngbDropdownMenu>
+                     <a *ngIf="!isSignedIn" routerLink="/login" class="dropdown-item">Sign in</a>
+                     <a *ngIf="!isSignedIn" routerLink="/register" class="dropdown-item">Register</a>
+
+                     <a *ngIf="isSignedIn && auth.currentUser" class="dropdown-item">{{auth.currentUser.displayName}}</a>
+
+                     <div class="dropdown-divider"></div>
+
+                     <a *ngIf="isSignedIn" routerLink="/signout" class="dropdown-item">Sign out</a>
+                  </div>
+               </li>
+            </ul>
+
+         </div>
+      </div>
+   </nav>
+
+   <router-outlet></router-outlet>
 </block-ui>
