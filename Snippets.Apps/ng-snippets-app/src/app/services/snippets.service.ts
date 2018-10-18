@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { HttpClient } from '@angular/common/http';
-import { SnippetPostData, SnippetPostDataEnvelope, SnippetDetailsEnvelope, SnippetsDetailsEnvelope } from '../data/features/snippet';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { SnippetPostData, SnippetPostDataEnvelope, SnippetDetailsEnvelope, SnippetsDetailsEnvelope, SnippetDetails } from '../data/features/snippet';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class SnippetsService {
 
   async submitAsync(data: SnippetPostData): Promise<SnippetDetailsEnvelope> {
     let envelope = new SnippetPostDataEnvelope(data);
-    return await this.http.post<SnippetDetailsEnvelope>(ApiService.getApiUrl('snippets'), 
+    return await this.http.post<SnippetDetailsEnvelope>(ApiService.getApiUrl('snippets'),
       envelope).toPromise();
   }
 
@@ -26,5 +26,13 @@ export class SnippetsService {
   async getAllAsync(): Promise<SnippetsDetailsEnvelope> {
     return await this.http.get<SnippetsDetailsEnvelope>(ApiService.getApiUrl('snippets/'))
       .toPromise();
+  }
+
+  async getByUserAsync(id: string): Promise<SnippetsDetailsEnvelope> {
+    let queryParams = new HttpParams().set('author', id);
+
+    return await this.http.get<SnippetsDetailsEnvelope>(ApiService.getApiUrl('snippets'), { 
+      params: queryParams 
+    }).toPromise();
   }
 }

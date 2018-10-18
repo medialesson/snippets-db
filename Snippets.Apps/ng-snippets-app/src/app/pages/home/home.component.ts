@@ -23,4 +23,8 @@ export class HomeComponent implements OnInit {
     this.router.navigate([id]);
   }
 
+  navigateToUserById(id: string) {
+    this.router.navigate(['/by/' + id]);
+  }
+
 }

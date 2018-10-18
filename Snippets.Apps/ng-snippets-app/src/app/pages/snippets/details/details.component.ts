@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnippetsService } from 'src/app/services/snippets.service';
 import { SnippetDetails } from 'src/app/data/features/snippet';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-details',
@@ -15,7 +16,8 @@ export class DetailsComponent implements OnInit {
 
   constructor(private router: Router,
     private route: ActivatedRoute,
-    private snippets: SnippetsService) {
+    private snippets: SnippetsService,
+    private toastr: ToastrService) {
 
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -31,6 +33,12 @@ export class DetailsComponent implements OnInit {
 
   downloadSnippet() {
     
+  }
+
+  copySnippet() {
+    this.toastr.info('Snippet has been copied to your clipboard', '', {
+      positionClass: 'toast-bottom-center'
+    });
   }
 
 }

@@ -2,7 +2,7 @@
 <block-ui>
    <nav class="navbar navbar-expand-lg navbar-dark bg-default">
       <div class="container">
-         <a class="navbar-brand" routerLink="/">Snippets</a>
+         <a class="navbar-brand" routerLink="/">Snippets DB</a>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-default"
             aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -26,12 +26,12 @@
             </div>
 
             <ul class="navbar-nav ml-lg-auto">
-                <li class="nav-item">
-                    <a class="nav-link nav-link-icon" routerLink="create" routerLinkActive="active">
-                        <i class="ni ni-cloud-upload-96"></i>
-                        <span class="nav-link-inner--text d-lg-none">Create</span>
-                    </a>
-                </li>
+               <li class="nav-item">
+                  <a class="nav-link nav-link-icon" routerLink="create" routerLinkActive="active">
+                     <i class="ni ni-cloud-upload-96"></i>
+                     <span class="nav-link-inner--text d-lg-none">Create</span>
+                  </a>
+               </li>
 
                <li class="nav-item">
                   <a class="nav-link nav-link-icon" href="#">
@@ -50,7 +50,8 @@
                      <a *ngIf="!isSignedIn" routerLink="/login" class="dropdown-item">Sign in</a>
                      <a *ngIf="!isSignedIn" routerLink="/register" class="dropdown-item">Register</a>
 
-                     <a *ngIf="isSignedIn && auth.currentUser" class="dropdown-item">{{auth.currentUser.displayName}}</a>
+                     <a *ngIf="isSignedIn && auth.currentUser" [routerLink]="['/by/' + auth.currentUser.userId]"
+                        routerLinkActive="active" class="dropdown-item">{{auth.currentUser.displayName}}</a>
 
                      <div class="dropdown-divider"></div>
 
@@ -62,6 +63,13 @@
          </div>
       </div>
    </nav>
+
+   <!-- <div class="bg-dark text-light">
+      <div class="container pb-4">
+         <h3 class="text-left lead py-4 m-0 text-light">Publish a new Snippet</h3>
+         <app-snippets-editor></app-snippets-editor>
+      </div>
+   </div> -->
 
    <router-outlet></router-outlet>
 </block-ui>

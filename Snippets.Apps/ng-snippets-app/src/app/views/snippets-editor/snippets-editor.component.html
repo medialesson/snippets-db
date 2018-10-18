@@ -1,0 +1,30 @@
+<div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <textarea [(ngModel)]="snippet.content" class="form-control" name="snippetContent" id="snippetContent" rows="14"></textarea>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input [(ngModel)]="snippet.title" type="text" class="form-control" name="title" id="title" placeholder="Coffee snippet">
+          </div>
+
+          <div class="form-group">
+            <label for="tags">Categories</label>
+            <tag-input [(ngModel)]="snippet.categories" theme="bootstrap" modelAsStrings="true"></tag-input>
+          </div>
+        </div>
+      </div>
+
+      <button (click)="onSubmit.emit()" type="button" [disabled]="!(snippet.content && snippet.title && snippet.categories)"
+        class="btn btn-primary btn-block btn-lg mt-3" [hidden]="!showSubmitButton">
+        Snip away
+      </button>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { GuestGuard } from './guards/guest.guard';
 import { CreateComponent } from './pages/snippets/create/create.component';
 import { DetailsComponent } from './pages/snippets/details/details.component';
+import { ProfileDetailsComponent } from './pages/profiles/profile-details/profile-details.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
   {
     path: ':id',
     component: DetailsComponent
+  },
+  {
+    path: 'by/:id',
+    component: ProfileDetailsComponent
   },
 ];
 

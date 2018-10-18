@@ -14,6 +14,8 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TagInputModule } from 'ngx-chips';
 import { HighlightModule } from 'ngx-highlightjs';
 import { StickyModule } from 'ng2-sticky-kit';
+import { ClipboardModule } from 'ngx-clipboard';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +27,10 @@ import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { CreateComponent } from './pages/snippets/create/create.component';
 import { DetailsComponent } from './pages/snippets/details/details.component';
 import { SnippetsService } from './services/snippets.service';
+import { ProfileDetailsComponent } from './pages/profiles/profile-details/profile-details.component';
+import { UsersService } from './services/users.service';
+import { SnippetsDeckComponent } from './views/snippets-deck/snippets-deck.component';
+import { SnippetsEditorComponent } from './views/snippets-editor/snippets-editor.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +42,11 @@ import { SnippetsService } from './services/snippets.service';
     CreateComponent,
     DetailsComponent,
 
-    TimeAgoPipe
+    TimeAgoPipe,
+
+    ProfileDetailsComponent,
+    SnippetsDeckComponent,
+    SnippetsEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -62,13 +72,16 @@ import { SnippetsService } from './services/snippets.service';
     TagInputModule,
     HighlightModule.forRoot(),
     StickyModule,
+    ClipboardModule,
+    ToastrModule.forRoot() ,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
   ],
   providers: [
     AuthService,
-    SnippetsService
+    SnippetsService,
+    UsersService
   ],
   bootstrap: [AppComponent]
 })
