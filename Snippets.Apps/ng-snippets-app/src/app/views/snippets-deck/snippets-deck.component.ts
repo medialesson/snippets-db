@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { SnippetDetails } from 'src/app/data/features/snippet';
 
 @Component({
   selector: 'app-snippets-deck',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SnippetsDeckComponent implements OnInit {
 
+  @Input() public snippets: SnippetDetails[];
+
   constructor() { }
 
   ngOnInit() {
   }
+
+  @Output() onClick = new EventEmitter();
 
 }
