@@ -9,6 +9,8 @@ import { SnippetDetails, SnippetPostData } from 'src/app/data/features/snippet';
 export class SnippetsEditorComponent implements OnInit {
 
   @Input() public snippet: SnippetPostData = new SnippetPostData();
+  @Input() public showSubmitButton: boolean = false;
+
   @Output() onSubmit = new EventEmitter();
 
   constructor() { }
