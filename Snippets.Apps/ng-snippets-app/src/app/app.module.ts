@@ -31,6 +31,7 @@ import { ProfileDetailsComponent } from './profiles/profile-details/profile-deta
 import { SnippetsDeckComponent } from './snippets/snippets-deck/snippets-deck.component';
 import { SnippetsEditorComponent } from './snippets/snippets-editor/snippets-editor.component';
 import { UsersService } from './users/users.service';
+import { SearchBoxComponent } from './core/search-box/search-box.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { UsersService } from './users/users.service';
 
     ProfileDetailsComponent,
     SnippetsDeckComponent,
-    SnippetsEditorComponent
+    SnippetsEditorComponent,
+    SearchBoxComponent
   ],
   imports: [
     BrowserModule,

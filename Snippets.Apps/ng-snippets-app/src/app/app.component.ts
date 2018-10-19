@@ -12,12 +12,17 @@ export class AppComponent {
 
   @BlockUI() blockUI: NgBlockUI;
   public isCollapsed: boolean = true;
+  public isSearchBarVisible: boolean = false;
 
   constructor(public auth: AuthService) {
   }
 
   public get isSignedIn() : boolean {
     return this.auth.isJwtValid();
+  }
+
+  boop(s: string) {
+    alert(s);
   }
   
 }
