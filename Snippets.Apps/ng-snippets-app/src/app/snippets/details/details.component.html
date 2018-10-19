@@ -1,5 +1,5 @@
-<div class="bg-secondary py-3">
-  <h5 class="container title my-0">
+<div class="bg-secondary py-3 sticky-top">
+  <h5 class="container title my-0 clearfix">
     {{snippet.title}} <span class="text-muted small">by <a [routerLink]="['/by/' + snippet.author.authorId]">{{snippet.author.displayName}}</a></span>
 
     <span class="float-right">
@@ -16,9 +16,9 @@
   </h5>
 </div>
 
-<div class="container-fluid pt-4">
+<div class="container pt-4">
   <div class="row">
-    <div class="col-md-auto full-height no-padding" sticky>
+    <div class="col-md-auto full-height no-padding">
       <div>
         <h5>{{snippet.score}}</h5>
       </div>

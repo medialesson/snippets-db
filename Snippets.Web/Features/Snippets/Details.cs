@@ -14,20 +14,19 @@ namespace Snippets.Web.Features.Snippets
     {
         public class Query : IRequest<SnippetEnvelope>
         {
+            /// <summary>
+            /// Initializes a Details Query
+            /// </summary>
+            /// <param name="snippetId">Unique identifier of the Snippet from which the details are retrieved</param>
             public Query(string snippetId)
             {
                 SnippetId = snippetId;
             }
             
+            /// <summary>
+            /// Unique identifier of the Snippet from which the details are retrieved           
+            /// </summary>
             public string SnippetId { get; }
-        }
-
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.SnippetId).NotEmpty();
-            }
         }
 
         public class QueryHandler : IRequestHandler<Query, SnippetEnvelope>
@@ -41,13 +40,21 @@ namespace Snippets.Web.Features.Snippets
                 _mapper = mapper;
             }
 
+
+            /// <summary>
+            /// Initializes a Downvote Handler
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public async Task<SnippetEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
+                // Get the selected snippet from the database context
                 var selectedSnippet = await _context.Snippets.GetAllData().AsNoTracking()
                     .FirstOrDefaultAsync(x => x.SnippetId == message.SnippetId, cancellationToken);
 
                 if (selectedSnippet != null)
                 {                    
+                    // Map from the data context to a transfer object
                     var snippet = _mapper.Map<Domains.Snippet, Snippet>(selectedSnippet);
                     return new SnippetEnvelope(snippet);
                 }

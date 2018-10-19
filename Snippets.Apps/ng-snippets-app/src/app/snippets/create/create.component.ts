@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SnippetPostData, SnippetPostDataEnvelope } from 'src/app/data/features/snippet';
-import { SnippetsService } from 'src/app/services/snippets.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
+import { SnippetPostData } from '../snippet';
+import { SnippetsService } from '../snippets.service';
 
 @Component({
   selector: 'app-create',

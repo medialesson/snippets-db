@@ -19,18 +19,18 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RegisterComponent } from './pages/auth/register/register.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { HomeComponent } from './pages/home/home.component';
-import { AuthService } from './services/auth.service';
-import { SignoutComponent } from './pages/auth/signout/signout.component';
-import { CreateComponent } from './pages/snippets/create/create.component';
-import { DetailsComponent } from './pages/snippets/details/details.component';
-import { SnippetsService } from './services/snippets.service';
-import { ProfileDetailsComponent } from './pages/profiles/profile-details/profile-details.component';
-import { UsersService } from './services/users.service';
-import { SnippetsDeckComponent } from './views/snippets-deck/snippets-deck.component';
-import { SnippetsEditorComponent } from './views/snippets-editor/snippets-editor.component';
+import { AuthService } from './auth/auth.service';
+import { SnippetsService } from './snippets/snippets.service';
+import { SignoutComponent } from './auth/signout/signout.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { HomeComponent } from './core/home/home.component';
+import { CreateComponent } from './snippets/create/create.component';
+import { DetailsComponent } from './snippets/details/details.component';
+import { ProfileDetailsComponent } from './profiles/profile-details/profile-details.component';
+import { SnippetsDeckComponent } from './snippets/snippets-deck/snippets-deck.component';
+import { SnippetsEditorComponent } from './snippets/snippets-editor/snippets-editor.component';
+import { UsersService } from './users/users.service';
 
 @NgModule({
   declarations: [

@@ -14,6 +14,13 @@ namespace Snippets.Web.Features.Snippets
     {
         public class Query : IRequest<SnippetsEnvelope>
         {
+            /// <summary>
+            /// Initializes a List Query
+            /// </summary>
+            /// <param name="category">Delimits the query to a specific category only</param>
+            /// <param name="authorId">Delimits the query to a specific author only by its id</param>
+            /// <param name="limit">Delimits the number of results returned</param>
+            /// <param name="offset">Skips the specified amount of entries</param>
             public Query(string category, string authorId, int? limit, int? offset)
             {
                 Category = category;
@@ -22,9 +29,24 @@ namespace Snippets.Web.Features.Snippets
                 Offset = offset;
             }
 
+            /// <summary>
+            /// Delimits the query to a specific category only
+            /// </summary>
             public string Category { get; }
+
+            /// <summary>
+            /// Delimits the query to a specific author only by its id
+            /// </summary>
             public string AuthorId { get; }
+
+            /// <summary>
+            /// Delimits the number of results returned
+            /// </summary>
             public int? Limit { get; }
+
+            /// <summary>
+            /// Skips the specified amount of entries
+            /// </summary>
             public int? Offset { get; }
         }
 
@@ -33,18 +55,31 @@ namespace Snippets.Web.Features.Snippets
             readonly SnippetsContext _context;
             readonly IMapper _mapper;
 
+            /// <summary>
+            /// Initializes a List QueryHandler 
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public QueryHandler(SnippetsContext context, IMapper mapper)
             {
                 _context = context;
                 _mapper = mapper;
             }
 
+
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<SnippetsEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
+                // Get all Snippets form the database context 
                 IQueryable<Domains.Snippet> queryable = _context.Snippets.GetAllData();
 
                 if (!string.IsNullOrEmpty(message.Category))
                 {
+                    // Validate that the delimiting category exists
                     var category =
                         await _context.SnippetCategories.FirstOrDefaultAsync(x => 
                             x.CategoryId == message.Category,
@@ -63,6 +98,7 @@ namespace Snippets.Web.Features.Snippets
 
                 if (!string.IsNullOrEmpty(message.AuthorId))
                 {
+                    // Validate that the delimiting author exists
                     var author =
                         await _context.Persons.FirstOrDefaultAsync(x => 
                             x.PersonId == message.AuthorId,
@@ -85,12 +121,9 @@ namespace Snippets.Web.Features.Snippets
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
 
+                // Map from the data context to a transfer object
                 var snippets = _mapper.Map<List<Domains.Snippet>, List<Snippet>>(queriedSnippets);
-                return new SnippetsEnvelope()
-                {
-                    Snippets = snippets,
-                    SnippetsCount = snippets.Count()
-                };
+                return new SnippetsEnvelope(snippets);
             }
         }
     }

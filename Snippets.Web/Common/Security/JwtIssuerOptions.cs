@@ -78,7 +78,7 @@ namespace Snippets.Web.Common.Security
         ///   or after which the JWT MUST NOT be accepted for processing.  The
         ///   processing of the "exp" claim requires that the current date/time
         ///   MUST be before the expiration date/time listed in the "exp" claim.
-        ///   Implementers MAY provide for some small leeway, usually no more than
+        ///   Implementors MAY provide for some small leeway, usually no more than
         ///   a few minutes, to account for clock skew.  Its value MUST be a number
         ///   containing a NumericDate value.  Use of this claim is OPTIONAL.</remarks>
         public DateTime Expiration => IssuedAt.Add(ValidFor);

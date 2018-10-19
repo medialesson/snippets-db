@@ -13,11 +13,19 @@ namespace Snippets.Web.Features.Karma
     {
         readonly IMediator _mediator;
 
+        /// <summary>
+        /// Initializes a VotingController
+        /// </summary>
+        /// <param name="mediator">Represents an instance of a MediateR mediator</param>
         public VotingController(IMediator mediator)
         {
            _mediator = mediator; 
         }
 
+        /// <summary>
+        /// Submits or deletes an existing Upvote to the specified Snippet 
+        /// </summary>
+        /// <param name="id">Id of the Snippet to submit the upvote</param>
         [HttpPost("{id}/upvote")]
         public async Task<VoteEnvelope> Upvote(string id)
         {
@@ -31,7 +39,10 @@ namespace Snippets.Web.Features.Karma
 
             return await _mediator.Send(command);
         }
-
+        /// <summary>
+        /// Submits or deletes an existing Downvote to the specified Snippet 
+        /// </summary>
+        /// <param name="id">Id of the Snippet to submit the Downvote</param>
         [HttpPost("{id}/downvote")]
         public async Task<VoteEnvelope> Downvote(string id)
         {

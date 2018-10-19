@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SnippetDetails } from 'src/app/data/features/snippet';
+import { SnippetDetails } from 'src/app/snippets/snippet';
 
 @Component({
   selector: 'app-snippets-deck',
