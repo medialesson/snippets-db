@@ -10,11 +10,16 @@ namespace Snippets.Web
 {
     public static class StartupExtensions
     {
+        /// <summary>
+        /// Validation service for Jwt tokens
+        /// </summary>
+        /// <param name="services">Specifies the contract for a collection of service descriptors</param>
         public static void AddJwt(this IServiceCollection services)
         {
             services.AddOptions();
             var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
+            // Receive the secret key from the AppSettings
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Snippets").GetValue<string>("Secret")));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 

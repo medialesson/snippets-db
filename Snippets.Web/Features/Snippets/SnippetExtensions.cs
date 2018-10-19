@@ -9,6 +9,11 @@ namespace Snippets.Web.Features.Snippets
 {
     public static class SnippetExtensions
     {
+        /// <summary>
+        /// Resolves the dependencies on related databases and returns the data
+        /// </summary>
+        /// <param name="snippets"></param>
+        /// <returns>Snippets dataset with resolved relationships</returns>
         public static IQueryable<Domains.Snippet> GetAllData(this DbSet<Domains.Snippet> snippets)
         {
             return snippets

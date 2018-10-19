@@ -10,6 +10,10 @@ namespace Snippets.Web.Features.Categories
     {
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Initializes a CategoriesController
+        /// </summary>
+        /// <param name="mediator">Represents an instance of a MediatR mediator</param>
         public CategoriesController(IMediator mediator)
         {
             _mediator = mediator;
@@ -20,7 +24,6 @@ namespace Snippets.Web.Features.Categories
         /// </summary>
         /// <param name="limit">Limits the amount of items that are being returned (default: 25)</param>
         /// <param name="offset">Applies an offset to the categories collection</param>
-        /// <returns></returns>
         [HttpGet]
         public async Task<CategoriesEnvelope> List([FromQuery] int? limit = 25, [FromQuery] int? offset = 0)
         {
@@ -28,10 +31,9 @@ namespace Snippets.Web.Features.Categories
         }
 
         /// <summary>
-        /// Retrieves a single category specified by its ID
+        /// Retrieves a single category specified by its unique identifier
         /// </summary>
-        /// <param name="id">Category ID</param>
-        /// <returns></returns>
+        /// <param name="id">Unique identifier of the Category</param>
         [HttpGet("{id}")]
         public async Task<CategoryEnvelope> Details(string id)
         {

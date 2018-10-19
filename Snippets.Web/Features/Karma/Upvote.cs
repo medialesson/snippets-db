@@ -17,16 +17,25 @@ namespace Snippets.Web.Features.Karma
     {
        public class VoteData
        {
+           /// <summary>
+           /// Unique identifier of the Snippet the Vote will be submitted to
+           /// </summary>
            public string SnippetId { get; set; }
        } 
 
         public class Command : IRequest<VoteEnvelope>
         {
+            /// <summary>
+            /// Instance of the inbound Upvote VoteData
+            /// </summary>
             public VoteData Vote { get; set; }
         } 
 
         public class CommandValidator : AbstractValidator<Command>
         {
+            /// <summary>
+            /// Initializes a Upvote CommandValidator
+            /// </summary>
             public CommandValidator()
             {
                RuleFor(v => v.Vote).NotNull(); 
@@ -46,8 +55,14 @@ namespace Snippets.Web.Features.Karma
                _mapper = mapper;
             }
 
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<VoteEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
+                // Get the current user, snippet and karma from the database context
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
                 var currentSnippet =  await _context.Snippets
                     .FindAsync(message.Vote.SnippetId, cancellationToken);
@@ -62,6 +77,7 @@ namespace Snippets.Web.Features.Karma
 
                 if (currentKarma == null)
                 {
+                    // Create a Karma that represents a Upvote
                     currentKarma = new Domains.Karma {
                         Upvote = true,
                         Snippet = currentSnippet,
@@ -71,10 +87,12 @@ namespace Snippets.Web.Features.Karma
                 }
                 else 
                 {
+                    // Update the Karma to represent a Upvote
                     if (!currentKarma.Upvote)
                         currentKarma.Upvote = true;
                     else
                     {
+                        // Delete the Karma that represents a Upvote
                         _context.Karma.Remove(currentKarma);
                         vote.Status = VoteStatus.Removed;
                     }

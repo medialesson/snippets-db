@@ -18,23 +18,52 @@ namespace Snippets.Web.Features.Users
     {
         public class UserData
         {
+            /// <summary>
+            /// New email to be associated with the Person
+            /// </summary>
             public string Email { get; set; }
 
+            /// <summary>
+            /// New name that gets displayed to other users associated with the Person 
+            /// </summary>
             public string DisplayName { get; set; }
 
+            /// <summary>
+            /// New password in plain text to be associated with the Person
+            /// </summary>
+            /// <value></value>
             public string Password { get; set; }
         }
 
+        public class UserDataValidator : AbstractValidator<UserData>
+        {
+            /// <summary>
+            /// Initialize a Edit UserDataValidator
+            /// </summary>
+            public UserDataValidator()
+            {
+                RuleFor(d => d.Email).EmailAddress();
+                // TODO: Implement the use of save passwords only
+                // RuleFor(d => d.Password); 
+            }
+        } 
+
         public class Command : IRequest<UserEnvelope>
         {
+            /// <summary>
+            /// Instance of the inbound Edit UserData
+            /// </summary>
             public UserData User { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
+            /// <summary>
+            /// Initializes a Edit CommandValidator
+            /// </summary>
             public CommandValidator()
             {
-                RuleFor(u => u.User).NotNull();
+                RuleFor(u => u.User).NotNull().SetValidator(new UserDataValidator());
             }
         }
 
@@ -45,7 +74,14 @@ namespace Snippets.Web.Features.Users
             readonly ICurrentUserAccessor _currentUserAccessor;
             readonly IMapper _mapper;
 
-            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, ICurrentUserAccessor currentUserAccessor, IMapper mapper)
+            /// <summary>
+            /// Handles the request 
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
+            /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
+             public Handler(SnippetsContext context, IPasswordHasher passwordHasher, ICurrentUserAccessor currentUserAccessor, IMapper mapper)
             {
                 _context = context;
                 _passwordHasher = passwordHasher;
@@ -53,22 +89,32 @@ namespace Snippets.Web.Features.Users
                 _mapper = mapper;
             }
 
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
+                // Get the current user id from the jwt token and retrieve its Person from the data context
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
                 var person = await _context.Persons.Where(p => p.PersonId == currentUserId).FirstOrDefaultAsync(cancellationToken);
                 
+                // Change the specified properties
                 person.Email = message.User.Email ?? person.Email;
                 person.DisplayName = message.User.DisplayName ?? person.DisplayName;
                 
                 if (!string.IsNullOrWhiteSpace(message.User.Password))
                 {
+                    // Generate a new password hash
                     var salt = Guid.NewGuid().ToByteArray();
                     person.PasswordHash = _passwordHasher.Hash(message.User.Password, salt);
                     person.PasswordSalt = salt;
                 }
 
                 await _context.SaveChangesAsync(cancellationToken);
+
+                // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
                 return new UserEnvelope(user);
             }
