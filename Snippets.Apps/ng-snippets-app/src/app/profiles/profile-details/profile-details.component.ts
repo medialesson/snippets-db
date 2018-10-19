@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UsersService } from 'src/app/services/users.service';
-import { User } from 'src/app/data/features/user';
-import { SnippetDetails } from 'src/app/data/features/snippet';
-import { SnippetsService } from 'src/app/services/snippets.service';
+import { User } from 'src/app/users/user';
+import { SnippetDetails } from 'src/app/snippets/snippet';
+import { SnippetsService } from 'src/app/snippets/snippets.service';
+import { UsersService } from 'src/app/users/users.service';
 
 @Component({
   selector: 'app-profile-details',

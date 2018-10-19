@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SnippetsService } from 'src/app/services/snippets.service';
-import { SnippetDetails } from 'src/app/data/features/snippet';
+import { SnippetsService } from 'src/app/snippets/snippets.service';
+import { SnippetDetails } from 'src/app/snippets/snippet';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

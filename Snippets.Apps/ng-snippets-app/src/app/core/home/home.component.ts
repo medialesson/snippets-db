@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SnippetsService } from 'src/app/services/snippets.service';
-import { SnippetDetails } from 'src/app/data/features/snippet';
+import { SnippetsService } from 'src/app/snippets/snippets.service';
+import { SnippetDetails } from 'src/app/snippets/snippet';
 import { Router } from '@angular/router';
 
 @Component({

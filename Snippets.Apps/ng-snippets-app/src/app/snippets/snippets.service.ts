@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { SnippetPostData, SnippetPostDataEnvelope, SnippetDetailsEnvelope, SnippetsDetailsEnvelope, SnippetDetails } from '../data/features/snippet';
-import { ApiService } from './api.service';
+import { AuthService } from '../auth/auth.service';
+import { SnippetPostData, SnippetDetailsEnvelope, SnippetPostDataEnvelope, SnippetsDetailsEnvelope } from './snippet';
+import { ApiService } from '../services/api.service';
 
 @Injectable({
   providedIn: 'root'

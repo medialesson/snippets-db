@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { SnippetDetails, SnippetPostData } from 'src/app/data/features/snippet';
+import { SnippetDetails, SnippetPostData } from 'src/app/snippets/snippet';
 
 @Component({
   selector: 'app-snippets-editor',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { User, UserEnvelope } from '../data/features/user';
+import { User, UserEnvelope } from '../users/user';
 import { HttpClient } from '@angular/common/http';
-import { ApiService } from './api.service';
+import { ApiService } from '../services/api.service';
 
 const JWT_TOKEN_KEY = "access_token";
 
