@@ -82,7 +82,11 @@ namespace Snippets.Web.Features.Users
                     user.Token = null; // Otherwise you might be able to login as the user LOL
                 }
                 else
+<<<<<<< Updated upstream
                     user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId); // TODO: Do not return a new token at this point
+=======
+                    user.Token = _currentUserAccessor.GetCurrentToken();
+>>>>>>> Stashed changes
                 return new UserEnvelope(user);
             }
         }

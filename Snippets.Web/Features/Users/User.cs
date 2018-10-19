@@ -34,10 +34,18 @@ namespace Snippets.Web.Features.Users
         /// <value></value>
         public string Token { get; set; }
 
+        public UserTokens Tokens { get; set; }
+
 #if DEBUG
         // Used for easier authentication within Swagger
         public string DebugToken => "Bearer " + Token;
 #endif
+    }
+
+    public class UserTokens {
+        public string Token { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 
     public class UserEnvelope

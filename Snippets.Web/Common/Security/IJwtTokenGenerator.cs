@@ -10,5 +10,7 @@ namespace Snippets.Web.Common.Security
         /// <param name="userId">Id of the user the token is generated for</param>
         /// <returns>Valid Jwt token for specified user id</returns>
         Task<string> CreateToken(string userId);
+
+        Task<string> CreateRefreshToken(string jwtToken, string passwordHash);
     }
 }
