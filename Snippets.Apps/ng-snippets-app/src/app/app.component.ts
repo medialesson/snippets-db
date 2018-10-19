@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ export class AppComponent {
   title = 'ng-snippets-app';
 
   @BlockUI() blockUI: NgBlockUI;
+  public isCollapsed: boolean = true;
 
   constructor(public auth: AuthService) {
   }

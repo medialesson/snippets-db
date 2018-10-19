@@ -1,0 +1,5 @@
+<div class="bg-secondary py-5">
+  <div class="container">
+    <app-snippets-deck [snippets]="snippetsList" (onItemClick)="navigateToSnippetById($event.snippetId)" (onDisplayNameClick)="navigateToUserById($event.authorId)"></app-snippets-deck>
+  </div>
+</div>

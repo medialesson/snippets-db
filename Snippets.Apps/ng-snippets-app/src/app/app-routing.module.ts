@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RegisterComponent } from './pages/auth/register/register.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { HomeComponent } from './pages/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
-import { SignoutComponent } from './pages/auth/signout/signout.component';
 import { GuestGuard } from './guards/guest.guard';
-import { CreateComponent } from './pages/snippets/create/create.component';
-import { DetailsComponent } from './pages/snippets/details/details.component';
+import { SignoutComponent } from './auth/signout/signout.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { CreateComponent } from './snippets/create/create.component';
+import { HomeComponent } from './core/home/home.component';
+import { DetailsComponent } from './snippets/details/details.component';
+import { ProfileDetailsComponent } from './profiles/profile-details/profile-details.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
   {
     path: ':id',
     component: DetailsComponent
+  },
+  {
+    path: 'by/:id',
+    component: ProfileDetailsComponent
   },
 ];
 
