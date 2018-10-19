@@ -43,8 +43,8 @@ namespace Snippets.Web.Features.Categories
         /// <summary>
         /// Initializes a CategoriesEnvelope
         /// </summary>
-        /// <param name="categories">List if Category transfer objects</param>
-        public CategoriesEnvelope(Listy<Category> categories)
+        /// <param name="categories">List of Category transfer objects</param>
+        public CategoriesEnvelope(List<Category> categories)
         {
             Categories = categories;
         }
@@ -52,11 +52,11 @@ namespace Snippets.Web.Features.Categories
         /// <summary>
         /// List if Category transfer objects
         /// </summary>
-        public IList<Category> Categories { get; }
+        public List<Category> Categories { get; }
 
         /// <summary>
         /// Number of listed categories
         /// </summary>
-        public int CategoriesCount => Categories.Count();
+        public int CategoriesCount => Categories.Count;
     }
 }

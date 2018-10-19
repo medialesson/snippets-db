@@ -14,7 +14,7 @@ namespace Snippets.Web.Domains
         public string PersonId { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
-        /// Email adress associated with the Person (optional)
+        /// Email address associated with the Person (optional)
         /// </summary>
         public string Email { get; set; }
 
@@ -24,7 +24,7 @@ namespace Snippets.Web.Domains
         public string  DisplayName { get; set; }
 
         /// <summary>
-        /// Score of the Karma the Person recieved on all Snippets
+        /// Score of the Karma the Person received on all Snippets
         /// </summary>
         [NotMapped]
         public int Score => Snippets?.Where(x => x.Author.PersonId == PersonId).Sum(s => s.Score) ?? 0;

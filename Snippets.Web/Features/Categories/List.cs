@@ -72,7 +72,7 @@ namespace Snippets.Web.Features.Categories
                     .ToListAsync(cancellationToken);
 
                 // Map from the data context to a transfer object
-                var categories = _mapper.Map<IList<Domains.Category>, IList<Category>>(queriedCategories);
+                var categories = _mapper.Map<List<Domains.Category>, List<Category>>(queriedCategories);
                 return new CategoriesEnvelope(categories);
             }
         }

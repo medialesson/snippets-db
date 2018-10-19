@@ -20,7 +20,7 @@ namespace Snippets.Web.Common.Middleware
         /// Initializes an ErrorHandlingMiddleware 
         /// </summary>
         /// <param name="next">A function that can process a request</param>
-        /// <param name="logger">Represents a type used to perform lgging</param>
+        /// <param name="logger">Represents a type used to perform logging</param>
         public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
         {
             _next = next;
@@ -46,7 +46,7 @@ namespace Snippets.Web.Common.Middleware
         }
 
         /// <summary>
-        /// Processes the individual exceptions and assignes their specific results
+        /// Processes the individual exceptions and assigns their specific results
         /// </summary>
         /// <param name="context">Encapsulates all HTTP-specific information about an individual request</param>
         /// <param name="exception">Represents errors that occur during application execution</param>

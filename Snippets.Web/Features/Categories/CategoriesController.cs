@@ -31,9 +31,9 @@ namespace Snippets.Web.Features.Categories
         }
 
         /// <summary>
-        /// Retrieves a single category specified by its ID
+        /// Retrieves a single category specified by its unique identifier
         /// </summary>
-        /// <param name="id">Category ID</param>
+        /// <param name="id">Unique identifier of the Category</param>
         [HttpGet("{id}")]
         public async Task<CategoryEnvelope> Details(string id)
         {

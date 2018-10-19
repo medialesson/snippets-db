@@ -12,17 +12,17 @@ namespace Snippets.Web.Common.Database
         public DbSet<Person> Persons { get; set; }
 
         /// <summary>
-        /// Table for storing Snippets
+        /// Table for storing Snippet objects
         /// </summary>
         public DbSet<Snippet> Snippets { get; set; }
 
         /// <summary>
-        /// Table for stroing the Snippets Categories
+        /// Table for storing the Snippet objects Category objects
         /// </summary>
         public DbSet<Category> Categories { get; set; }
 
         /// <summary>
-        /// Table for storing the Snippets Karma submissions
+        /// Table for storing the Snippets Karma object submissions
         /// </summary>
         public DbSet<Karma> Karma { get; set; }
 
@@ -55,7 +55,7 @@ namespace Snippets.Web.Common.Database
                     .HasForeignKey(pt => pt.CategoryId);
             });
 
-            // User preferences serialisation
+            // User preferences serialization
             modelBuilder.Entity<Person>(p =>
             {
                 #region User Preferences Notice

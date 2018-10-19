@@ -13,7 +13,7 @@ namespace Snippets.Web.Common.Security
         /// <summary>
         /// Initializes a JwtTokenGenerator
         /// </summary>
-        /// <param name="jwtOptions"></param>
+        /// <param name="jwtOptions">A set of option used to generate the jwt token</param>
         public JwtTokenGenerator(IOptions<JwtIssuerOptions> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;

@@ -31,12 +31,12 @@ namespace Snippets.Web.Domains
         public int Score => Upvotes.Count() - Downvotes.Count();
 
         /// <summary>
-        /// Listof all Karma votes the Snipped received
+        /// List of all Karma votes the Snipped received
         /// </summary>
         public List<Karma> Karma { get; set; }
 
         /// <summary>
-        /// Person that sumitted the Snippet
+        /// Person that submitted the Snippet
         /// </summary>
         public Person Author { get; set; }
 

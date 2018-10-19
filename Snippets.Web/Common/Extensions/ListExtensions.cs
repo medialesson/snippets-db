@@ -11,7 +11,7 @@ namespace Snippets.Web.Common.Extensions
         /// </summary>
         /// <param name="list">List from which elements are selected</param>
         /// <typeparam name="T">The type of objects contained within the list</typeparam>
-        /// <returns>A random element from the specefied list</returns>
+        /// <returns>A random element from the specified list</returns>
         public static T Random<T>(this IEnumerable<T> list)
         {
             return list.OrderBy(x => Guid.NewGuid()).FirstOrDefault();

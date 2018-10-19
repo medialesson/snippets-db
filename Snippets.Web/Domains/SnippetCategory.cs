@@ -3,7 +3,7 @@
     public class SnippetCategory
     {
         /// <summary>
-        /// Unique identifier of the Snippet the Category is relatied to
+        /// Unique identifier of the Snippet the Category is related to
         /// </summary>
         public string SnippetId { get; set; }
 
