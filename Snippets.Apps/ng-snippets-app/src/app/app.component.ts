@@ -11,6 +11,7 @@ export class AppComponent {
   title = 'ng-snippets-app';
 
   @BlockUI() blockUI: NgBlockUI;
+  public isCollapsed: boolean = true;
 
   constructor(public auth: AuthService) {
   }

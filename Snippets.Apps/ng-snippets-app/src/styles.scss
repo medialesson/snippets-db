@@ -51,4 +51,18 @@ pre {
 	code.padding {
 		padding: 24px;
 	}
-  }
+}
+
+ /* Sticky footer styles
+-------------------------------------------------- */
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 24px 0px !important;
+}
