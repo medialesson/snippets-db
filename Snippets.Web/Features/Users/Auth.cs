@@ -32,7 +32,7 @@ namespace Snippets.Web.Features.Users
         public class UserDataValidator : AbstractValidator<UserData>
         {
             /// <summary>
-            /// Initializes a Auth UserDataValidator
+            /// Initializes an Auth UserDataValidator
             /// </summary>
             public UserDataValidator()
             {
@@ -52,7 +52,7 @@ namespace Snippets.Web.Features.Users
         public class CommandValidator : AbstractValidator<Command>
         {
             /// <summary>
-            /// Initializes a Auth CommandValidator
+            /// Initializes an Auth CommandValidator
             /// </summary>
             public CommandValidator()
             {
@@ -99,9 +99,19 @@ namespace Snippets.Web.Features.Users
                 if (!person.PasswordHash.SequenceEqual(_passwordHasher.Hash(message.User.Password, person.PasswordSalt)))
                     throw new RestException(HttpStatusCode.BadRequest, "Invalid password");
 
+                // Generate tokens and savethe checksum of the refresh token in the data context
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
+                await _context.SaveChangesAsync();
+
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                user.Tokens = new UserTokens {
+                    Token = jwtToken,
+                    RefreshToken = refreshToken 
+                };
                 return new UserEnvelope(user);
             }
         }

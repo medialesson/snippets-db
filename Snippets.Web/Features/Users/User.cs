@@ -29,23 +29,21 @@ namespace Snippets.Web.Features.Users
         public int Score { get; set; }
 
         /// <summary>
-        /// Jwt token valid for the User, used for authentication verification
+        /// Tokens valid for the User, used for authentication verification
         /// </summary>
-        /// <value></value>
+        public UserTokens Tokens { get; set; }
+    }
+
+    public class UserTokens
+    {
         public string Token { get; set; }
 
-        public UserTokens Tokens { get; set; }
+        public string RefreshToken { get; set; }
 
 #if DEBUG
         // Used for easier authentication within Swagger
         public string DebugToken => "Bearer " + Token;
 #endif
-    }
-
-    public class UserTokens {
-        public string Token { get; set; }
-
-        public string RefreshToken { get; set; }
     }
 
     public class UserEnvelope
@@ -63,5 +61,16 @@ namespace Snippets.Web.Features.Users
         /// Instance of a User transfer object
         /// </summary>
         public User User { get; }
+    }
+
+    public class UserTokensEnvelope
+    {
+
+        public UserTokensEnvelope(UserTokens tokens)
+        {
+            Tokens = tokens;
+        }
+
+        public UserTokens Tokens { get; }
     }
 }

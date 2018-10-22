@@ -34,7 +34,5 @@ namespace Snippets.Web.Common
             return _httpContextAccessor.HttpContext.User?.Claims
                 ?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         }
-
-        // TODO: Method GetCurrentUserToken()
     }
 }
