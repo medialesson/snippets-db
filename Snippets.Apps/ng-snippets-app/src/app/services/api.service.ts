@@ -12,7 +12,7 @@ export class ApiService {
   /**
    * getApiUrl
    */
-  public static getApiUrl(endpoint: string): string {
+  public static buildApiUrl(endpoint: string): string {
     return environment.api.rootUrl + '/' + endpoint;
   }
 }

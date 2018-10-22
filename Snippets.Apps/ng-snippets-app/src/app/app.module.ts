@@ -16,6 +16,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { StickyModule } from 'ng2-sticky-kit';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ToastrModule } from 'ngx-toastr';
+import { CovalentCodeEditorModule } from '@covalent/code-editor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -75,7 +76,8 @@ import { SearchBoxComponent } from './core/search-box/search-box.component';
     HighlightModule.forRoot(),
     StickyModule,
     ClipboardModule,
-    ToastrModule.forRoot() ,
+    ToastrModule.forRoot(),
+    CovalentCodeEditorModule,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
