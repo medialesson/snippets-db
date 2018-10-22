@@ -79,10 +79,17 @@ namespace Snippets.Web.Features.Users
                 if (person.PersonId != _currentUserAccessor.GetCurrentUserId())
                 {
                     user.Email = null;
-                    user.Token = null; // Otherwise you might be able to login as the user LOL
+                    user.Tokens = null; // Otherwise you might be able to login as the user LOL
                 }
                 else
-                    user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId); // TODO: Do not return a new token at this point
+                {
+                    var jwtToken = _currentUserAccessor.GetCurrentToken();
+                    user.Tokens = new UserTokens 
+                    {
+                        Token = jwtToken,
+                        RefreshToken = await _jwtTokenGenerator.CreateRefreshToken(jwtToken)
+                    };
+                }
                 return new UserEnvelope(user);
             }
         }

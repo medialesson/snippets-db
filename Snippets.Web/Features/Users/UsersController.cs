@@ -39,5 +39,22 @@ namespace Snippets.Web.Features.Users
         {
             return await _mediator.Send(command);
         }
+
+        /// <summary>
+        /// Generates a new Jwt token from a Refresh token
+        /// </summary>
+        /// <param name="refreshToken">Valid Refresh token for the current Jwt token</param>
+        /// <returns></returns>
+        [HttpPost("auth/refresh")]
+        public async Task<UserTokensEnvelope> Refresh([FromHeader] string refreshToken)
+        {
+            return await _mediator.Send(new Refresh.Command
+             {
+                Tokens = new Refresh.UserTokensData 
+                {
+                    RefreshToken = refreshToken
+                }
+            });
+        }
     }
 }

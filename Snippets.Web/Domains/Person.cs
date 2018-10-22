@@ -54,5 +54,7 @@ namespace Snippets.Web.Domains
         /// Salt in binary form, used for securing the Persons PasswordHash
         /// </summary>
         public byte[] PasswordSalt { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }
