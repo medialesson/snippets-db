@@ -1,6 +1,27 @@
-<div>
-  <div class="my-4 container">
-    <h3>{{user.displayName}}</h3>
+<div class="profile-page">
+  <div class="my-1 container card-profile">
+    <div class="row justify-content-center">
+      <div class="col-md-6 align-self-center">
+        <h3 class="m-0">{{user.displayName}}</h3>
+      </div>
+      <div class="col-md-6">
+        <div class="card-profile-stats d-flex justify-content-end">
+          <!-- TODO: Display values from API -->
+          <div>
+            <span class="heading">124</span>
+            <span class="description">Karma</span>
+          </div>
+          <div>
+            <span class="heading">22</span>
+            <span class="description">Snippets</span>
+          </div>
+          <div>
+            <span class="heading">65</span>
+            <span class="description">Starred</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

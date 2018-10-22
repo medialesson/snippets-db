@@ -35,4 +35,8 @@ export class SnippetsService {
       params: queryParams 
     }).toPromise();
   }
+  
+  buildRawUrl(id: string): string {
+    return ApiService.buildApiUrl(`snippets/${id}/raw`);
+  }
 }

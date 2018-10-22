@@ -9,7 +9,7 @@
       </div>
 
       <div class="btn-group" role="group">
-        <button class="btn btn-primary btn-sm" (click)="downloadSnippet()">Download</button>
+        <a class="btn btn-primary btn-sm" (click)="downloadSnippet()" [href]="snippets.buildRawUrl(snippet.snippetId)" target="_blank">Download</a>
         <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i
             class="ni ni-single-copy-04"></i></button>
       </div>
