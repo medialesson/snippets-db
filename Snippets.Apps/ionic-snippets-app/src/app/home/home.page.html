@@ -1,10 +1,26 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs">docs</a> will be your guide.</p>
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-card *ngFor="let snippet of snippetsList">
+      <ion-card-header [translucent]="true">
+        <ion-card-subtitle>
+          {{snippet.author.displayName}}
+          <span float-end>
+            {{snippet.createdAt | date}}
+          </span>
+        </ion-card-subtitle>
+        <ion-card-title>{{snippet.title}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-chip [style.margin-right]="'8px'" *ngFor="let category of snippet.categories">
+          <ion-label>{{category.displayName}}</ion-label>
+        </ion-chip>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
 </ion-content>
