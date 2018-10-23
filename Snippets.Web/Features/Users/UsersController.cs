@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Snippets.Web.Features.Users
 {
     [Route("users")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
         readonly IMediator _mediator;
 
