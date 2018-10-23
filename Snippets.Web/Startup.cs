@@ -22,6 +22,7 @@ using NSwag;
 using Snippets.Web.Common;
 using Microsoft.AspNetCore.Http;
 using Snippets.Web.Common.Middleware;
+using Snippets.Web.Common.Services;
 
 namespace Snippets.Web
 {
@@ -58,6 +59,7 @@ namespace Snippets.Web
 
 
             // Add common services
+            services.AddSingleton<IMailService, SmtpMailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>(); // TODO: Blame Samuel in case it fucks up
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
