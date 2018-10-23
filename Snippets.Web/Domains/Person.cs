@@ -44,7 +44,12 @@ namespace Snippets.Web.Domains
         /// </summary>
         [NotMapped]
         public UserPreferences Preferences { get; set; } = new UserPreferences();
-        
+
+        /// <summary>
+        /// Key that is being sent for email verification
+        /// </summary>
+        public string VerificationKey { get; set; } = Guid.NewGuid().ToString();
+
         /// <summary>
         /// Hashed password in binary form, used for verification
         /// </summary>

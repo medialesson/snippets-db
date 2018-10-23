@@ -22,9 +22,11 @@ using NSwag;
 using Snippets.Web.Common;
 using Microsoft.AspNetCore.Http;
 using Snippets.Web.Common.Middleware;
+using Snippets.Web.Common.Services;
 using FluentValidation.AspNetCore;
 using Newtonsoft.Json;
 using Snippets.Web.Common.Filter;
+
 
 namespace Snippets.Web
 {
@@ -75,6 +77,9 @@ namespace Snippets.Web
             services.AddAutoMapper(GetType().Assembly);
 
             // Add common services
+
+            services.AddSingleton<IMailService, SmtpMailService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
