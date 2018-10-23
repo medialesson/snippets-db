@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -57,6 +58,9 @@ namespace Snippets.Web.Common.Middleware
 
             switch (exception)
             {
+                case ValidationException ve:
+                    throw new NotImplementedException();
+                    break;
                 // Generic errors that result in a json error response
                 case RestException re:
                     errors = re.Errors;

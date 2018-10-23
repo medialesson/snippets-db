@@ -31,9 +31,16 @@ namespace Snippets.Web.Features.Users
         {
             public UserDataValidator()
             {
-                RuleFor(d => d.Email).NotEmpty().EmailAddress();
-                RuleFor(d => d.Password).NotEmpty(); 
-                // TODO: Implement the use of save passwords only
+                RuleFor(d => d.Email)
+                    .NotEmpty().WithMessage("Email can not be empty")
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(d => d.Password)
+                    .NotEmpty().WithMessage("Password can not be empty")
+                    .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
+                    .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
+                    .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
+                    .Matches("[0-9]").WithMessage("Password has to have at least one number")
+                    .Matches("[!\"#$%&'()*+´\\-./:;<=>?@[\\]^_`{|}~]").WithMessage("Password has to have at least one special character"); 
             }
         }
 
@@ -46,7 +53,9 @@ namespace Snippets.Web.Features.Users
         {
             public CommandValidator()
             {
-                RuleFor(c => c.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(c => c.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
