@@ -31,16 +31,16 @@ namespace Snippets.Web.Features.Users
         {
             public UserDataValidator()
             {
-                RuleFor(d => d.Email)
-                    .NotEmpty().WithMessage("Email can not be empty")
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email has to have a value")
                     .EmailAddress().WithMessage("Email has be a propper email address");
-                RuleFor(d => d.Password)
-                    .NotEmpty().WithMessage("Password can not be empty")
+                RuleFor(x => x.Password)
+                    .NotEmpty().WithMessage("Password has to have a value")
                     .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
                     .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
                     .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
                     .Matches("[0-9]").WithMessage("Password has to have at least one number")
-                    .Matches("[!\"#$%&'()*+´\\-./:;<=>?@[\\]^_`{|}~]").WithMessage("Password has to have at least one special character"); 
+                    .Matches(@"[^\w\d]").WithMessage("Password has to have at least one special character");
             }
         }
 
@@ -53,7 +53,7 @@ namespace Snippets.Web.Features.Users
         {
             public CommandValidator()
             {
-                RuleFor(c => c.User)
+                RuleFor(x => x.User)
                     .NotNull().WithMessage("Payload has to contain a user object")
                     .SetValidator(new UserDataValidator());
             }
@@ -77,7 +77,10 @@ namespace Snippets.Web.Features.Users
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
-                    throw new RestException(HttpStatusCode.BadRequest, "Email already in use");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string> 
+                    {
+                        {"user.email", $"Email '{ message.User.Email }' is already in use"}
+                    });
 
                 var salt = Guid.NewGuid().ToByteArray();
                 var person = new Person
@@ -88,13 +91,17 @@ namespace Snippets.Web.Features.Users
                     PasswordSalt = salt
                 };
 
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
+
                 var user = _mapper.Map<Person, User>(person);
-                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
                 user.Tokens = new UserTokens {
                     Token = jwtToken,
-                    RefreshToken = await _jwtTokenGenerator.CreateRefreshToken(jwtToken)
+                    Refresh = refreshToken 
                 };
                 return new UserEnvelope(user);
             }

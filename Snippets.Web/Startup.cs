@@ -48,6 +48,7 @@ namespace Snippets.Web
             
             // Add MediatR
             services.AddMediatR();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
             // Add Entity
             services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>

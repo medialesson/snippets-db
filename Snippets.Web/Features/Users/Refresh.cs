@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace Snippets.Web.Features.Users
             /// <summary>
             /// Token associated with the Person to refresh the Jwt token
             /// </summary>
-            public string RefreshToken { get; set; } 
+            public string Refresh { get; set; } 
         } 
 
         public class UserTokensDataValidator : AbstractValidator<UserTokensData>
@@ -29,7 +30,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public UserTokensDataValidator()
             {
-               RuleFor(u => u.RefreshToken).NotEmpty(); 
+                RuleFor(x => x.Refresh)
+                    .NotEmpty().WithMessage("RefreshToken has to have a value")
+                    .Matches(@"rft\.[A-z0-9].*\.[A-z0-9].*").WithMessage("Refresh token value has to match the convention"); 
             }
         }
 
@@ -48,7 +51,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public CommandValidator()
             {
-               RuleFor(u => u.Tokens).NotNull().SetValidator(new UserTokensDataValidator()); 
+                RuleFor(x => x.Tokens)
+                    .NotNull().WithMessage("Payload has to contain a tokens object")
+                    .SetValidator(new UserTokensDataValidator()); 
             }
         }
 
@@ -79,18 +84,24 @@ namespace Snippets.Web.Features.Users
             public async Task<UserTokensEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 var jwtToken = _currentUserAccessor.GetCurrentToken();
-                var refreshToken = message.Tokens.RefreshToken;
+                var refreshToken = message.Tokens.Refresh;
                 var refreshTokenChecksum = refreshToken.Split('.')[2];
 
                 // Get the Person the Refresh token belongs to
                 var person = await _context.Persons.Where(x => x.RefreshToken == refreshTokenChecksum).SingleOrDefaultAsync(cancellationToken);
 
                 if (person == null)
-                    throw new RestException(HttpStatusCode.BadRequest, "Refresh token does not belong to any user");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
+                    {
+                        {"tokens.refresh", $"Refresh token '{ refreshToken.Substring(0, 12) }...' does not belong to any user"}
+                    });
 
                 // Validate the Refresh token
                 if (!await _jwtTokenGenerator.VerifyRefreshToken(refreshToken, jwtToken))
-                    throw new RestException(HttpStatusCode.BadRequest, "Refresh token is invalid");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                    {
+                        {"tokens.refresh", $"Refresh token '{ refreshToken.Substring(0, 12) }...' is invalid"}
+                    });
 
                 // Generate a new Jwt and Refresh token
                 var newJwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
@@ -102,7 +113,7 @@ namespace Snippets.Web.Features.Users
                 return new UserTokensEnvelope(new UserTokens
                 {
                     Token = newJwtToken,
-                    RefreshToken = newRefreshToken
+                    Refresh = newRefreshToken
                 });
             }
         }

@@ -10,8 +10,7 @@ namespace Snippets.Web.Features.Users
 {
     [Route("user")]
     [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
-    [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
         readonly IMediator _mediator;
 

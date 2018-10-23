@@ -38,11 +38,11 @@ namespace Snippets.Web.Features.Users
     {
         public string Token { get; set; }
 
-        public string RefreshToken { get; set; }
+        public string Refresh { get; set; }
 
 #if DEBUG
         // Used for easier authentication within Swagger
-        public string DebugToken => "Bearer " + Token;
+        public string Debug => "Bearer " + Token;
 #endif
     }
 

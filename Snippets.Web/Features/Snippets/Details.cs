@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,18 +35,22 @@ namespace Snippets.Web.Features.Snippets
             readonly SnippetsContext _context;
             readonly IMapper _mapper;
 
+            /// <summary>
+            /// Initializes a Downvote Handler
+            /// </summary>
+            /// <param name="context">DataContext which the query gets processed on</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public QueryHandler(SnippetsContext context, IMapper mapper)
             {
                 _context = context;
                 _mapper = mapper;
             }
 
-
             /// <summary>
-            /// Initializes a Downvote Handler
+            /// Handles the request
             /// </summary>
-            /// <param name="context">DataContext which the query gets processed on</param>
-            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<SnippetEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
                 // Get the selected snippet from the database context
@@ -60,7 +65,10 @@ namespace Snippets.Web.Features.Snippets
                 }
                 else
                 {
-                    throw new RestException(HttpStatusCode.NotFound, "Snippet not found");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"snippet.id", $"Snippet for id '{ message.SnippetId }' does not exist"}
+                    });
                 }
             }
         }
