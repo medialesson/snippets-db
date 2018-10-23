@@ -22,6 +22,9 @@ using NSwag;
 using Snippets.Web.Common;
 using Microsoft.AspNetCore.Http;
 using Snippets.Web.Common.Middleware;
+using FluentValidation.AspNetCore;
+using Newtonsoft.Json;
+using Snippets.Web.Common.Filter;
 
 namespace Snippets.Web
 {
@@ -37,37 +40,45 @@ namespace Snippets.Web
         // Method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add MediatR and database services
-            services.AddMediatR();
-            services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
-            {
-                options.UseSqlite("Data Source=snippets.db");
-            });
-
-            services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
-
             // Bind settings to instance
             var settings = new AppSettings();
             Configuration.Bind("Snippets", settings);
             services.AddSingleton(Configuration);
             services.AddSingleton(settings);
+            
+            // Add MediatR
+            services.AddMediatR();
 
+            // Add Entity
+            services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
+            {
+                options.UseSqlite("Data Source=snippets.db");
+            });
+            services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
+
+            // Swagger
+            services.AddSwagger();
+
+            // Add MVC
+            services.AddCors();
+            services.AddMvc(opt => 
+            {
+                opt.Filters.Add(typeof(ValidatorActionFilter));
+            })
+            .AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            })
+            .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             // Add auto mapper
             services.AddAutoMapper(GetType().Assembly);
 
-
             // Add common services
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IPasswordHasher, PasswordHasher>(); // TODO: Blame Samuel in case it fucks up
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
-
-
-            // Add MVC
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwagger();
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add auth
             services.AddJwt();
@@ -84,10 +95,17 @@ namespace Snippets.Web
             {
                 app.UseHsts();
             }
+            app.UseHttpsRedirection();
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
-            app.UseHttpsRedirection();
+            app.UseCors(builder =>
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
+            app.UseMvc();
             app.UseStaticFiles();
 
             app.UseSwaggerUi3WithApiExplorer(options =>
@@ -105,8 +123,6 @@ namespace Snippets.Web
 
                 options.GeneratorSettings.OperationProcessors.Add(new OperationSecurityScopeProcessor("jwt"));
             });
-
-            app.UseMvc();
         }
     }
 }
