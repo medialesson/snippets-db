@@ -1,23 +1,18 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Contact
+      Sign in
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-list-header>
-      <ion-label>
-        Follow us on Twitter
-      </ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label>
-        <ion-icon name="logo-ionic" slot="start"></ion-icon>
-        @ionicframework
-      </ion-label>
-    </ion-item>
-  </ion-list>
+<ion-content padding>
+  <ion-item>
+    <ion-input no-padding required type="email" placeholder="coffee@beanmachine.pro"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input no-padding required type="password" placeholder="Password"></ion-input>
+  </ion-item>
+
+  <ion-button size="default" expand="block" margin-top>Sign in</ion-button>
 </ion-content>

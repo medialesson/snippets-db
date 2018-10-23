@@ -1,10 +1,10 @@
-<ion-header [translucent]="true">
+<ion-header translucent>
   <ion-toolbar>
-    <ion-title>Home</ion-title>
+    <ion-searchbar animated></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content fullscreen>
   <ion-list>
     <ion-card *ngFor="let snippet of snippetsList">
       <ion-card-header [translucent]="true">
