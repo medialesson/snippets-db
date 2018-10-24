@@ -77,7 +77,7 @@ namespace Snippets.Web.Features.Karma
                 // Get the current user, snippet and karma from the database context
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
                 var currentSnippet =  await _context.Snippets
-                    .FindAsync(message.Vote.SnippetId, cancellationToken);
+                    .SingleOrDefaultAsync(x => x.SnippetId == message.Vote.SnippetId, cancellationToken);
                 var currentKarma = await _context.Karma.SingleOrDefaultAsync(x => 
                     x.Submitter.PersonId == currentUserId && x.Snippet == currentSnippet, 
                     cancellationToken); 
@@ -93,7 +93,7 @@ namespace Snippets.Web.Features.Karma
                     currentKarma = new Domains.Karma {
                         Upvote = true,
                         Snippet = currentSnippet,
-                        Submitter = await _context.Persons.FindAsync(currentUserId, cancellationToken)
+                        Submitter = await _context.Persons.SingleOrDefaultAsync(x => x.PersonId == currentUserId)
                     };
                     await _context.Karma.AddAsync(currentKarma, cancellationToken);
                 }
