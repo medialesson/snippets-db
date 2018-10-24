@@ -7,6 +7,8 @@ namespace Snippets.Web.Common.Services
 {
     public interface IMailService
     {
-        Task SendEmailAsync(string to, string subject, string textBody, string htmlBody, string from = null);
+        Task SendEmailAsync(string to, string subject, string htmlBody, string from = null);
+
+        Task SendEmailFromEmbeddedAsync(string to, string subject, string razorTemplatePath, object model);
     }
 }
