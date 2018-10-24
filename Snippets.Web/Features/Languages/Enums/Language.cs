@@ -1,10 +1,11 @@
-﻿namespace Snippets.Web.Features.Snippets.Enums
+﻿namespace Snippets.Web.Features.Languages.Enums
 {
     /// <summary>
     /// Supported language types for a Snippet
     /// </summary>
     public enum Language
     {
+        Undefined,
         Plain,
         CSharp,
         VisualBasic,

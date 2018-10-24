@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Snippets.Web.Domains;
-using Snippets.Web.Features.Snippets.Enums;
+using Snippets.Web.Features.Languages.Enums;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -38,7 +38,14 @@ namespace Snippets.Web.Features.Snippets
         /// <summary>
         /// Programming language the Snippets content is in
         /// </summary>
+        [JsonIgnore]
         public Language Language { get; set; }
+
+        /// <summary>
+        /// Programming language the Snippets content is in as sting
+        /// </summary>
+        [JsonProperty("language")]
+        public string LanguageString => Language.ToString().ToLower();
 
         /// <summary>
         /// List of all Categories that belong to the Snippet

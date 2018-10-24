@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,10 +10,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
+using Snippets.Web.Common.Exceptions;
 using Snippets.Web.Common.Extensions;
 using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
-using Snippets.Web.Features.Snippets.Enums;
+using Snippets.Web.Features.Languages.Enums;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -31,9 +33,9 @@ namespace Snippets.Web.Features.Snippets
             public string Content { get; set; }
 
             /// <summary>
-            /// Programming language the Snippets content is in
+            /// Programming language the Snippets content is in as string
             /// </summary>
-            public Language Language { get; set; }
+            public string Language { get; set; }
 
             /// <summary>
             /// List of Category names the Snippet should be attached to
@@ -51,8 +53,7 @@ namespace Snippets.Web.Features.Snippets
                 RuleFor(x => x.Title).NotEmpty().WithMessage("Title has to have a value");
                 RuleFor(x => x.Content).NotEmpty().WithMessage("Content has to have a value");
                 RuleFor(x => x.Language)
-                    .NotEmpty().WithMessage("Language has to have a value")
-                    .IsInEnum().WithMessage("Language value has to be a Language enum");
+                    .NotEmpty().WithMessage("Language has to have a value");
             }
         }
 
@@ -131,12 +132,19 @@ namespace Snippets.Web.Features.Snippets
                     categories.Add(category);
                 }
 
+                // Resolve language enum from string
+                if (!Enum.TryParse(message.Snippet.Language, true, out Language language))
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                    {
+                        {"snippet.language", $"Language '{ message.Snippet.Language }' is not registered"}
+                    });
+
                 var newSnippet = new Domains.Snippet()
                 {
                     Title = message.Snippet.Title,
                     Author = author,
                     Content = message.Snippet.Content,
-                    Language = (int) message.Snippet.Language,
+                    Language = (int) language,
                 };
                 await _context.Snippets.AddAsync(newSnippet, cancellationToken);
 
