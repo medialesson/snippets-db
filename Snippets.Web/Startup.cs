@@ -27,7 +27,6 @@ using FluentValidation.AspNetCore;
 using Newtonsoft.Json;
 using Snippets.Web.Common.Filter;
 using Hangfire;
-using Hangfire.SQLite;
 
 namespace Snippets.Web
 {
