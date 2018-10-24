@@ -105,6 +105,16 @@ namespace Snippets.Web.Features.Users
                 var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
                 person.RefreshToken = refreshToken.Split('.')[2];
 
+                if (message.User.Email != null)
+                {
+                    await _mailService.SendEmailFromEmbeddedAsync(message.User.Email, "Welcome to Snippets DB", 
+                        $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
+                        {
+                            DisplayName = message.User.DisplayName ?? message.User.Email,
+                            VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                        });
+                }
+
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
 
@@ -113,13 +123,6 @@ namespace Snippets.Web.Features.Users
                     Token = jwtToken,
                     Refresh = refreshToken 
                 };
-
-                await _mailService.SendEmailFromEmbeddedAsync(user.Email, "Welcome to Snippets DB", 
-                    $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
-                    {
-                        DisplayName = user.DisplayName,
-                        VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
-                    });
 
                 return new UserEnvelope(user);
             }
