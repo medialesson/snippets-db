@@ -22,7 +22,7 @@ namespace Snippets.Web.Common.Services
 
             // Email client configuration
             Email.DefaultRenderer = new RazorRenderer();
-            _smtpClient = new SmtpSender(new SmtpClient(_appSettings.SmtpConfig.Host, _appSettings.SmtpConfig.Port)
+            _smtpClient = new SmtpSender(new SmtpClient(_appSettings.SmtpConfig.Host, 25)
             {
                 Credentials = new NetworkCredential(_appSettings.SmtpConfig.Username, _appSettings.SmtpConfig.Password)
             });
@@ -38,12 +38,12 @@ namespace Snippets.Web.Common.Services
             var result = await _smtpClient.SendAsync(email);
         }
 
-        public async Task SendEmailFromEmbeddedAsync(string to, string subject, string razorTemplateNamespace, object model)
+        public async Task SendEmailFromTemplateAsync<T>(string to, string subject, string razorTemplatePath, T model)
         {
             var email = Email.From(_appSettings.SmtpConfig.Identity.Email, _appSettings.SmtpConfig.Identity.Name)
                 .To(to)
                 .Subject(subject)
-                .UsingTemplateFromEmbedded(razorTemplateNamespace, model, this.GetType().GetTypeInfo().Assembly);
+                .UsingTemplateFromFile(razorTemplatePath, model);
 
             var result = await _smtpClient.SendAsync(email);
         }

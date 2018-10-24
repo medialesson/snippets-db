@@ -15,6 +15,7 @@ using Snippets.Web.Common.Exceptions;
 using System.Net;
 using Snippets.Web.Common.Services;
 using System.IO;
+using Hangfire;
 
 namespace Snippets.Web.Features.Users
 {
@@ -104,12 +105,14 @@ namespace Snippets.Web.Features.Users
 
                 if (message.User.Email != null)
                 {
-                    await _mailService.SendEmailFromEmbeddedAsync(message.User.Email, "Welcome to Snippets DB", 
-                        $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
-                        {
-                            DisplayName = message.User.DisplayName ?? message.User.Email,
-                            VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
-                        });
+                    BackgroundJob.Enqueue(() =>
+                        _mailService.SendEmailFromTemplateAsync(message.User.Email, "Welcome to Snippets DB",
+                            $"{Directory.GetCurrentDirectory()}/Views/Emails/Registration.cshtml", new
+                            {
+                                DisplayName = message.User.DisplayName ?? message.User.Email,
+                                VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                            })
+                    );
                 }
 
                 _context.Persons.Add(person);

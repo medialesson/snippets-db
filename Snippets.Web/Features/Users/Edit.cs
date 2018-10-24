@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
@@ -9,6 +10,7 @@ using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,12 +121,14 @@ namespace Snippets.Web.Features.Users
                 if (message.User.Email != null && message.User.Email != person.Email)
                 {
                     person.VerificationKey = Guid.NewGuid().ToString();
-                    await _mailService.SendEmailFromEmbeddedAsync(message.User.Email, "Welcome to Snippets DB", 
-                    $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
-                    {
-                        DisplayName = person.DisplayName ?? message.User.Email,
-                        VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
-                    });
+                    BackgroundJob.Enqueue(() =>
+                        _mailService.SendEmailFromTemplateAsync(message.User.Email, "Welcome to Snippets DB",
+                            $"{Directory.GetCurrentDirectory()}/Views/Emails/Registration.cshtml", new Views.Emails.RegistrationModel
+                            {
+                                DisplayName = message.User.DisplayName ?? message.User.Email,
+                                VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                            })
+                    );
                 }
 
                 // Change the specified properties
