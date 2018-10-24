@@ -70,7 +70,7 @@ namespace Snippets.Web.Features.Snippets
         }
 
         /// <summary>
-        /// Retrieves all registered Language enums
+        /// Retrieves a list of all registered Language enums
         /// </summary>
         [HttpGet("languages")]
         public async Task<LanguagesEnvelope> ListLanguages()

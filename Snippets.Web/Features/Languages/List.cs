@@ -26,6 +26,7 @@ namespace Snippets.Web.Features.Languages
                 return await Task.Run(() => 
                 {
                     var languages = Enum.GetNames(typeof(Language)).ToList();
+                    languages.RemoveAt(0); // Removes the Undefined Language enum from the list
                     return new LanguagesEnvelope(languages.ConvertAll(i => i.ToLower()).ToArray());
                 });
             }
