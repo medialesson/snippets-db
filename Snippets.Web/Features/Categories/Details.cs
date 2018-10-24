@@ -53,7 +53,7 @@ namespace Snippets.Web.Features.Categories
             {
                 // Get the requested category from the database
                 var selectedCategory = await _context.Categories
-                    .FindAsync(new object[] { message.CategoryId }, cancellationToken: cancellationToken);
+                    .FindAsync(new object[] { message.CategoryId }, cancellationToken);
 
                 if(selectedCategory != null)
                 {

@@ -108,7 +108,7 @@ namespace Snippets.Web.Features.Users
                 var newRefreshToken = await _jwtTokenGenerator.CreateRefreshToken(newJwtToken);
                 person.RefreshToken = newRefreshToken.Split('.')[2];
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return new UserTokensEnvelope(new UserTokens
                 {

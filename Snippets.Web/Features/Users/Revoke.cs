@@ -90,7 +90,7 @@ namespace Snippets.Web.Features.Users
 
                 person.RefreshToken = null;
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
                 {
                     {"tokens.refresh", $"Refresh token '{ message.Tokens.Refresh.Substring(0, 12) }...' has been revoked"}
