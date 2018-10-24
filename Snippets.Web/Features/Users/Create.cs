@@ -14,6 +14,7 @@ using Snippets.Web.Domains;
 using Snippets.Web.Common.Exceptions;
 using System.Net;
 using Snippets.Web.Common.Services;
+using System.IO;
 
 namespace Snippets.Web.Features.Users
 {
@@ -35,13 +36,19 @@ namespace Snippets.Web.Features.Users
                 RuleFor(x => x.Email)
                     .NotEmpty().WithMessage("Email has to have a value")
                     .EmailAddress().WithMessage("Email has be a propper email address");
+
+
                 RuleFor(x => x.Password)
+#if DEBUG
+                    .NotEmpty().WithMessage("Password has to have a value");
+#else
                     .NotEmpty().WithMessage("Password has to have a value")
                     .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
                     .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
                     .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
                     .Matches("[0-9]").WithMessage("Password has to have at least one number")
                     .Matches(@"[^\w\d]").WithMessage("Password has to have at least one special character");
+#endif
             }
         }
 
@@ -107,8 +114,12 @@ namespace Snippets.Web.Features.Users
                     Refresh = refreshToken 
                 };
 
-                // TODO: Add email templates and fancy marketing messages
-                await _mailService.SendEmailAsync(person.Email, "Hurray, you're on board!", "Insert fancy marketing messages here. Start to create new snippets today:", null);
+                await _mailService.SendEmailFromEmbeddedAsync(user.Email, "Welcome to Snippets DB", 
+                    $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
+                    {
+                        DisplayName = user.DisplayName,
+                        VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                    });
 
                 return new UserEnvelope(user);
             }
