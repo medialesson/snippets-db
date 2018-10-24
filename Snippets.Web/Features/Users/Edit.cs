@@ -49,7 +49,6 @@ namespace Snippets.Web.Features.Users
 #if DEBUG
                     .NotEmpty().WithMessage("Password has to have a value");
 #else
-                    .NotEmpty().WithMessage("Password has to have a value")
                     .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
                     .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
                     .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
