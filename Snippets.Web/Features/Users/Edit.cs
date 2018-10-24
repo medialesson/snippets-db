@@ -44,10 +44,8 @@ namespace Snippets.Web.Features.Users
             public UserDataValidator()
             {
                 RuleFor(x => x.Email)
-                    .Empty()
                     .EmailAddress().WithMessage("Email has be a propper email address");
                 RuleFor(x => x.Password)
-                    .Empty()
                     .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
                     .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
                     .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
