@@ -72,10 +72,9 @@ namespace Snippets.Web.Features.Users
         }
 
         /// <summary>
-        /// Verifies the account by its verification key
+        /// Verifies the email of a user by its verification key
         /// </summary>
-        /// <param name="command">Command following the <see cref="Verify.VerificationData"/> model</param>
-        /// <returns></returns>
+        /// <param name="command">Command following the <see cref="Verify.UserVerificationData"/> convention</param>
         [HttpPost("auth/verify")]
         public async Task<IActionResult> Verify([FromBody] Verify.Command command)
         {

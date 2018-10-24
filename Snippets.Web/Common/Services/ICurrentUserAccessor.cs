@@ -1,4 +1,4 @@
-﻿namespace Snippets.Web.Common
+﻿namespace Snippets.Web.Common.Services
 {
     public interface ICurrentUserAccessor
     {

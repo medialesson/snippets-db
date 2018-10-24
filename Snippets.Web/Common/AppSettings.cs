@@ -49,5 +49,24 @@ namespace Snippets.Web.Common
         /// 
         /// </summary>
         public string Host { get; set; }
+
+        /// <summary>
+        /// Default sender identity
+        /// </summary>
+        public SenderIdentity Identity { get; set; }
+    }
+
+    public class SenderIdentity 
+    {
+        /// <summary>
+        /// Email of the identity sending the email
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Name of the identity sending the email
+        /// </summary>
+        /// <value></value>
+        public string Name { get; set; }
     }
 }

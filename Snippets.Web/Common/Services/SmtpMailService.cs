@@ -9,23 +9,23 @@ namespace Snippets.Web.Common.Services
 {
     public class SmtpMailService : IMailService
     {
-        readonly AppSettings _settings;
+        readonly AppSettings _appSettings;
 
-        public SmtpMailService(AppSettings settings)
+        public SmtpMailService(AppSettings appSettings)
         {
-            _settings = settings;
+            _appSettings = appSettings;
         }
 
         public async Task SendEmailAsync(string to, string subject, string textBody, string htmlBody, string from = null)
         {
-            using(SmtpClient client = new SmtpClient(_settings.SmtpConfig.Host, _settings.SmtpConfig.Port))
+            using(SmtpClient client = new SmtpClient(_appSettings.SmtpConfig.Host, _appSettings.SmtpConfig.Port))
             {
-                client.Credentials = new NetworkCredential(_settings.SmtpConfig.Username, _settings.SmtpConfig.Password);
+                client.Credentials = new NetworkCredential(_appSettings.SmtpConfig.Username, _appSettings.SmtpConfig.Password);
                 
                 using(MailMessage mail = new MailMessage())
                 {
                     mail.IsBodyHtml = true;
-                    mail.From = new MailAddress(from ?? "no-reply@snippets-dev.azurewebsites.net", "Snippets DB");
+                    mail.From = new MailAddress(from ?? _appSettings.SmtpConfig.Identity.Email, _appSettings.SmtpConfig.Identity.Name);
                     mail.Subject = subject;
                     mail.Body = htmlBody ?? textBody;
 
