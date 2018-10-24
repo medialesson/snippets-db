@@ -31,7 +31,6 @@
     <PackageReference Include="FluentEmail.Smtp" Version="2.5.2" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.0.100" />
     <PackageReference Include="Hangfire" Version="1.6.20" />
-    <PackageReference Include="Hangfire.SQLite" Version="1.4.2" />
     <PackageReference Include="MediatR" Version="5.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5" />
