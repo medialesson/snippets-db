@@ -70,5 +70,16 @@ namespace Snippets.Web.Features.Users
                 }
             });
         }
+
+        /// <summary>
+        /// Verifies the account by its verification key
+        /// </summary>
+        /// <param name="command">Command following the <see cref="Verify.VerificationData"/> model</param>
+        /// <returns></returns>
+        [HttpPost("auth/verify")]
+        public async Task<IActionResult> Verify([FromBody] Verify.Command command)
+        {
+            return await _mediator.Send(command);
+        }
     }
 }

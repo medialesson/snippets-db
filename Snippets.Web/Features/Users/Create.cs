@@ -13,6 +13,7 @@ using Snippets.Web.Common.Security;
 using Snippets.Web.Domains;
 using Snippets.Web.Common.Exceptions;
 using System.Net;
+using Snippets.Web.Common.Services;
 
 namespace Snippets.Web.Features.Users
 {
@@ -65,13 +66,15 @@ namespace Snippets.Web.Features.Users
             readonly IPasswordHasher _passwordHasher;
             readonly IJwtTokenGenerator _jwtTokenGenerator;
             readonly IMapper _mapper;
+            readonly IMailService _mailService;
 
-            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper)
+            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IMailService mailService)
             {
                 _context = context;
                 _passwordHasher = passwordHasher;
                 _jwtTokenGenerator = jwtTokenGenerator;
                 _mapper = mapper;
+                _mailService = mailService;
             }
 
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
@@ -103,6 +106,10 @@ namespace Snippets.Web.Features.Users
                     Token = jwtToken,
                     Refresh = refreshToken 
                 };
+
+                // TODO: Add email templates and fancy marketing messages
+                await _mailService.SendEmailAsync(person.Email, "Hurray, you're on board!", "Insert fancy marketing messages here. Start to create new snippets today:", null);
+
                 return new UserEnvelope(user);
             }
         }
