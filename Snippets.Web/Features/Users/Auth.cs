@@ -32,12 +32,15 @@ namespace Snippets.Web.Features.Users
         public class UserDataValidator : AbstractValidator<UserData>
         {
             /// <summary>
-            /// Initializes a Auth UserDataValidator
+            /// Initializes an Auth UserDataValidator
             /// </summary>
             public UserDataValidator()
             {
-                RuleFor(u => u.Email).NotEmpty();
-                RuleFor(u => u.Password).NotEmpty();
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email has to have a value")
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(x => x.Password)
+                    .NotEmpty().WithMessage("Password has to have a value");
             }
         }
 
@@ -52,11 +55,13 @@ namespace Snippets.Web.Features.Users
         public class CommandValidator : AbstractValidator<Command>
         {
             /// <summary>
-            /// Initializes a Auth CommandValidator
+            /// Initializes an Auth CommandValidator
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(u => u.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
@@ -99,9 +104,19 @@ namespace Snippets.Web.Features.Users
                 if (!person.PasswordHash.SequenceEqual(_passwordHasher.Hash(message.User.Password, person.PasswordSalt)))
                     throw new RestException(HttpStatusCode.BadRequest, "Invalid password");
 
+                // Generate tokens and savethe checksum of the refresh token in the data context
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
+                await _context.SaveChangesAsync(cancellationToken);
+
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                user.Tokens = new UserTokens {
+                    Token = jwtToken,
+                    Refresh = refreshToken 
+                };
                 return new UserEnvelope(user);
             }
         }

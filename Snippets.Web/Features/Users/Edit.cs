@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Security;
+using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
@@ -42,9 +43,16 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public UserDataValidator()
             {
-                RuleFor(d => d.Email).EmailAddress();
-                // TODO: Implement the use of save passwords only
-                // RuleFor(d => d.Password); 
+                RuleFor(x => x.Email)
+                    .Empty()
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(x => x.Password)
+                    .Empty()
+                    .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
+                    .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
+                    .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
+                    .Matches("[0-9]").WithMessage("Password has to have at least one number")
+                    .Matches("[!\"#$%&'()*+´\\-./:;<=>?@[\\]^_`{|}~]").WithMessage("Password has to have at least one special character");
             }
         } 
 
@@ -63,7 +71,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(u => u.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 

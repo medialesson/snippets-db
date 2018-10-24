@@ -21,5 +21,52 @@ namespace Snippets.Web.Common
         /// Accent colors for tag creation in list form
         /// </summary>
         public IEnumerable<string> AccentColorsList { get => AccentColors.Split(';').ToList(); }
+
+        /// <summary>
+        /// SMTP config and client credentials
+        /// </summary>
+        public SmtpConfig SmtpConfig { get; set; }
+    }
+
+    public class SmtpConfig
+    {
+        /// <summary>
+        /// User name for the SMTP client
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        /// Password for the SMTP client
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Port which is being used for the SMTP server
+        /// </summary>
+        public int Port { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Host { get; set; }
+
+        /// <summary>
+        /// Default sender identity
+        /// </summary>
+        public SenderIdentity Identity { get; set; }
+    }
+
+    public class SenderIdentity 
+    {
+        /// <summary>
+        /// Email of the identity sending the email
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Name of the identity sending the email
+        /// </summary>
+        /// <value></value>
+        public string Name { get; set; }
     }
 }

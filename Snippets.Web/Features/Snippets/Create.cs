@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Extensions;
+using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
 using Snippets.Web.Features.Snippets.Enums;
 
@@ -47,9 +48,11 @@ namespace Snippets.Web.Features.Snippets
             /// </summary>
             public SnippetDataValidator()
             {
-                RuleFor(x => x.Title).NotEmpty();
-                RuleFor(x => x.Content).NotEmpty();
-                RuleFor(x => x.Language).NotEmpty();
+                RuleFor(x => x.Title).NotEmpty().WithMessage("Title has to have a value");
+                RuleFor(x => x.Content).NotEmpty().WithMessage("Content has to have a value");
+                RuleFor(x => x.Language)
+                    .NotEmpty().WithMessage("Language has to have a value")
+                    .IsInEnum().WithMessage("Language value has to be a Language enum");
             }
         }
 
@@ -68,7 +71,9 @@ namespace Snippets.Web.Features.Snippets
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(x => x.Snippet).NotNull().SetValidator(new SnippetDataValidator());
+                RuleFor(x => x.Snippet)
+                    .NotNull().WithMessage("Payload has to contain a snippet object")
+                    .SetValidator(new SnippetDataValidator());
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -53,13 +54,13 @@ namespace Snippets.Web.Common.Middleware
         /// <param name="logger">Represents errors that occur during application execution</param>
         public static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger)
         {
-            object errors = null;
+            object messages = null;
 
             switch (exception)
             {
                 // Generic errors that result in a json error response
                 case RestException re:
-                    errors = re.Errors;
+                    messages = re.Errors;
                     context.Response.StatusCode = (int) re.Code;
                     context.Response.ContentType = "application/json";
                     logger.LogWarning(re, $"HTTP {(int) re.Code} - {re.Message}");
@@ -72,7 +73,7 @@ namespace Snippets.Web.Common.Middleware
 
                 // Errors of this kind result in http status code 500
                 case Exception ex:
-                    errors = string.IsNullOrWhiteSpace(ex.Message) ? "Error" : ex.Message;
+                    messages = string.IsNullOrWhiteSpace(ex.Message) ? "Error" : ex.Message;
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                     logger.LogError(ex, ex.Message);
@@ -82,7 +83,7 @@ namespace Snippets.Web.Common.Middleware
             // Serialize the inbound error messages 
             var result = JsonConvert.SerializeObject(new
             {
-                errors
+                messages
             });
 
             await context.Response.WriteAsync(result);

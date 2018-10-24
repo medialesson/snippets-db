@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Snippets.Web.Features.Users
 {
     [Route("users")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
         readonly IMediator _mediator;
 
@@ -36,6 +35,48 @@ namespace Snippets.Web.Features.Users
         /// <param name="command">Command folowing the <see cref="Auth.UserData" /> convention</param>
         [HttpPost("auth")]
         public async Task<UserEnvelope> Auth([FromBody] Auth.Command command)
+        {
+            return await _mediator.Send(command);
+        }
+
+        /// <summary>
+        /// Generates a new Jwt token from a Refresh token
+        /// </summary>
+        /// <param name="refresh">Valid Refresh token for the current Jwt token</param>
+        [HttpPost("auth/refresh")]
+        public async Task<UserTokensEnvelope> Refresh([FromHeader] string refresh)
+        {
+            return await _mediator.Send(new Refresh.Command
+             {
+                Tokens = new Refresh.UserTokensData 
+                {
+                    Refresh = refresh
+                }
+            });
+        }
+
+        /// <summary>
+        /// Revokes an existing Refresh token
+        /// </summary>
+        /// <param name="refresh">Valid Refresh token for the current Jwt token</param>
+        [HttpPost("auth/revoke")]
+        public async Task<object> Revoke([FromHeader] string refresh)
+        {
+            return await _mediator.Send(new Revoke.Command
+             {
+                Tokens = new Revoke.UserTokensData 
+                {
+                    Refresh = refresh
+                }
+            });
+        }
+
+        /// <summary>
+        /// Verifies the email of a user by its verification key
+        /// </summary>
+        /// <param name="command">Command following the <see cref="Verify.UserVerificationData"/> convention</param>
+        [HttpPost("auth/verify")]
+        public async Task<IActionResult> Verify([FromBody] Verify.Command command)
         {
             return await _mediator.Send(command);
         }

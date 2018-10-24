@@ -13,6 +13,8 @@ using Snippets.Web.Common.Security;
 using Snippets.Web.Domains;
 using Snippets.Web.Common.Exceptions;
 using System.Net;
+using Snippets.Web.Common.Services;
+using System.IO;
 
 namespace Snippets.Web.Features.Users
 {
@@ -20,51 +22,48 @@ namespace Snippets.Web.Features.Users
     {
         public class UserData
         {
-            /// <summary>
-            /// Email to associate with the Person
-            /// </summary>
             public string Email { get; set; }
 
-            /// <summary>
-            /// Name that gets displayed to other users to associate with the Person
-            /// </summary>
             public string DisplayName { get; set; }
 
-            /// <summary>
-            /// Password in plain text to associate with the Person
-            /// </summary>
             public string Password { get; set; }
         }
 
         public class UserDataValidator : AbstractValidator<UserData>
         {
-            /// <summary>
-            /// Initialize a Create UserDataValidator
-            /// </summary>
             public UserDataValidator()
             {
-                RuleFor(d => d.Email).NotEmpty().EmailAddress();
-                RuleFor(d => d.Password).NotEmpty(); 
-                // TODO: Implement the use of save passwords only
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email has to have a value")
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+
+
+                RuleFor(x => x.Password)
+#if DEBUG
+                    .NotEmpty().WithMessage("Password has to have a value");
+#else
+                    .NotEmpty().WithMessage("Password has to have a value")
+                    .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
+                    .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
+                    .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
+                    .Matches("[0-9]").WithMessage("Password has to have at least one number")
+                    .Matches(@"[^\w\d]").WithMessage("Password has to have at least one special character");
+#endif
             }
         }
 
         public class Command : IRequest<UserEnvelope>
         {
-            /// <summary>
-            /// Instance of the inbound Create UserData
-            /// </summary>
             public UserData User { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            /// <summary>
-            /// Initializes a Create CommandValidator
-            /// </summary>
             public CommandValidator()
             {
-                RuleFor(c => c.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
@@ -74,27 +73,24 @@ namespace Snippets.Web.Features.Users
             readonly IPasswordHasher _passwordHasher;
             readonly IJwtTokenGenerator _jwtTokenGenerator;
             readonly IMapper _mapper;
+            readonly IMailService _mailService;
 
-            /// <summary>
-            /// Handles the request 
-            /// </summary>
-            /// <param name="context">DataContext which the query gets processed on</param>
-            /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
-            /// <param name="jwtTokenGenerator">Represents a type used to generate user specific jwt tokens</param>
-            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
-            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper)
+            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IMailService mailService)
             {
                 _context = context;
                 _passwordHasher = passwordHasher;
                 _jwtTokenGenerator = jwtTokenGenerator;
                 _mapper = mapper;
+                _mailService = mailService;
             }
 
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                // Check whether there is a User already existing with the same mail associated
                 if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
-                    throw new RestException(HttpStatusCode.BadRequest, "Email already in use");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string> 
+                    {
+                        {"user.email", $"Email '{ message.User.Email }' is already in use"}
+                    });
 
                 var salt = Guid.NewGuid().ToByteArray();
                 var person = new Person
@@ -105,12 +101,26 @@ namespace Snippets.Web.Features.Users
                     PasswordSalt = salt
                 };
 
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                user.Tokens = new UserTokens {
+                    Token = jwtToken,
+                    Refresh = refreshToken 
+                };
+
+                await _mailService.SendEmailFromEmbeddedAsync(user.Email, "Welcome to Snippets DB", 
+                    $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
+                    {
+                        DisplayName = user.DisplayName,
+                        VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                    });
+
                 return new UserEnvelope(user);
             }
         }
