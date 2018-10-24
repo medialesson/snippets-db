@@ -54,7 +54,7 @@ namespace Snippets.Web.Features.Users
 
             public async Task<IActionResult> Handle(Command message, CancellationToken cancellationToken)
             {
-                var person = await _context.Persons.Where(x => x.VerificationKey == message.Verification.VerificationKey).SingleOrDefaultAsync(cancellationToken);
+                var person = await _context.Persons.SingleOrDefaultAsync(x => x.VerificationKey == message.Verification.VerificationKey, cancellationToken);
                 
                 // Check whether user exists in database
                 if(person == null)
