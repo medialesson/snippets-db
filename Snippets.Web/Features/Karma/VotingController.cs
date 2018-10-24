@@ -8,8 +8,7 @@ namespace Snippets.Web.Features.Karma
 {
     [Route("snippets")]
     [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
-    [ApiController]
-    public class VotingController : ControllerBase
+    public class VotingController : Controller
     {
         readonly IMediator _mediator;
 

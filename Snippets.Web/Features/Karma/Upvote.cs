@@ -23,6 +23,17 @@ namespace Snippets.Web.Features.Karma
            public string SnippetId { get; set; }
        } 
 
+        public class VoteDataValidator : AbstractValidator<VoteData>
+        {
+            /// <summary>
+            /// Initializes a Upvote VoteDataValidator
+            /// </summary>
+            public VoteDataValidator()
+            {
+                RuleFor(x => x.SnippetId).NotNull().WithMessage("Id has to have a value");
+            } 
+        } 
+
         public class Command : IRequest<VoteEnvelope>
         {
             /// <summary>
@@ -38,7 +49,7 @@ namespace Snippets.Web.Features.Karma
             /// </summary>
             public CommandValidator()
             {
-               RuleFor(v => v.Vote).NotNull(); 
+               RuleFor(v => v.Vote).NotNull().WithMessage("Payload has to contain a vote object"); 
             }
         }
 

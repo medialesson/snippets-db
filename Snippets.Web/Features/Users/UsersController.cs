@@ -42,16 +42,31 @@ namespace Snippets.Web.Features.Users
         /// <summary>
         /// Generates a new Jwt token from a Refresh token
         /// </summary>
-        /// <param name="refreshToken">Valid Refresh token for the current Jwt token</param>
-        /// <returns></returns>
+        /// <param name="refresh">Valid Refresh token for the current Jwt token</param>
         [HttpPost("auth/refresh")]
-        public async Task<UserTokensEnvelope> Refresh([FromHeader] string refreshToken)
+        public async Task<UserTokensEnvelope> Refresh([FromHeader] string refresh)
         {
             return await _mediator.Send(new Refresh.Command
              {
                 Tokens = new Refresh.UserTokensData 
                 {
-                    RefreshToken = refreshToken
+                    Refresh = refresh
+                }
+            });
+        }
+
+        /// <summary>
+        /// Revokes an existing Refresh token
+        /// </summary>
+        /// <param name="refresh">Valid Refresh token for the current Jwt token</param>
+        [HttpPost("auth/revoke")]
+        public async Task<object> Revoke([FromHeader] string refresh)
+        {
+            return await _mediator.Send(new Revoke.Command
+             {
+                Tokens = new Revoke.UserTokensData 
+                {
+                    Refresh = refresh
                 }
             });
         }

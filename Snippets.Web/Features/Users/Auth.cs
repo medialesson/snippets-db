@@ -36,8 +36,11 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public UserDataValidator()
             {
-                RuleFor(u => u.Email).NotEmpty();
-                RuleFor(u => u.Password).NotEmpty();
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email has to have a value")
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(x => x.Password)
+                    .NotEmpty().WithMessage("Password has to have a value");
             }
         }
 
@@ -56,7 +59,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(u => u.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
@@ -104,13 +109,13 @@ namespace Snippets.Web.Features.Users
                 var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
                 person.RefreshToken = refreshToken.Split('.')[2];
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
                 user.Tokens = new UserTokens {
                     Token = jwtToken,
-                    RefreshToken = refreshToken 
+                    Refresh = refreshToken 
                 };
                 return new UserEnvelope(user);
             }

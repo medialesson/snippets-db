@@ -11,8 +11,7 @@ using Snippets.Web.Common.Security;
 namespace Snippets.Web.Features.Snippets
 {
     [Route("snippets")]
-    [ApiController]
-    public class SnippetsController : ControllerBase
+    public class SnippetsController : Controller
     {
         private readonly IMediator _mediator;
  

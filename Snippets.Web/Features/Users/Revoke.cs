@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace Snippets.Web.Features.Users
             /// <summary>
             /// Token associated with the Person that should be revoked
             /// </summary>
-            public string RefreshToken { get; set; } 
+            public string Refresh { get; set; } 
         } 
 
         public class UserTokensDataValidator : AbstractValidator<UserTokensData>
@@ -29,7 +30,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public UserTokensDataValidator()
             {
-               RuleFor(u => u.RefreshToken).NotEmpty(); 
+                RuleFor(x => x.Refresh)
+                    .NotEmpty().WithMessage("RefreshToken has to have a value")
+                    .Matches(@"rft\.[a-zA-z0-9-/].*\.[a-zA-z0-9-/].*").WithMessage("Refresh token value has to match the convention");  
             }
         }
 
@@ -48,7 +51,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public CommandValidator()
             {
-               RuleFor(u => u.Tokens).NotNull().SetValidator(new UserTokensDataValidator()); 
+               RuleFor(u => u.Tokens)
+                    .NotNull().WithMessage("Payload has to contain a tokens object")
+                    .SetValidator(new UserTokensDataValidator()); 
             }
         }
 
@@ -72,18 +77,24 @@ namespace Snippets.Web.Features.Users
             /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<object> Handle(Command message, CancellationToken cancellationToken)
             {
-                var refreshTokenChecksum = message.Tokens.RefreshToken.Split('.')[2];
+                var refreshTokenChecksum = message.Tokens.Refresh.Split('.')[2];
 
                 // Get the Person the Refresh token belongs to
                 var person = await _context.Persons.Where(x => x.RefreshToken == refreshTokenChecksum).SingleOrDefaultAsync(cancellationToken);
 
                 if (person == null)
-                    throw new RestException(HttpStatusCode.BadRequest, "Refresh token does not belong to any user");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
+                    {
+                        {"tokens.refresh", $"Refresh token '{ message.Tokens.Refresh.Substring(0, 12) }...' does not belong to any user"}
+                    });
 
                 person.RefreshToken = null;
 
-                await _context.SaveChangesAsync();
-                throw new RestException(HttpStatusCode.OK, "Refresh token has been revoked");
+                await _context.SaveChangesAsync(cancellationToken);
+                throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
+                {
+                    {"tokens.refresh", $"Refresh token '{ message.Tokens.Refresh.Substring(0, 12) }...' has been revoked"}
+                });
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,10 @@ namespace Snippets.Web.Features.Users
                     throw new RedirectException($"user/{_currentUserAccessor.GetCurrentUserId()}", false);
 
                 if (person == null)
-                    throw new RestException(HttpStatusCode.NotFound, "User does not exist");
+                    throw new RestException(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"user.id", $"User for id { message.UserId } does not exist"}
+                    });
 
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
@@ -87,7 +91,7 @@ namespace Snippets.Web.Features.Users
                     user.Tokens = new UserTokens 
                     {
                         Token = jwtToken,
-                        RefreshToken = await _jwtTokenGenerator.CreateRefreshToken(jwtToken)
+                        Refresh = await _jwtTokenGenerator.CreateRefreshToken(jwtToken)
                     };
                 }
                 return new UserEnvelope(user);
