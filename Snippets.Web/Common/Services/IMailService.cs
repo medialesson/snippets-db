@@ -9,6 +9,6 @@ namespace Snippets.Web.Common.Services
     {
         Task SendEmailAsync(string to, string subject, string htmlBody, string from = null);
 
-        Task SendEmailFromEmbeddedAsync(string to, string subject, string razorTemplatePath, object model);
+        Task SendEmailFromTemplateAsync<T>(string to, string subject, string razorTemplatePath, T model);
     }
 }

@@ -26,7 +26,8 @@ using Snippets.Web.Common.Services;
 using FluentValidation.AspNetCore;
 using Newtonsoft.Json;
 using Snippets.Web.Common.Filter;
-
+using Hangfire;
+using Hangfire.SQLite;
 
 namespace Snippets.Web
 {
@@ -54,12 +55,16 @@ namespace Snippets.Web
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
 
-            // Add Entity
+            // Add Entity Framework
             services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
             {
                 options.UseSqlite("Data Source=snippets.db");
             });
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
+
+
+            // Add Hangfire server
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection")));
 
 
             // Swagger
@@ -84,7 +89,7 @@ namespace Snippets.Web
 
 
             // Add common services
-            services.AddSingleton<IMailService, SmtpMailService>();
+            services.AddSingleton<IMailService, SendGridMailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -111,14 +116,21 @@ namespace Snippets.Web
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+
+
             app.UseCors(builder =>
                 builder
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 
+
             app.UseMvc();
             app.UseStaticFiles();
+
 
             app.UseSwaggerUi3WithApiExplorer(options =>
             {
