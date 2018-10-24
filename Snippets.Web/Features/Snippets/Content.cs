@@ -62,7 +62,10 @@ namespace Snippets.Web.Features.Snippets
                 }
                 else
                 {
-                    throw new RestException(HttpStatusCode.NotFound, "Snippet not found");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"snippet.id", $"Snippet for id '{ message.SnippetId }' does not exist"}
+                    });
                 }
             }
         }
