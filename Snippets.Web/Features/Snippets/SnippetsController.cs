@@ -58,6 +58,23 @@ namespace Snippets.Web.Features.Snippets
             return await _mediator.Send(new Content.Query(id));
         }
 
+        /// <summary>
+        /// Deletes a single Snippet by its unique identifier
+        /// </summary>
+        /// <param name="id">Unique identifier of the Snippet</param>
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        public async Task<object> Delete(string id)
+        {
+            return await _mediator.Send(new Delete.Command
+            {
+                Snippet = new Delete.SnippetData
+                {
+                    SnippetId = id
+                }
+            });
+        }
+
     	/// <summary>
         /// Creates a new Snippet
         /// </summary>
