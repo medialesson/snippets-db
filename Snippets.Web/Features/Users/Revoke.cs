@@ -83,7 +83,7 @@ namespace Snippets.Web.Features.Users
                 var person = await _context.Persons.Where(x => x.RefreshToken == refreshTokenChecksum).SingleOrDefaultAsync(cancellationToken);
 
                 if (person == null)
-                    throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
                     {
                         {"tokens.refresh", $"Refresh token '{ message.Tokens.Refresh.Substring(0, 12) }...' does not belong to any user"}
                     });
@@ -91,7 +91,7 @@ namespace Snippets.Web.Features.Users
                 person.RefreshToken = null;
 
                 await _context.SaveChangesAsync(cancellationToken);
-                throw RestException.CreateFromDictionary(HttpStatusCode.BadGateway, new Dictionary<string, string>
+                throw RestException.CreateFromDictionary(HttpStatusCode.OK, new Dictionary<string, string>
                 {
                     {"tokens.refresh", $"Refresh token '{ message.Tokens.Refresh.Substring(0, 12) }...' has been revoked"}
                 });
