@@ -34,10 +34,7 @@ namespace Snippets.Web.Features.Users
             public UserDataValidator()
             {
                 RuleFor(x => x.Email)
-                    .NotEmpty().WithMessage("Email has to have a value")
                     .EmailAddress().WithMessage("Email has be a propper email address");
-
-
                 RuleFor(x => x.Password)
 #if DEBUG
                     .NotEmpty().WithMessage("Password has to have a value");
@@ -86,7 +83,7 @@ namespace Snippets.Web.Features.Users
 
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
+                if (message.User.Email != null && await _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
                     throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string> 
                     {
                         {"user.email", $"Email '{ message.User.Email }' is already in use"}

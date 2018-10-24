@@ -94,6 +94,7 @@ namespace Snippets.Web.Features.Users
             /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
             /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
             /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
+            /// <param name="mailService">Represents a type used to email send operations</param>
              public Handler(SnippetsContext context, IPasswordHasher passwordHasher, ICurrentUserAccessor currentUserAccessor, IMapper mapper, IMailService mailService)
             {
                 _context = context;
