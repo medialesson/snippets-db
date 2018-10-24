@@ -10,6 +10,7 @@ using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
 using Snippets.Web.Common.Security;
+using Snippets.Web.Common.Services;
 
 namespace Snippets.Web.Features.Users
 {
@@ -31,7 +32,7 @@ namespace Snippets.Web.Features.Users
             public UserTokensDataValidator()
             {
                 RuleFor(x => x.Refresh)
-                    .NotEmpty().WithMessage("RefreshToken has to have a value")
+                    .NotEmpty().WithMessage("Refresh token has to have a value")
                     .Matches(@"rft\.[A-z0-9].*\.[A-z0-9].*").WithMessage("Refresh token value has to match the convention"); 
             }
         }

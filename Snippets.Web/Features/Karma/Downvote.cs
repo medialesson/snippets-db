@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Snippets.Web.Features.Karma.Enums;
 using Microsoft.EntityFrameworkCore;
+using Snippets.Web.Common.Services;
 
 namespace Snippets.Web.Features.Karma
 {

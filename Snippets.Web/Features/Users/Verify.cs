@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
 using System;
@@ -14,17 +15,33 @@ namespace Snippets.Web.Features.Users
 {
     public class Verify
     {
-        public class VerificationData
+        public class UserVerificationData
         {
-            public string UserId { get; set; }
-
             public string VerificationKey { get; set; }
         }
 
+        public class UserVerificationDataValidator : AbstractValidator<UserVerificationData>
+        {
+            public UserVerificationDataValidator()
+            {
+                RuleFor(x => x.VerificationKey).NotEmpty().WithMessage("Verification key has to have a value");
+            }
+        } 
+
         public class Command : IRequest<IActionResult>
         {
-            public VerificationData Verification { get; set; }
+            public UserVerificationData Verification { get; set; }
         }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Verification)
+                    .NotNull().WithMessage("Payload has to contain a verification object")
+                    .SetValidator(new UserVerificationDataValidator());
+           }
+       }
 
         public class Handler : IRequestHandler<Command, IActionResult>
         {
@@ -37,29 +54,33 @@ namespace Snippets.Web.Features.Users
 
             public async Task<IActionResult> Handle(Command message, CancellationToken cancellationToken)
             {
-                var result = await _context.Persons.FindAsync(message.Verification.UserId);
+                var person = await _context.Persons.Where(x => x.VerificationKey == message.Verification.VerificationKey).SingleOrDefaultAsync(cancellationToken);
                 
                 // Check whether user exists in database
-                if(result == null)
-                    throw new RestException(HttpStatusCode.NotFound, $"User with ID {message.Verification.UserId} does not exist");
-
-                // Check whether user was already verified in the past
-                if(result.VerificationKey == null)
-                    throw new RestException(HttpStatusCode.OK, "Account already verified");
-
+                if(person == null)
+                    throw RestException.CreateFromDictionary(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"verification.key", $"Verification key '{ message.Verification.VerificationKey }' does not belong to any user"}
+                    });
 
                 // Compare verification keys from request and database
-                if (result.VerificationKey.Equals(message.Verification.VerificationKey))
+                if (person.VerificationKey.Equals(message.Verification.VerificationKey))
                 {
                     // Set it to null upon match
-                    result.VerificationKey = null;
+                    person.VerificationKey = null;
                     await _context.SaveChangesAsync();
 
-                    return new OkResult();
+                    throw RestException.CreateFromDictionary(HttpStatusCode.OK, new Dictionary<string, string>
+                    {
+                        {"verification", $"Email for person with id '{ person.PersonId }' has been verified"}
+                    });
                 }
                 else
                 {
-                    throw new RestException(HttpStatusCode.BadRequest, "Verification key invalid");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                    {
+                        {"verification.key", $"Verification key '{ message.Verification.VerificationKey }' is invalid"}
+                    });
                 }
             }
         }

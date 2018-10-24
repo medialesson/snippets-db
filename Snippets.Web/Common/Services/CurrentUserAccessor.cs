@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Snippets.Web.Common
+namespace Snippets.Web.Common.Services
 {
     public class CurrentUserAccessor : ICurrentUserAccessor
     {
