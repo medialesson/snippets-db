@@ -47,10 +47,12 @@ namespace Snippets.Web
             Configuration.Bind("Snippets", settings);
             services.AddSingleton(Configuration);
             services.AddSingleton(settings);
-            
+
+
             // Add MediatR
             services.AddMediatR();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
 
             // Add Entity
             services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
@@ -59,8 +61,10 @@ namespace Snippets.Web
             });
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
 
+
             // Swagger
             services.AddSwagger();
+
 
             // Add MVC
             services.AddCors();
@@ -74,17 +78,19 @@ namespace Snippets.Web
             })
             .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+
             // Add auto mapper
             services.AddAutoMapper(GetType().Assembly);
 
-            // Add common services
 
+            // Add common services
             services.AddSingleton<IMailService, SmtpMailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
             // Add auth
             services.AddJwt();
