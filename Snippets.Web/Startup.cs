@@ -117,7 +117,10 @@ namespace Snippets.Web
 
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                Authorization = new [] { new HangfireAuthorizationFilter() }
+            });
 
 
             app.UseCors(builder =>
