@@ -72,7 +72,7 @@ namespace Snippets.Web.Features.Snippets
             /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<object> Handle(Command message, CancellationToken cancellationToken)
             {
-                var author = await _context.Persons.FirstAsync(p => 
+                var author = await _context.Persons.SingleOrDefaultAsync(p => 
                     p.PersonId == _currentUserAccessor.GetCurrentUserId(), 
                     cancellationToken);
                 var selectedSnippet = await _context.Snippets.SingleOrDefaultAsync(x => x.SnippetId == message.Snippet.SnippetId);
