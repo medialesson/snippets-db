@@ -78,7 +78,8 @@ namespace Snippets.Web.Features.Snippets
             /// </summary>
             /// <param name="context">DataContext which the query gets processed on</param>
             /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
-            // TODO: Add params
+            /// <param name="appSettings">Mapper for the "appsettings.json" file</param>
+            /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
             public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, AppSettings appSettings, IMapper mapper)
             {
                 _context = context;

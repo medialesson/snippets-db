@@ -19,7 +19,7 @@ namespace Snippets.Web.Domains
         /// <summary>
         /// Background color of the Category that should be displayed to the user
         /// </summary>
-        public string Color { get; set; } = "#000";
+        public string Color { get; set; } = "#BADA55"; // see: https://en.wikipedia.org/wiki/Hexspeak
 
         /// <summary>
         /// Pivot table for linking the relationship between Snippets and its Categories

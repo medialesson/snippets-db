@@ -19,6 +19,7 @@ namespace Snippets.Web.Common.Services
 
         public string GetCurrentToken()
         {
+            // Parser for the Jwt Token created by @ginomessmer
             var headerValue = _httpContextAccessor.HttpContext.Request.Headers.SingleOrDefault(x => x.Key == "Authorization").Value.ToString();
             if(headerValue.StartsWith("Bearer "))
             {

@@ -40,6 +40,7 @@ namespace Snippets.Web.Common.Exceptions
         {
             var errors = new JObject();
 
+            // Create the layered json object for the domains
             foreach (var valuePair in dictionary)
             {
                 var data = new JTokenWriter();
@@ -65,6 +66,8 @@ namespace Snippets.Web.Common.Exceptions
 
                 data.WriteEndObject();
 
+                // Serious merging magic is used to achieve 
+                // the domain based error list
                 errors.Merge((JObject) data.Token, new JsonMergeSettings 
                 {
                     MergeArrayHandling = MergeArrayHandling.Union

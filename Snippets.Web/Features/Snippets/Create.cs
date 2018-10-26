@@ -83,7 +83,7 @@ namespace Snippets.Web.Features.Snippets
             readonly SnippetsContext _context;
             readonly ICurrentUserAccessor _currentUserAccessor;
             readonly IMapper _mapper;
-            readonly AppSettings _settings;
+            readonly AppSettings _appSettings;
 
             /// <summary>
             /// Initializes a Create Handler
@@ -91,13 +91,13 @@ namespace Snippets.Web.Features.Snippets
             /// <param name="context">DataContext which the query gets processed on</param>
             /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
             /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
-            /// <param name="settings">Mapper for the appsettings.json file</param>
-            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper, AppSettings settings)
+            /// <param name="appSettings">Mapper for the "appsettings.json" file</param>
+            public Handler(SnippetsContext context, ICurrentUserAccessor currentUserAccessor, IMapper mapper, AppSettings appSettings)
             {
                 _context = context;
                 _currentUserAccessor = currentUserAccessor;
                 _mapper = mapper;
-                _settings = settings;
+                _appSettings = appSettings;
             }
 
             /// <summary>
@@ -123,7 +123,7 @@ namespace Snippets.Web.Features.Snippets
                         category = new Category()
                         {
                             DisplayName = categoryString,
-                            Color = _settings.AccentColorsList.Random()
+                            Color = _appSettings.AccentColorsList.Random()
                         };
 
                         await _context.Categories.AddAsync(category, cancellationToken);

@@ -10,13 +10,17 @@ namespace Snippets.Web.Common.Services
 {
     public class SendGridMailService : IMailService
     {
-        readonly AppSettings _settings;
+        readonly AppSettings _appSettings;
         readonly SendGridSender _sendGridClient;
 
-        public SendGridMailService(AppSettings settings)
+        /// <summary>
+        /// Initializes a SendGridMailService
+        /// </summary>
+        /// <param name="appSettings">Mapper for the "appsettings.json" file</param>
+        public SendGridMailService(AppSettings appSettings)
         {
-            _settings = settings;
-            _sendGridClient = new SendGridSender(settings.SmtpConfig.Password);
+            _appSettings = appSettings;
+            _sendGridClient = new SendGridSender(appSettings.SmtpConfig.Password);
 
             Email.DefaultSender = _sendGridClient;
             Email.DefaultRenderer = new RazorRenderer();
@@ -24,12 +28,15 @@ namespace Snippets.Web.Common.Services
 
         public async Task SendEmailAsync(string to, string subject, string htmlBody, string from = null)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => 
+            {
+                throw new NotImplementedException();
+            });
         }
 
         public async Task SendEmailFromTemplateAsync<T>(string to, string subject, string razorTemplatePath, T model)
         {
-            await Email.From(_settings.SmtpConfig.Identity.Email, _settings.SmtpConfig.Identity.Name)
+            await Email.From(_appSettings.SmtpConfig.Identity.Email, _appSettings.SmtpConfig.Identity.Name)
                 .To(to)
                 .Subject(subject)
                 .UsingTemplateFromFile(razorTemplatePath, model)

@@ -18,9 +18,9 @@ namespace Snippets.Web.Common.Security
         /// <summary>
         /// Initializes a JwtTokenGenerator
         /// </summary>
-        /// <param name="jwtOptions"></param>
-        /// <param name="appSettings"></param>
-        /// <param name="passwordHasher"></param>
+        /// <param name="jwtOptions">Options bound to the creation of the individual Jwt tokens</param>
+        /// <param name="appSettings">Mapped version of "appsettings.json"</param>
+        /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
         public JwtTokenGenerator(IOptions<JwtIssuerOptions> jwtOptions, AppSettings appSettings, IPasswordHasher passwordHasher)
         {
             _jwtOptions = jwtOptions.Value;
@@ -57,6 +57,28 @@ namespace Snippets.Web.Common.Security
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
+        #region Refresh Token Algorithm Notice
+        /* 
+         * The algorithm used to generate and verify 
+         * a valid Refresh token works as elaborated below:
+         *
+         * Schema: rft.(payload).(checksum)
+         *
+         * The Refresh token has t anyways start with the prefix
+         * "rft", this way we can ensure that the user is not
+         * handing us a Jwt token. The payload is actually up to the
+         * user of the algorithm, but we are using just a heavy amount of
+         * random data here (256 bytes); its like a secret key and used to
+         * make the checksum harder to break. At last there is a checksum,
+         * which is generated via the use of the checksum of the currently 
+         * valid Jwt token and the payload of the Refresh token. This way
+         * the end-user has to have access to both tokens in order to
+         * generate a new Jwt token. The Jwt token also has to be valid in
+         * order to validate the Refresh token.
+         *
+         */
+        #endregion
+
         public Task<string> CreateRefreshToken(string jwtToken)
         {
             return Task.Run(() => 
@@ -76,7 +98,7 @@ namespace Snippets.Web.Common.Security
                 return $"rft.{payloadBase64}.{checksum}";
             });
         }
-
+        
         public Task<bool> VerifyRefreshToken(string refreshToken, string jwtToken)
         {
             return Task.Run(() =>

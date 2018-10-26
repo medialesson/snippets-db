@@ -16,6 +16,10 @@ namespace Snippets.Web.Common.Services
         readonly AppSettings _appSettings;
         private SmtpSender _smtpClient;
 
+        /// <summary>
+        /// Initializes a SmtpMailService
+        /// </summary>
+        /// <param name="appSettings">Mapper for the "appsettings.json" file</param>
         public SmtpMailService(AppSettings appSettings)
         {
             _appSettings = appSettings;

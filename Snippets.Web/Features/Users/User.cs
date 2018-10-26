@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Snippets.Web.Features.Users
 {
@@ -10,6 +11,7 @@ namespace Snippets.Web.Features.Users
         /// <summary>
         /// Unique identifier of the User
         /// </summary>
+        [JsonProperty("id")]
         public string UserId { get; set; }
 
         /// <summary>
@@ -36,8 +38,14 @@ namespace Snippets.Web.Features.Users
 
     public class UserTokens
     {
+        /// <summary>
+        /// Jwt token used for authentication
+        /// </summary>
         public string Token { get; set; }
 
+        /// <summary>
+        /// Refresh token used for generating a new Jwt token
+        /// </summary>
         public string Refresh { get; set; }
 
 #if DEBUG
@@ -65,12 +73,18 @@ namespace Snippets.Web.Features.Users
 
     public class UserTokensEnvelope
     {
-
+        /// <summary>
+        /// Initializes a UserTokensEnvelope
+        /// </summary>
+        /// <param name="tokens">Instace of a UserTokens transfer object</param>
         public UserTokensEnvelope(UserTokens tokens)
         {
             Tokens = tokens;
         }
 
+        /// <summary>
+        /// Instace of a UserTokens transfer object
+        /// </summary>
         public UserTokens Tokens { get; }
     }
 }
