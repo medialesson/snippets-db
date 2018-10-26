@@ -57,7 +57,7 @@ namespace Snippets.Web
             // Add Entity Framework
             services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
             {
-                options.UseSqlite("Data Source=snippets.db");
+                options.UseSqlServer("DefaultConnection");
             });
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
 

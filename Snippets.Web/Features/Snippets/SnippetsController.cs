@@ -75,6 +75,14 @@ namespace Snippets.Web.Features.Snippets
             });
         }
 
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        public async Task<SnippetEnvelope> Edit(string id, [FromBody] Edit.Command command)
+        {
+            command.SnippetId = id;
+            return await _mediator.Send(command);
+        }
+
     	/// <summary>
         /// Creates a new Snippet
         /// </summary>

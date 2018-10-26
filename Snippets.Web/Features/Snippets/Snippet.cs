@@ -13,6 +13,7 @@ namespace Snippets.Web.Features.Snippets
         /// <summary>
         /// Unique identifier of the Snippet
         /// </summary>
+        [JsonProperty("id")]
         public string SnippetId { get; set; }
 
         /// <summary>
