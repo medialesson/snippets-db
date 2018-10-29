@@ -6,7 +6,7 @@ export const environment = {
   production: false,
 
   api: {
-    rootUrl: 'https://snippets-api-dev.azurewebsites.net'
+    rootUrl: 'https://snippets-db.northeurope.cloudapp.azure.com'
   }
 };
 

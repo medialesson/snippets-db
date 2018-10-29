@@ -31,7 +31,7 @@ export class RegisterComponent implements OnInit {
 
     // Send request
     let user = await this.authService.registerAsync(this.email, this.displayName, this.password);
-    this.authService.setJwtToken(user.token);
+    this.authService.setJwtToken(user.tokens.token);
 
     // Add timeout for UX because the 
     // sign up process is actually blazing fast
