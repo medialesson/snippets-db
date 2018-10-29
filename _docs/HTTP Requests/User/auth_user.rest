@@ -1,3 +1,16 @@
+### Register me
+POST https://localhost:5001/users
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "messmer@medialesson.de",
+    "displayName": "Gino",
+    "password": "time4CoffeeBreak!"
+  }
+}
+
+
 ### Register the user
 # @name register
 POST https://localhost:5001/users

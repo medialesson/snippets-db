@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Snippets.Web.Common;
@@ -9,6 +10,7 @@ using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,15 +46,15 @@ namespace Snippets.Web.Features.Users
             public UserDataValidator()
             {
                 RuleFor(x => x.Email)
-                    .Empty()
                     .EmailAddress().WithMessage("Email has be a propper email address");
+#if !DEBUG
                 RuleFor(x => x.Password)
-                    .Empty()
                     .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
                     .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
                     .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
                     .Matches("[0-9]").WithMessage("Password has to have at least one number")
-                    .Matches("[!\"#$%&'()*+´\\-./:;<=>?@[\\]^_`{|}~]").WithMessage("Password has to have at least one special character");
+                    .Matches(@"[^\w\d]").WithMessage("Password has to have at least one special character");
+#endif
             }
         } 
 
@@ -83,6 +85,7 @@ namespace Snippets.Web.Features.Users
             readonly IPasswordHasher _passwordHasher;
             readonly ICurrentUserAccessor _currentUserAccessor;
             readonly IMapper _mapper;
+            readonly IMailService _mailService;
 
             /// <summary>
             /// Handles the request 
@@ -91,12 +94,14 @@ namespace Snippets.Web.Features.Users
             /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
             /// <param name="currentUserAccessor">Represents a type used to access the current user from a jwt token</param>
             /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
-             public Handler(SnippetsContext context, IPasswordHasher passwordHasher, ICurrentUserAccessor currentUserAccessor, IMapper mapper)
+            /// <param name="mailService">Represents a type used to email send operations</param>
+             public Handler(SnippetsContext context, IPasswordHasher passwordHasher, ICurrentUserAccessor currentUserAccessor, IMapper mapper, IMailService mailService)
             {
                 _context = context;
                 _passwordHasher = passwordHasher;
                 _currentUserAccessor = currentUserAccessor;
                 _mapper = mapper;
+                _mailService = mailService;
             }
 
             /// <summary>
@@ -110,6 +115,20 @@ namespace Snippets.Web.Features.Users
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
                 var person = await _context.Persons.Where(p => p.PersonId == currentUserId).FirstOrDefaultAsync(cancellationToken);
                 
+                // Verify new email if it has changed
+                if (message.User.Email != null && message.User.Email != person.Email)
+                {
+                    person.VerificationKey = Guid.NewGuid().ToString();
+                    BackgroundJob.Enqueue(() =>
+                        _mailService.SendEmailFromTemplateAsync(message.User.Email, "Welcome to Snippets DB",
+                            $"{Directory.GetCurrentDirectory()}/Views/Emails/Registration.cshtml", new Views.Emails.RegistrationModel
+                            {
+                                DisplayName = message.User.DisplayName ?? message.User.Email,
+                                VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                            })
+                    );
+                }
+
                 // Change the specified properties
                 person.Email = message.User.Email ?? person.Email;
                 person.DisplayName = message.User.DisplayName ?? person.DisplayName;

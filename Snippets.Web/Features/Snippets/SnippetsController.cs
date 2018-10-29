@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Snippets.Web.Common.Security;
+using Snippets.Web.Features.Languages;
 
 namespace Snippets.Web.Features.Snippets
 {
@@ -28,7 +29,7 @@ namespace Snippets.Web.Features.Snippets
         /// Retrieves a list of Snippets
         /// </summary>
         /// <param name="category">Delimits the query to a specific category only</param>
-        /// <param name="authorId">Delimits the query to a specific author only by its id</param>
+        /// <param name="author">Delimits the query to a specific author only by its id</param>
         /// <param name="limit">Delimits the number of results returned</param>
         /// <param name="offset">Skips the specified amount of entries</param>
         [HttpGet]
@@ -57,6 +58,31 @@ namespace Snippets.Web.Features.Snippets
             return await _mediator.Send(new Content.Query(id));
         }
 
+        /// <summary>
+        /// Deletes a single Snippet by its unique identifier
+        /// </summary>
+        /// <param name="id">Unique identifier of the Snippet</param>
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        public async Task<object> Delete(string id)
+        {
+            return await _mediator.Send(new Delete.Command
+            {
+                Snippet = new Delete.SnippetData
+                {
+                    SnippetId = id
+                }
+            });
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
+        public async Task<SnippetEnvelope> Edit(string id, [FromBody] Edit.Command command)
+        {
+            command.SnippetId = id;
+            return await _mediator.Send(command);
+        }
+
     	/// <summary>
         /// Creates a new Snippet
         /// </summary>
@@ -66,6 +92,15 @@ namespace Snippets.Web.Features.Snippets
         public async Task<SnippetEnvelope> Create([FromBody] Create.Command command)
         {
             return await _mediator.Send(command);
+        }
+
+        /// <summary>
+        /// Retrieves a list of all registered Language enums
+        /// </summary>
+        [HttpGet("languages")]
+        public async Task<LanguagesEnvelope> ListLanguages()
+        {
+            return await _mediator.Send(new Languages.List.Query());
         }
     }
 }

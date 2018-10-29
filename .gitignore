@@ -267,3 +267,4 @@ Snippets.Web/snippets.db
 Snippets.Web/.vscode/launch.json
 Snippets.Web/Properties/PublishProfiles
 Snippets.Web/appsettings.Development.json
+/Snippets.Web/snippets_jobs.db

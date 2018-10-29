@@ -1,38 +1,21 @@
-﻿@model Snippets.Web.Views.Emails.RegistrationModel
+﻿<h2>Hey @Model.DisplayName!</h2>
 
-<!doctype html>
-<html lang="en">
+Thanks for signing up on Snippets DB. We need to verify your account to ensure you're not a robot.
+<br /><br />
+Just follow the link and you'll be able to submit and contribute to snippets soon:
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<br />
+<a href="@Model.VerificationUrl" target="_blank">Verify me</a>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
-          crossorigin="anonymous">
-</head>
+<br />
+<br />
 
-<body>
-    <div class="container">
-        <div class="p-3">
+Cheers
 
-            <h2>Hey @Model.DisplayName!</h2>
+<hr />
 
-            Thanks for signing up on Snippets DB. We need to verify your account to ensure you're not a robot.
-            <br />Just follow the link and you'll be able to submit and contribute to snippets soon:
-
-            <hr />
-
-            <a class="btn btn-primary btn-lg text-center mt-3" href="@Model.VerificationUrl" target="_blank">Verify me</a>
-        </div>
-
-        <div class="bg-light p-3">
-            <span class="text-muted small">
-                Fork us on GitHub
-            </span>
-        </div>
-    </div>
-</body>
-
-</html>
+<div class="bg-light p-3">
+    <small class="text-muted small">
+        Fork us on GitHub
+    </small>
+</div>

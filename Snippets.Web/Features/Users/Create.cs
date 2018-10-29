@@ -15,6 +15,7 @@ using Snippets.Web.Common.Exceptions;
 using System.Net;
 using Snippets.Web.Common.Services;
 using System.IO;
+using Hangfire;
 
 namespace Snippets.Web.Features.Users
 {
@@ -34,10 +35,7 @@ namespace Snippets.Web.Features.Users
             public UserDataValidator()
             {
                 RuleFor(x => x.Email)
-                    .NotEmpty().WithMessage("Email has to have a value")
                     .EmailAddress().WithMessage("Email has be a propper email address");
-
-
                 RuleFor(x => x.Password)
 #if DEBUG
                     .NotEmpty().WithMessage("Password has to have a value");
@@ -86,7 +84,7 @@ namespace Snippets.Web.Features.Users
 
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
+                if (message.User.Email != null && await _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
                     throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string> 
                     {
                         {"user.email", $"Email '{ message.User.Email }' is already in use"}
@@ -105,6 +103,18 @@ namespace Snippets.Web.Features.Users
                 var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
                 person.RefreshToken = refreshToken.Split('.')[2];
 
+                if (message.User.Email != null)
+                {
+                    BackgroundJob.Enqueue(() =>
+                        _mailService.SendEmailFromTemplateAsync(message.User.Email, "Welcome to Snippets DB",
+                            $"{Directory.GetCurrentDirectory()}/Views/Emails/Registration.cshtml", new
+                            {
+                                DisplayName = message.User.DisplayName ?? message.User.Email,
+                                VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                            })
+                    );
+                }
+
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
 
@@ -113,13 +123,6 @@ namespace Snippets.Web.Features.Users
                     Token = jwtToken,
                     Refresh = refreshToken 
                 };
-
-                await _mailService.SendEmailFromEmbeddedAsync(user.Email, "Welcome to Snippets DB", 
-                    $"Snippets.Web.Views.Emails.Registration.cshtml", new Views.Emails.RegistrationModel
-                    {
-                        DisplayName = user.DisplayName,
-                        VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
-                    });
 
                 return new UserEnvelope(user);
             }
