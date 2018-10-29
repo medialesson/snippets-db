@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     this.blockUI.start('Signing you in...');
 
     let user = await this.authService.loginAsync(this.email, this.password);
-    this.authService.setJwtToken(user.token);
+    this.authService.setJwtToken(user.tokens.token);
 
     // Same story here
     setTimeout(() => {

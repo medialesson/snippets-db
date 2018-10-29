@@ -9,21 +9,21 @@
       </div>
 
       <div class="btn-group" role="group">
-        <button class="btn btn-primary btn-sm" (click)="downloadSnippet()">Download</button>
-        <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i class="ni ni-single-copy-04"></i></button>
+        <a class="btn btn-primary btn-sm" (click)="downloadSnippet()" [href]="snippets.buildRawUrl(snippet.snippetId)" target="_blank">Download</a>
+        <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i
+            class="ni ni-single-copy-04"></i></button>
       </div>
     </span>
   </h5>
+
+  <div class="container mt-2" *ngIf="snippet.categories.length > 0">
+    <a *ngFor="let category of snippet.categories" class="badge badge-pill badge-secondary mr-1 text-white"
+      [style.background-color]="category.color" [routerLink]="['/tag/' + category.id]">{{category.displayName}}</a>
+  </div>
 </div>
 
 <div class="container pt-4">
   <div class="row">
-    <div class="col-md-auto full-height no-padding">
-      <div>
-        <h5>{{snippet.score}}</h5>
-      </div>
-    </div>
-
     <div class="col-md">
       <div class="card shadow-sm bg-secondary">
         <pre><code highlight [textContent]="snippet.content" class="padding"></code></pre>

@@ -16,6 +16,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { StickyModule } from 'ng2-sticky-kit';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ToastrModule } from 'ngx-toastr';
+import { CovalentCodeEditorModule } from '@covalent/code-editor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,6 +32,7 @@ import { ProfileDetailsComponent } from './profiles/profile-details/profile-deta
 import { SnippetsDeckComponent } from './snippets/snippets-deck/snippets-deck.component';
 import { SnippetsEditorComponent } from './snippets/snippets-editor/snippets-editor.component';
 import { UsersService } from './users/users.service';
+import { SearchBoxComponent } from './core/search-box/search-box.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { UsersService } from './users/users.service';
 
     ProfileDetailsComponent,
     SnippetsDeckComponent,
-    SnippetsEditorComponent
+    SnippetsEditorComponent,
+    SearchBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,8 @@ import { UsersService } from './users/users.service';
     HighlightModule.forRoot(),
     StickyModule,
     ClipboardModule,
-    ToastrModule.forRoot() ,
+    ToastrModule.forRoot(),
+    CovalentCodeEditorModule,
 
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
