@@ -1,0 +1,83 @@
+# Creates a new user
+# @name register
+POST https://localhost:5001/users HTTP/1.1
+Content-Type: application/json
+
+# email: needs to be a valid email, optional
+# displayName: optional
+# password: 12 characters min, 
+#           upper/lowercase letter, 
+#           number, special character,
+#           optional
+
+{
+  "user": {
+    "email": "jonathan@appleseed.com",
+    "displayName": "Johnathan Appleseed",
+    "password": "<MySecretPassw0rd>"
+  }
+}
+
+@register_id = {{register.response.body.$.user.id}}
+@register_token = {{register.response.body.$.user.tokens.token}}
+@register_refreshToken = {{register.response.body.$.user.tokens.refresh}}
+
+###
+
+# Authenticates an existing user
+# @name auth
+POST https://localhost:5001/users/auth HTTP/1.1
+Content-Type: application/json
+
+# id: required if user has no email, optional
+# email: optional
+# password: non-optional
+
+{
+  "user": {
+    "id": "{{register_id}}",
+    "email": "jonathan@appleseed.com",
+    "password": "<MySecretPassw0rd>"
+  }
+}
+
+@auth_token = {{auth.response.body.$.user.tokens.token}}
+@auth_refreshToken = {{auth.response.body.$.user.tokens.refresh}}
+
+###
+
+# Generates a new Jwt token from a Refresh token
+# @name refresh
+POST https://localhost:5001/users/auth/refresh HTTP/1.1
+Content-Type: : application/json
+Authorization: Bearer {{auth_token}}
+Refresh: {{auth_refreshToken}} 
+
+@refresh_token = {{refresh.response.body.$.tokens.token}}
+@refresh_refreshToken = {{refresh.response.body.$.tokens.refresh}}
+
+###
+
+# Revokes an existing Refresh token
+# @name revoke
+POST https://localhost:5001/users/auth/revoke HTTP/1.1
+Content-Type: : application/json
+Authorization: Bearer {{refresh_token}}
+Refresh: {{refresh_refreshToken}}
+
+###
+
+# Verifies the email of a user by its verification key
+# @name verify
+POST https://localhost:5001/users/auth/verify HTTP/1.1
+Content-Type: : application/json
+
+{
+  "verification": {
+    "verificationKey": "50dd3a8a-fe5a-43d1-941f-3db90587035c"
+  }
+}
+
+# For a detailed overview of the api specs 
+# have a look at swagger whilst running the app
+# at: https://localhost:5001/swagger

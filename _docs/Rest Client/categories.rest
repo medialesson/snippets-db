@@ -1,0 +1,58 @@
+# Authenticates an existing user
+# @name auth
+POST https://localhost:5001/users/auth HTTP/1.1
+Content-Type: application/json
+
+# id: required if user has no email, optional
+# email: optional
+# password: non-optional
+
+{
+  "user": {
+    "email": "jonathan@appleseed.com",
+    "password": "<MySecretPassw0rd>"
+  }
+}
+
+@auth_token = {{auth.response.body.$.user.tokens.token}}
+@auth_id = {{auth.response.body.$.user.id}}
+
+###
+
+# Creates a new Snippet
+# @name create
+POST https://localhost:5001/snippets HTTP/1.1
+Content-Type: application/application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "snippet": {
+    "title": "Hello World in plain text!",
+    "content": "Hello World",
+    "language": "plain",
+    "categories": [
+      "hello world",
+      "example",
+      "stupid"
+    ]
+  }
+}
+
+@create_id = {{create.response.body.$.snippet.id}
+
+# Retrieves a list of submitted categories
+# @name details
+GET https://localhost:5001/categories HTTP/1.1
+
+# limit: optional, query
+# offset: optional, query
+
+###
+# @name details_by_id
+GET https://localhost:5001/categories/{{create_id}} HTTP/1.1
+
+# id: non-optional
+
+# For a detailed overview of the api specs 
+# have a look at swagger whilst running the app
+# at: https://localhost:5001/swagger
