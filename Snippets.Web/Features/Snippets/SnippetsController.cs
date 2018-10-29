@@ -75,6 +75,12 @@ namespace Snippets.Web.Features.Snippets
             });
         }
 
+        /// <summary>
+        /// Edits the details of a Snippet by its unique identifier 
+        /// </summary>
+        /// <param name="id">Unique identifier of the Snippet</param>
+        /// <param name="command">Command folowing the <see cref="Edit.SnippetData" /> convention</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtIssuerOptions.Schemes)]
         public async Task<SnippetEnvelope> Edit(string id, [FromBody] Edit.Command command)

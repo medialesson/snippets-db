@@ -40,7 +40,7 @@ namespace Snippets.Web.Domains
         public List<Karma> Karma { get; set; }
 
         /// <summary>
-        /// User-customizable snd specific preferences (see <cref="UserPreferences" /> for further detail)
+        /// User-customizable snd specific preferences (see <see cref="UserPreferences" /> for further detail)
         /// </summary>
         [NotMapped]
         public UserPreferences Preferences { get; set; } = new UserPreferences();

@@ -15,13 +15,23 @@ namespace Snippets.Web.Common.Filter
     {
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a ValidationActionFilter 
+        /// </summary>
+        /// <param name="logger">Represents a type used to perform logging</param>
         public ValidatorActionFilter(ILogger<ValidatorActionFilter> logger)
         {
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Called once the action gets executed, handles the action
+        /// </summary>
+        /// <param name="context">A context for action filters, specifically</param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            // Compile a dictionary of the found errors
+            // and hand it of to the ErrorHandlingMiddleware
             if (!context.ModelState.IsValid)
             {
                 var result = new ContentResult();
@@ -30,6 +40,7 @@ namespace Snippets.Web.Common.Filter
                 context.ModelState.ToList().ForEach(i => 
                     messages.Add(i.Key, i.Value.Errors.Select(y => y.ErrorMessage).FirstOrDefault()));
 
+                // Error message that follows the apis exception convention (use for your own exceptions)
                 throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, messages);
             }
         }

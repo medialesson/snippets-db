@@ -1,0 +1,132 @@
+# Authenticates an existing user
+# @name auth
+POST https://localhost:5001/users/auth HTTP/1.1
+Content-Type: application/json
+
+# id: required if user has no email, optional
+# email: optional
+# password: non-optional
+
+{
+  "user": {
+    "email": "jonathan@appleseed.com",
+    "password": "<MySecretPassw0rd>"
+  }
+}
+
+@auth_token = {{auth.response.body.$.user.tokens.token}}
+@auth_id = {{auth.response.body.$.user.id}}
+
+###
+
+# Retrieves a list of Snippets
+# @name details
+GET https://localhost:5001/snippets HTTP/1.1
+Content-Type: application/json
+
+# category: optional, query
+# author: optinal, query
+# limit: optional, query
+# offset: optional, query
+
+###
+
+# Creates a new Snippet
+# @name create
+POST https://localhost:5001/snippets HTTP/1.1
+Content-Type: application/application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "snippet": {
+    "title": "Hello World in plain text!",
+    "content": "Hello World",
+    "language": "plain",
+    "categories": [
+      "hello world",
+      "example",
+      "stupid"
+    ]
+  }
+}
+
+@create_id = {{create.response.body.$.snippet.id}}
+
+###
+
+# Retrieves a single Snippet by its unique identifier
+# @name details_by_id
+GET https://localhost:5001/snippets/{{create_id}} HTTP/1.1
+Content-Type: application/json
+
+# id: non-optional, path
+
+###
+
+# Deletes a single Snippet by its unique identifier
+# @name delete
+GET https://localhost:5001/snippets/{{create_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+# id: non-optional
+
+###
+
+# Edits the details of a Snippet by its unique identifier 
+# @name edit
+GET https://localhost:5001/snippets/{{create_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+# title: non-optional
+# content: non-optional
+# language: non-optional, (see languages route)
+
+{
+  "snippet": {
+    "title": "Hello World in lua!",
+    "content": "print 'Hello World'",
+    "language": "lua",
+    "categories": [
+      "hello world",
+      "example"
+    ]
+  }
+}
+
+###
+
+# Retrieves the content of a Snippet by its unique identifier
+# @name content
+GET https://localhost:5001/snippets/{{create_id}}/raw HTTP/1.1
+Content-Type: application/json
+
+# id: non-optional, path
+
+###
+
+# Retrieves a list of all registered Language enums
+# @name languages
+GET https://localhost:5001/snippets/languages HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Submits or deletes an existing Upvote to the specified Snippet 
+# @name upvote
+POST https://localhost:5001/snippets/{{create_id}}/upvote HTTP/1.1
+Content-Type: : application/json
+Authorization: Bearer {{auth_token}}
+
+### 
+
+# Submits or deletes an existing Downvote to the specified Snippet 
+# @name upvote
+POST https://localhost:5001/snippets/{{create_id}}/downvote HTTP/1.1
+Content-Type: : application/json
+Authorization: Bearer {{auth_token}}
+
+# For a detailed overview of the api specs 
+# have a look at swagger whilst running the app
+# at: https://localhost:5001/swagger

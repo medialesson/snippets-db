@@ -13,6 +13,26 @@ namespace Snippets.Web.Domains
         public string SnippetId { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
+        /// Title of the Snippet
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Content of the Snippet (usually code) 
+        /// </summary>
+        public string Content { get; set; }
+
+        /// <summary>
+        /// Programming language the Snippets content is in
+        /// </summary>
+        public int Language { get; set; }
+
+        /// <summary>
+        /// Person that submitted the Snippet
+        /// </summary>
+        public Person Author { get; set; }
+
+        /// <summary>
         /// List of positive Karma votes the Snippet received only 
         /// </summary>
         [NotMapped]
@@ -34,26 +54,6 @@ namespace Snippets.Web.Domains
         /// List of all Karma votes the Snipped received
         /// </summary>
         public List<Karma> Karma { get; set; }
-
-        /// <summary>
-        /// Person that submitted the Snippet
-        /// </summary>
-        public Person Author { get; set; }
-
-        /// <summary>
-        /// Title of the Snippet
-        /// </summary>
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Content of the Snippet (usually code) 
-        /// </summary>
-        public string Content { get; set; }
-
-        /// <summary>
-        /// Programming language the Snippets content is in
-        /// </summary>
-        public int Language { get; set; }
 
         /// <summary>
         /// List of all Categories that belong to the Snippet
