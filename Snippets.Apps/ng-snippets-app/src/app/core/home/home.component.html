@@ -9,6 +9,15 @@
 
 <div class="bg-secondary py-5">
   <div class="container">
+    <div *ngIf="snippetsList.length === 0">
+      <div class="text-center">
+        <h3>It looks so empty here...</h3>
+        <p>
+          Be the first one to <a routerLink="/create">snip something</a>
+        </p>
+      </div>
+    </div>
+
     <app-snippets-deck [snippets]="snippetsList" (onItemClick)="navigateToSnippetById($event.snippetId)" (onDisplayNameClick)="navigateToUserById($event.authorId)"></app-snippets-deck>
   </div>
 </div>

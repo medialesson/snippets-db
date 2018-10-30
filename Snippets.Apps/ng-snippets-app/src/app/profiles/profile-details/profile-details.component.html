@@ -27,6 +27,12 @@
 
 <div class="bg-secondary py-4">
   <div class="container">
+    <div *ngIf="userSnippets.length === 0">
+      <div>
+        <h4>Oh snap</h4>
+        {{user.displayName}} hasn't snipped anything yet.
+      </div>
+    </div>
     <app-snippets-deck [snippets]="userSnippets" (onItemClick)="navigateToSnippetById($event.snippetId)"></app-snippets-deck>
   </div>
 </div>
