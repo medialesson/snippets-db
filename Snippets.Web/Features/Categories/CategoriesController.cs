@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Snippets.Web.Features.Categories
 {
     [Route("categories")]
-    [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoriesController : Controller
     {
         private readonly IMediator _mediator;
 

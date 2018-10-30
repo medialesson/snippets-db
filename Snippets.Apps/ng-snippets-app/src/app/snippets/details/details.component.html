@@ -9,7 +9,7 @@
       </div>
 
       <div class="btn-group" role="group">
-        <button class="btn btn-primary btn-sm" (click)="downloadSnippet()">Download</button>
+        <a class="btn btn-primary btn-sm" (click)="downloadSnippet()" [href]="snippets.buildRawUrl(snippet.snippetId)" target="_blank">Download</a>
         <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i
             class="ni ni-single-copy-04"></i></button>
       </div>
@@ -18,7 +18,7 @@
 
   <div class="container mt-2" *ngIf="snippet.categories.length > 0">
     <a *ngFor="let category of snippet.categories" class="badge badge-pill badge-secondary mr-1 text-white"
-      [style.background-color]="category.color" routerLink="['/tag/' + category.id]">{{category.displayName}}</a>
+      [style.background-color]="category.color" [routerLink]="['/tag/' + category.id]">{{category.displayName}}</a>
   </div>
 </div>
 

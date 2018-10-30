@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Snippets.Web.Features.Categories
 {
@@ -7,6 +8,7 @@ namespace Snippets.Web.Features.Categories
         /// <summary>
         /// Unique identifier of the Category
         /// </summary>
+        [JsonProperty("id")]
         public string CategoryId { get; set; }
 
         /// <summary>

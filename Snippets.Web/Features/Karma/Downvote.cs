@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Snippets.Web.Features.Karma.Enums;
 using Microsoft.EntityFrameworkCore;
+using Snippets.Web.Common.Services;
 
 namespace Snippets.Web.Features.Karma
 {
@@ -22,6 +23,17 @@ namespace Snippets.Web.Features.Karma
            /// </summary>
            public string SnippetId { get; set; }
        } 
+
+       public class VoteDataValidator : AbstractValidator<VoteData>
+       {
+           /// <summary>
+           /// Initializes a Downvote VoteDataValidator
+           /// </summary>
+          public VoteDataValidator()
+          {
+              RuleFor(x => x.SnippetId).NotNull().WithMessage("Id has to have a value");
+          } 
+       }
 
         public class Command : IRequest<VoteEnvelope>
         {
@@ -38,7 +50,7 @@ namespace Snippets.Web.Features.Karma
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(v => v.Vote).NotNull(); 
+                RuleFor(v => v.Vote).NotNull().WithMessage("Payload has to contain a vote object"); 
             }
         }
 
@@ -71,7 +83,7 @@ namespace Snippets.Web.Features.Karma
                 // Get the current user, snippet and karma from the database context
                 var currentUserId = _currentUserAccessor.GetCurrentUserId();
                 var selectedSnippet =  await _context.Snippets
-                    .FindAsync(message.Vote.SnippetId, cancellationToken);
+                    .SingleOrDefaultAsync(x => x.SnippetId == message.Vote.SnippetId, cancellationToken);
                 var currentKarma = await _context.Karma.SingleOrDefaultAsync(x => 
                     x.Submitter.PersonId == currentUserId && x.Snippet == selectedSnippet, 
                     cancellationToken); 
@@ -87,7 +99,7 @@ namespace Snippets.Web.Features.Karma
                     currentKarma = new Domains.Karma {
                         Upvote = false,
                         Snippet = selectedSnippet,
-                        Submitter = await _context.Persons.FindAsync(currentUserId, cancellationToken)
+                        Submitter = await _context.Persons.SingleOrDefaultAsync(x => x.PersonId == currentUserId, cancellationToken)
                     };
                     await _context.Karma.AddAsync(currentKarma, cancellationToken);
                 }

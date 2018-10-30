@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Snippets.Web.Common;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
 using Snippets.Web.Common.Security;
+using Snippets.Web.Common.Services;
 using Snippets.Web.Domains;
 
 namespace Snippets.Web.Features.Users
@@ -70,7 +72,10 @@ namespace Snippets.Web.Features.Users
                     throw new RedirectException($"user/{_currentUserAccessor.GetCurrentUserId()}", false);
 
                 if (person == null)
-                    throw new RestException(HttpStatusCode.NotFound, "User does not exist");
+                    throw new RestException(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"user.id", $"User for id { message.UserId } does not exist"}
+                    });
 
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
@@ -79,10 +84,17 @@ namespace Snippets.Web.Features.Users
                 if (person.PersonId != _currentUserAccessor.GetCurrentUserId())
                 {
                     user.Email = null;
-                    user.Token = null; // Otherwise you might be able to login as the user LOL
+                    user.Tokens = null; // Otherwise you might be able to login as the user LOL
                 }
                 else
-                    user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId); // TODO: Do not return a new token at this point
+                {
+                    var jwtToken = _currentUserAccessor.GetCurrentToken();
+                    user.Tokens = new UserTokens 
+                    {
+                        Token = jwtToken,
+                        Refresh = await _jwtTokenGenerator.CreateRefreshToken(jwtToken)
+                    };
+                }
                 return new UserEnvelope(user);
             }
         }

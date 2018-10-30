@@ -22,6 +22,11 @@ using NSwag;
 using Snippets.Web.Common;
 using Microsoft.AspNetCore.Http;
 using Snippets.Web.Common.Middleware;
+using Snippets.Web.Common.Services;
+using FluentValidation.AspNetCore;
+using Newtonsoft.Json;
+using Snippets.Web.Common.Filter;
+using Hangfire;
 
 namespace Snippets.Web
 {
@@ -31,43 +36,59 @@ namespace Snippets.Web
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // Method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add MediatR and database services
+            // Bind settings to instance
+            var appSettings = new AppSettings();
+            Configuration.Bind("Snippets", appSettings);
+            services.AddSingleton(Configuration);
+            services.AddSingleton(appSettings);
+
+            // Add MediatR
             services.AddMediatR();
+            // Error handling for Fluent Validation within MediatR
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+
+            // Add Entity Framework
             services.AddEntityFrameworkSqlite().AddDbContext<SnippetsContext>(options =>
             {
-                options.UseSqlite("Data Source=snippets.db");
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
             services.BuildServiceProvider().GetRequiredService<SnippetsContext>().Database.EnsureCreated();
 
-            // Bind settings to instance
-            var settings = new AppSettings();
-            Configuration.Bind("Snippets", settings);
-            services.AddSingleton(Configuration);
-            services.AddSingleton(settings);
+            // Add Hangfire server
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection")));
 
+            // Swagger
+            services.AddSwagger();
+
+            // Add MVC
+            services.AddCors();
+            services.AddMvc(opt => 
+            {
+                // Error handling for Fluent Validation
+                opt.Filters.Add(typeof(ValidatorActionFilter));
+            })
+            .AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            })
+            .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             // Add auto mapper
             services.AddAutoMapper(GetType().Assembly);
 
-
             // Add common services
+            services.AddSingleton<IMailService, SendGridMailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IPasswordHasher, PasswordHasher>(); // TODO: Blame Samuel in case it fucks up
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
-
-
-            // Add MVC
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwagger();
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add auth
             services.AddJwt();
@@ -84,12 +105,32 @@ namespace Snippets.Web
             {
                 app.UseHsts();
             }
+            app.UseHttpsRedirection();
 
+            // Error handling for user defined exceptions
+            // BODGE: This is also used to do some returns as exceptions
+            // we know that this is not the proper way of doing returns
+            // but du to limited time and concentration this design 
+            // decision was made ... we are sorry (it is your task to fix it)
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
-            app.UseHttpsRedirection();
+            // Hangfire background scheduler
+            app.UseHangfireServer();
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                Authorization = new [] { new HangfireAuthorizationFilter() }
+            });
+
+            app.UseCors(builder =>
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
+            app.UseMvc();
             app.UseStaticFiles();
 
+            // Swagger (we are also supporting VisualStudio Code REST client)
             app.UseSwaggerUi3WithApiExplorer(options =>
             {
                 options.GeneratorSettings.Title = "Snippets API";
@@ -105,8 +146,6 @@ namespace Snippets.Web
 
                 options.GeneratorSettings.OperationProcessors.Add(new OperationSecurityScopeProcessor("jwt"));
             });
-
-            app.UseMvc();
         }
     }
 }

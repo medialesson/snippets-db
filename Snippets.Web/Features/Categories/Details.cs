@@ -2,6 +2,7 @@
 using MediatR;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace Snippets.Web.Features.Categories
             {
                 // Get the requested category from the database
                 var selectedCategory = await _context.Categories
-                    .FindAsync(new object[] { message.CategoryId }, cancellationToken: cancellationToken);
+                    .FindAsync(new object[] { message.CategoryId }, cancellationToken);
 
                 if(selectedCategory != null)
                 {
@@ -62,7 +63,10 @@ namespace Snippets.Web.Features.Categories
                 }
                 else
                 {
-                    throw new RestException(HttpStatusCode.NotFound, "Category not found");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.NotFound, new Dictionary<string, string>
+                    {
+                        {"category.id", $"Category for id '{ message.CategoryId }' does not exist"}
+                    });
                 }
             }
         }

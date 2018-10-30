@@ -11,6 +11,6 @@ export class UsersService {
   constructor(private http: HttpClient) { }
 
   public async getByIdAsync(id: string): Promise<User> {
-    return (await this.http.get<UserEnvelope>(ApiService.getApiUrl('user/' + id)).toPromise()).user;
+    return (await this.http.get<UserEnvelope>(ApiService.buildApiUrl('user/' + id)).toPromise()).user;
   }
 }

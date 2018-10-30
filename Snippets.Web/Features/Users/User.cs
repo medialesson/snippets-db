@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Snippets.Web.Features.Users
 {
@@ -10,6 +11,7 @@ namespace Snippets.Web.Features.Users
         /// <summary>
         /// Unique identifier of the User
         /// </summary>
+        [JsonProperty("id")]
         public string UserId { get; set; }
 
         /// <summary>
@@ -29,14 +31,26 @@ namespace Snippets.Web.Features.Users
         public int Score { get; set; }
 
         /// <summary>
-        /// Jwt token valid for the User, used for authentication verification
+        /// Tokens valid for the User, used for authentication verification
         /// </summary>
-        /// <value></value>
+        public UserTokens Tokens { get; set; }
+    }
+
+    public class UserTokens
+    {
+        /// <summary>
+        /// Jwt token used for authentication
+        /// </summary>
         public string Token { get; set; }
+
+        /// <summary>
+        /// Refresh token used for generating a new Jwt token
+        /// </summary>
+        public string Refresh { get; set; }
 
 #if DEBUG
         // Used for easier authentication within Swagger
-        public string DebugToken => "Bearer " + Token;
+        public string Debug => "Bearer " + Token;
 #endif
     }
 
@@ -55,5 +69,22 @@ namespace Snippets.Web.Features.Users
         /// Instance of a User transfer object
         /// </summary>
         public User User { get; }
+    }
+
+    public class UserTokensEnvelope
+    {
+        /// <summary>
+        /// Initializes a UserTokensEnvelope
+        /// </summary>
+        /// <param name="tokens">Instace of a UserTokens transfer object</param>
+        public UserTokensEnvelope(UserTokens tokens)
+        {
+            Tokens = tokens;
+        }
+
+        /// <summary>
+        /// Instace of a UserTokens transfer object
+        /// </summary>
+        public UserTokens Tokens { get; }
     }
 }

@@ -1,3 +1,12 @@
+<div *ngIf="auth.currentUser" class="my-4">
+  <div class="container clearfix">
+    <h4 class="float-left m-0">Welcome back {{auth.currentUser.displayName}}</h4>
+    <!-- <div class="float-right">
+      <button class="btn btn-link">Create something</button>
+    </div> -->
+  </div>
+</div>
+
 <div class="bg-secondary py-5">
   <div class="container">
     <app-snippets-deck [snippets]="snippetsList" (onItemClick)="navigateToSnippetById($event.snippetId)" (onDisplayNameClick)="navigateToUserById($event.authorId)"></app-snippets-deck>

@@ -7,5 +7,11 @@ export class User {
     email:       string;
     displayName: string;
     score:       number;
-    token:       string;
+    tokens:      Tokens;
+}
+
+export class Tokens {
+    token:   string;
+    refresh: string;
+    debug:   string;
 }

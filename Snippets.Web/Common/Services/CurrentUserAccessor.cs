@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Snippets.Web.Common
+namespace Snippets.Web.Common.Services
 {
     public class CurrentUserAccessor : ICurrentUserAccessor
     {
@@ -17,12 +17,23 @@ namespace Snippets.Web.Common
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public string GetCurrentToken()
+        {
+            // Parser for the Jwt Token created by @ginomessmer
+            var headerValue = _httpContextAccessor.HttpContext.Request.Headers.SingleOrDefault(x => x.Key == "Authorization").Value.ToString();
+            if(headerValue.StartsWith("Bearer "))
+            {
+		        string token = headerValue.Substring("Bearer ".Length).Replace(" ", string.Empty);
+		        if(token.Length > 0)
+			        return token;
+		    }
+            return null;
+        }
+
         public string GetCurrentUserId()
         {
             return _httpContextAccessor.HttpContext.User?.Claims
                 ?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         }
-
-        // TODO: Method GetCurrentUserToken()
     }
 }

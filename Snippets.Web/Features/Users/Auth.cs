@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -7,6 +8,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Snippets.Web.Common.Database;
 using Snippets.Web.Common.Exceptions;
 using Snippets.Web.Common.Security;
@@ -18,6 +20,12 @@ namespace Snippets.Web.Features.Users
     {
         public class UserData
         {
+            /// <summary>
+            /// Unique identifier associated with the Person to authenticate
+            /// </summary>
+            [JsonProperty("id")]
+            public string UserId { get; set; }
+
             /// <summary>
             /// Email associated with the Person to authenticate
             /// </summary>
@@ -32,12 +40,14 @@ namespace Snippets.Web.Features.Users
         public class UserDataValidator : AbstractValidator<UserData>
         {
             /// <summary>
-            /// Initializes a Auth UserDataValidator
+            /// Initializes an Auth UserDataValidator
             /// </summary>
             public UserDataValidator()
             {
-                RuleFor(u => u.Email).NotEmpty();
-                RuleFor(u => u.Password).NotEmpty();
+                RuleFor(x => x.Email)
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(x => x.Password)
+                    .NotEmpty().WithMessage("Password has to have a value");
             }
         }
 
@@ -52,11 +62,13 @@ namespace Snippets.Web.Features.Users
         public class CommandValidator : AbstractValidator<Command>
         {
             /// <summary>
-            /// Initializes a Auth CommandValidator
+            /// Initializes an Auth CommandValidator
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(u => u.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
@@ -90,18 +102,34 @@ namespace Snippets.Web.Features.Users
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
                 // Check whether there is a User already existing with the same mail associated
-                var person = await _context.Persons.Where(p => p.Email == message.User.Email)
+                var person = await _context.Persons.Where(p => p.PersonId == message.User.UserId || p.Email == message.User.Email)
                     .SingleOrDefaultAsync(cancellationToken);
                 if (person == null)
-                    throw new RestException(HttpStatusCode.BadRequest, "Invalid Email");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                    {
+                        {"user", "User can not be resolved from either id or email"}
+                    });
                 
                 // Check whether the password is correct
                 if (!person.PasswordHash.SequenceEqual(_passwordHasher.Hash(message.User.Password, person.PasswordSalt)))
-                    throw new RestException(HttpStatusCode.BadRequest, "Invalid password");
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string>
+                    {
+                        {"user.password", $"Password for user with id '{ person.PersonId }' is invalid"}
+                    });;
+
+                // Generate tokens and savethe checksum of the refresh token in the data context
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
+                await _context.SaveChangesAsync(cancellationToken);
 
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                user.Tokens = new UserTokens {
+                    Token = jwtToken,
+                    Refresh = refreshToken 
+                };
                 return new UserEnvelope(user);
             }
         }

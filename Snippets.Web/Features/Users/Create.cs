@@ -13,6 +13,9 @@ using Snippets.Web.Common.Security;
 using Snippets.Web.Domains;
 using Snippets.Web.Common.Exceptions;
 using System.Net;
+using Snippets.Web.Common.Services;
+using System.IO;
+using Hangfire;
 
 namespace Snippets.Web.Features.Users
 {
@@ -21,18 +24,19 @@ namespace Snippets.Web.Features.Users
         public class UserData
         {
             /// <summary>
-            /// Email to associate with the Person
+            /// New email to be associated with the Person
             /// </summary>
             public string Email { get; set; }
 
             /// <summary>
-            /// Name that gets displayed to other users to associate with the Person
+            /// New name that gets displayed to other users associated with the Person 
             /// </summary>
             public string DisplayName { get; set; }
 
             /// <summary>
-            /// Password in plain text to associate with the Person
+            /// New password in plain text to be associated with the Person
             /// </summary>
+            /// <value></value>
             public string Password { get; set; }
         }
 
@@ -43,9 +47,19 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public UserDataValidator()
             {
-                RuleFor(d => d.Email).NotEmpty().EmailAddress();
-                RuleFor(d => d.Password).NotEmpty(); 
-                // TODO: Implement the use of save passwords only
+                RuleFor(x => x.Email)
+                    .EmailAddress().WithMessage("Email has be a propper email address");
+                RuleFor(x => x.Password)
+#if DEBUG
+                    .NotEmpty().WithMessage("Password has to have a value");
+#else
+                    .NotEmpty().WithMessage("Password has to have a value")
+                    .MinimumLength(12).WithMessage("Password has to be at least 12 characters long")
+                    .Matches("[A-Z]").WithMessage("Password has to have at least one uppercase letter")
+                    .Matches("[a-z]").WithMessage("Password has to have at least one lowercase letter")
+                    .Matches("[0-9]").WithMessage("Password has to have at least one number")
+                    .Matches(@"[^\w\d]").WithMessage("Password has to have at least one special character");
+#endif
             }
         }
 
@@ -64,7 +78,9 @@ namespace Snippets.Web.Features.Users
             /// </summary>
             public CommandValidator()
             {
-                RuleFor(c => c.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User)
+                    .NotNull().WithMessage("Payload has to contain a user object")
+                    .SetValidator(new UserDataValidator());
             }
         }
 
@@ -74,6 +90,7 @@ namespace Snippets.Web.Features.Users
             readonly IPasswordHasher _passwordHasher;
             readonly IJwtTokenGenerator _jwtTokenGenerator;
             readonly IMapper _mapper;
+            readonly IMailService _mailService;
 
             /// <summary>
             /// Handles the request 
@@ -82,21 +99,33 @@ namespace Snippets.Web.Features.Users
             /// <param name="passwordHasher">Represents a type used to generate and verify passwords</param>
             /// <param name="jwtTokenGenerator">Represents a type used to generate user specific jwt tokens</param>
             /// <param name="mapper">Represents a type used to do mapping operations using AutoMapper</param>
-            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper)
+            /// <param name="mailService">Represents a type used to email send operations</param>
+            public Handler(SnippetsContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IMailService mailService)
             {
                 _context = context;
                 _passwordHasher = passwordHasher;
                 _jwtTokenGenerator = jwtTokenGenerator;
                 _mapper = mapper;
+                _mailService = mailService;
             }
-
+            
+            /// <summary>
+            /// Handles the request
+            /// </summary>
+            /// <param name="message">Inbound data from the request</param>
+            /// <param name="cancellationToken">CancellationToken to cancel the Task</param>
             public async Task<UserEnvelope> Handle(Command message, CancellationToken cancellationToken)
             {
-                // Check whether there is a User already existing with the same mail associated
-                if (await  _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
-                    throw new RestException(HttpStatusCode.BadRequest, "Email already in use");
+                // If the user specifies an email, check whether its already in use
+                if (message.User.Email != null && await _context.Persons.Where(u => u.Email == message.User.Email).AnyAsync(cancellationToken))
+                    throw RestException.CreateFromDictionary(HttpStatusCode.BadRequest, new Dictionary<string, string> 
+                    {
+                        {"user.email", $"Email '{ message.User.Email }' is already in use"}
+                    });
 
+                // Generate the person object in the data context
                 var salt = Guid.NewGuid().ToByteArray();
+                                // Generate the person object in the data context
                 var person = new Person
                 {
                     Email = message.User.Email,
@@ -105,12 +134,34 @@ namespace Snippets.Web.Features.Users
                     PasswordSalt = salt
                 };
 
+                // Authenticate the user
+                var jwtToken = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                var refreshToken =  await _jwtTokenGenerator.CreateRefreshToken(jwtToken);
+                person.RefreshToken = refreshToken.Split('.')[2];
+
+                // If there is an email specified, verify it
+                if (message.User.Email != null)
+                {
+                    BackgroundJob.Enqueue(() =>
+                        _mailService.SendEmailFromTemplateAsync(message.User.Email, "Welcome to Snippets DB",
+                            $"{Directory.GetCurrentDirectory()}/Views/Emails/Registration.cshtml", new
+                            {
+                                DisplayName = message.User.DisplayName ?? message.User.Email,
+                                VerificationUrl = "https://www.youtube.com/watch?v=DLzxrzFCyOs"
+                            })
+                    );
+                }
+
                 _context.Persons.Add(person);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 // Map from the data context to a transfer object
                 var user = _mapper.Map<Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.PersonId);
+                user.Tokens = new UserTokens {
+                    Token = jwtToken,
+                    Refresh = refreshToken 
+                };
+
                 return new UserEnvelope(user);
             }
         }

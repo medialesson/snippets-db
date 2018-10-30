@@ -16,7 +16,7 @@ export class DetailsComponent implements OnInit {
 
   constructor(private router: Router,
     private route: ActivatedRoute,
-    private snippets: SnippetsService,
+    public snippets: SnippetsService,
     private toastr: ToastrService) {
 
     this.route.params.subscribe(params => {

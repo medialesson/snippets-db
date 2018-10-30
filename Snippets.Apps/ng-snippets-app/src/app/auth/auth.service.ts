@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   async registerAsync(email, displayName, password: string): Promise<User> {
-    let response = await this.http.post<UserEnvelope>(ApiService.getApiUrl('users'), {
+    let response = await this.http.post<UserEnvelope>(ApiService.buildApiUrl('users'), {
       user: {
         email: email,
         displayName: displayName,
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   async loginAsync(email, password: string): Promise<User> {
-    let response = await this.http.post<UserEnvelope>(ApiService.getApiUrl('users/auth'), {
+    let response = await this.http.post<UserEnvelope>(ApiService.buildApiUrl('users/auth'), {
       user: {
         email: email,
         password: password
@@ -55,5 +55,15 @@ export class AuthService {
 
     this.currentUser = response.user;
     return response.user;
+  }
+
+  async getCurrentUserAsync(): Promise<User> {
+    if (this.isJwtValid()) {
+      let response = await this.http.get<UserEnvelope>(ApiService.buildApiUrl('user')).toPromise();
+      return response.user;
+    }
+    else {
+      return null;
+    }
   }
 }

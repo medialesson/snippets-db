@@ -40,11 +40,16 @@ namespace Snippets.Web.Domains
         public List<Karma> Karma { get; set; }
 
         /// <summary>
-        /// User-customizable snd specific preferences (see <cref="UserPreferences" /> for further detail)
+        /// User-customizable snd specific preferences (see <see cref="UserPreferences" /> for further detail)
         /// </summary>
         [NotMapped]
         public UserPreferences Preferences { get; set; } = new UserPreferences();
-        
+
+        /// <summary>
+        /// Key that is being sent for email verification
+        /// </summary>
+        public string VerificationKey { get; set; } = Guid.NewGuid().ToString();
+
         /// <summary>
         /// Hashed password in binary form, used for verification
         /// </summary>
@@ -54,5 +59,7 @@ namespace Snippets.Web.Domains
         /// Salt in binary form, used for securing the Persons PasswordHash
         /// </summary>
         public byte[] PasswordSalt { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }
