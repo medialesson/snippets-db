@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
-import { SnippetPostData, SnippetDetailsEnvelope, SnippetPostDataEnvelope, SnippetsDetailsEnvelope } from './snippet';
+import { SnippetPostData, SnippetDetailsEnvelope, SnippetPostDataEnvelope, SnippetsDetailsEnvelope, VoteEnum, VoteEnvelope } from './snippet';
 import { ApiService } from '../services/api.service';
 
 @Injectable({
@@ -35,6 +35,17 @@ export class SnippetsService {
     return await this.http.get<SnippetsDetailsEnvelope>(ApiService.buildApiUrl('snippets'), { 
       params: queryParams 
     }).toPromise();
+  }
+
+  async voteAsync(id: string, vote: VoteEnum): Promise<string> {
+    let term: string;
+
+    switch(vote) { // Sorry for this ugly switch/case
+      case VoteEnum.upvote: term = 'upvote'; break;
+      case VoteEnum.downvote: term = 'downvote'; break;
+    }
+
+    return (await this.http.post<VoteEnvelope>(ApiService.buildApiUrl(`snippets/${id}/${term}`), { }).toPromise()).vote.status;
   }
   
   buildRawUrl(id: string): string {

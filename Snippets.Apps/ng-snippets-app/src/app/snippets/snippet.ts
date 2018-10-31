@@ -47,3 +47,20 @@ export class Category {
     displayName: string;
     color:       string;
 }
+
+// Vote
+
+export class VoteEnvelope {
+    vote: Vote;
+}
+
+export class Vote {
+    status: string;
+}
+
+
+export enum VoteEnum {
+    upvote,
+    downvote,
+    removed
+}

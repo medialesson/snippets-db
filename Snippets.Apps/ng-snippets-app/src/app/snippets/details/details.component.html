@@ -4,12 +4,15 @@
 
     <span class="float-right">
       <div class="btn-group mr-3" role="group">
-        <button class="btn btn-outline-success btn-sm" (click)="downloadSnippet()"><i class="ni ni-like-2"></i></button>
-        <button class="btn btn-outline-danger btn-sm" (click)="downloadSnippet()"><i class="ni ni-like-2 flip-180"></i></button>
+        <button class="btn btn-outline-success btn-sm" [class.active]="currentVote === 'upvote'" (click)="upvoteSnippet()"><i
+            class="ni ni-like-2"></i></button>
+        <button class="btn btn-outline-danger btn-sm" [class.active]="currentVote === 'downvote'" (click)="downvoteSnippet()"><i
+            class="ni ni-like-2 flip-180"></i></button>
+        <button class="btn btn-outline-light btn-sm px-3">{{snippet.score}}</button>
       </div>
 
       <div class="btn-group" role="group">
-        <a class="btn btn-primary btn-sm" (click)="downloadSnippet()" [href]="snippets.buildRawUrl(snippet.snippetId)" target="_blank">Download</a>
+        <a class="btn btn-primary btn-sm" (click)="downloadSnippet()" [href]="snippets.buildRawUrl(snippet.id)" target="_blank">Download</a>
         <button class="btn btn-default btn-sm" (click)="copySnippet()" [cbContent]="snippet.content" ngxClipboard><i
             class="ni ni-single-copy-04"></i></button>
       </div>

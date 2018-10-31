@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnippetsService } from 'src/app/snippets/snippets.service';
-import { SnippetDetails } from 'src/app/snippets/snippet';
+import { SnippetDetails, VoteEnum } from 'src/app/snippets/snippet';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -13,6 +13,7 @@ export class DetailsComponent implements OnInit {
 
   id: string;
   snippet: SnippetDetails = new SnippetDetails();
+  currentVote: string = 'removed';
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -39,6 +40,14 @@ export class DetailsComponent implements OnInit {
     this.toastr.info('Snippet has been copied to your clipboard', '', {
       positionClass: 'toast-bottom-center'
     });
+  }
+
+  async upvoteSnippet() {
+    this.currentVote = await this.snippets.voteAsync(this.snippet.id, VoteEnum.upvote);
+  }
+
+  async downvoteSnippet() {
+    this.currentVote = await this.snippets.voteAsync(this.snippet.id, VoteEnum.downvote);
   }
 
 }
