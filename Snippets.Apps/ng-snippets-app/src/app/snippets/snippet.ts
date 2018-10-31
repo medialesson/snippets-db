@@ -10,7 +10,7 @@ export class SnippetPostDataEnvelope {
 export class SnippetPostData {
     title:      string;
     content:    string;
-    language:   number;
+    language:   string;
     categories: string[] = [];
 }
 
@@ -22,15 +22,16 @@ export class SnippetDetailsEnvelope {
 
 export class SnippetsDetailsEnvelope {
     snippets: SnippetDetails[];
+    count:    number;
 }
 
 export class SnippetDetails {
-    snippetId:  string;
+    id:         string;
     title:      string;
     content:    string;
     score:      number;
     author:     Author;
-    language:   number;
+    language:   string;
     categories: Category[];
     createdAt:  string;
     updatedAt:  string;
@@ -45,4 +46,21 @@ export class Category {
     id:          string;
     displayName: string;
     color:       string;
+}
+
+// Vote
+
+export class VoteEnvelope {
+    vote: Vote;
+}
+
+export class Vote {
+    status: string;
+}
+
+
+export enum VoteEnum {
+    upvote,
+    downvote,
+    removed
 }

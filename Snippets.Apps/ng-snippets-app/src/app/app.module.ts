@@ -63,7 +63,8 @@ import { SearchBoxComponent } from './core/search-box/search-box.component';
         whitelistedDomains: [
           'localhost:5001', 
           'localhost:5000', 
-          'snippets-api-dev.azurewebsites.net'
+          'snippets-api-dev.azurewebsites.net',
+          'snippets-db.northeurope.cloudapp.azure.com'
         ]
       }
     }),
