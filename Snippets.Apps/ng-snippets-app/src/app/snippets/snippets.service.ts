@@ -13,6 +13,7 @@ export class SnippetsService {
     private http: HttpClient) { }
 
   async submitAsync(data: SnippetPostData): Promise<SnippetDetailsEnvelope> {
+    data.language = 'plain';
     let envelope = new SnippetPostDataEnvelope(data);
     return await this.http.post<SnippetDetailsEnvelope>(ApiService.buildApiUrl('snippets'),
       envelope).toPromise();

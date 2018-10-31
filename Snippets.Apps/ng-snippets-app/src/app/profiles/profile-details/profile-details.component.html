@@ -33,6 +33,6 @@
         {{user.displayName}} hasn't snipped anything yet.
       </div>
     </div>
-    <app-snippets-deck [snippets]="userSnippets" (onItemClick)="navigateToSnippetById($event.snippetId)"></app-snippets-deck>
+    <app-snippets-deck [snippets]="userSnippets" (onItemClick)="navigateToSnippetById($event.id)"></app-snippets-deck>
   </div>
 </div>

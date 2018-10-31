@@ -18,6 +18,6 @@
       </div>
     </div>
 
-    <app-snippets-deck [snippets]="snippetsList" (onItemClick)="navigateToSnippetById($event.snippetId)" (onDisplayNameClick)="navigateToUserById($event.authorId)"></app-snippets-deck>
+    <app-snippets-deck [snippets]="snippetsList" (onItemClick)="navigateToSnippetById($event.id)" (onDisplayNameClick)="navigateToUserById($event.authorId)"></app-snippets-deck>
   </div>
 </div>
